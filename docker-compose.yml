@@ -5,6 +5,7 @@ services:
       context: .
       args:
         NODE_ENV: development
+        DB_CONNECTION_STRING: mongodb://localhost:27018/botman
     env_file: .env
     volumes:
       - ./src:/app/src
@@ -13,3 +14,13 @@ services:
     entrypoint: ["yarn", "run", "start:dev"]
     ports:
       - 8000:80
+  db:
+    image: mongo:4
+    volumes:
+      - db:/data/db
+    ports:
+      - 27018:27017
+
+volumes:
+  db:
+    driver: local
