@@ -1,36 +1,57 @@
-import { Message } from 'discord.js';
+import { ColorResolvable, Message, MessageEmbed } from 'discord.js';
 import constants from '../constants';
 import Command from './command';
 import { pickRandom } from '../utils'
+import { url } from 'inspector';
 
-let replyVar = ''
+/*
+interface DescriptionReply {description: string}
+interface ImageReply {image: {url: string}}
+type CoinflipReply = DescriptionReply | ImageReply
+*/
+
 const headMsg = [
-  'Heads. You\'re in WINNERS QUEUE BABYYYYYYY',
-  'Heads. You is am good video gamer, buddy.',
-  'Heads. Is that him?']
+  {description: 'You\'re in WINNERS QUEUE BABYYYYYYY'},
+  {description: 'You is am good video gamer, buddy.'},
+  {description: 'Is that him?'},
+  {description: 'IT\'S HUGE'},
+  {image: {url:'https://i.imgur.com/M9sJim1.png'}},
+  {image: {url:'https://i.imgur.com/jb268vM.gif'}}]
 const tailMsg = [
-  'Tails. ONONONONONONONONO',
-  'Tails. Good news, Liam. You don\'t even have to queue up now!',
-  'Tails. Aw nuts.',
-  'Tails. IT\'S A DISASTER!',
-  'Tails. Hold on, I\'m pulling up directions to the bridge on Google maps.',
+  {description: 'ONONONONONONONONO'},
+  {description: 'Good news, Liam. You don\'t even have to queue up now!'},
+  {description: 'Aw nuts.'},
+  {description: 'IT\'S A DISASTER!'},
+  {description: 'Hold on, I\'m pulling up directions to the bridge on Google maps.'},
+  {image: {url:'https://i2-prod.chroniclelive.co.uk/incoming/article16374454.ece/ALTERNATES/s810/0_Wearmouth-Bridge.jpg'}},
+  {image: {url:'https://cdn.discordapp.com/attachments/535780263217594368/944317744046825502/Immervad-Bro.png'}},
+  {description: '"You have been autofilled to Jungle"'},
+  {description: 'ff @15'}
 ]
 
 export class CoinCommand extends Command {
   constructor() {
     super('coinflip', `${ constants.messagePrefix } coinflip`, 'Flip a coin to leave an important decision to chance!');
   }
-  
 
-  execute(message: Message): Promise<any> {
+    execute(message: Message): Promise<any> {
     let flip = Math.random()
+    let textVar;
+    let titleVar;
+    let colorVar: ColorResolvable;
     if (flip < 0.5) {
-      replyVar = `${pickRandom(headMsg)}`
+      textVar = pickRandom(headMsg);
+      titleVar = 'Heads!';
+      colorVar = '#72ff6e';
     } else {
-      replyVar = `${pickRandom(tailMsg)}`
+      textVar = pickRandom(tailMsg);
+      titleVar = 'Tails.';
+      colorVar = '#ff4242';
     }
     
-    return message.reply(replyVar);
+    return message.reply({ 
+      embeds: [{title: titleVar, ...textVar, color: colorVar }]
+    });
   }
 }
 
