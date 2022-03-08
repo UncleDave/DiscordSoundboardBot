@@ -25,14 +25,14 @@ export class SkipCommand extends Command {
         context.botAudioPlayer.player.stop();
         context.soundQueue.clear();
         reply = 'Skipped all sounds. Queue is now empty.';
-      } else if (Number(skipOption)) {
+      } else if (Number.isInteger(Number(skipOption))) {
         if (Number(skipOption) > context.soundQueue.length) reply = 'All sounds skipped (count option was >= number of current sounds.)';
         else reply = `Skipped ${ skipOption } sound(s).`;
         context.botAudioPlayer.player.stop();
         const int = Number(skipOption);
         context.soundQueue.splice(0, int - 1);
       } else {
-        reply = 'Incorrect value for count entered. Try an integer or "all" without quotes.';
+        reply = 'Invalid value for count entered. Try an integer or "all" without quotes.';
       }
     } else { // If not Idle and no option
       context.botAudioPlayer.player.stop();
