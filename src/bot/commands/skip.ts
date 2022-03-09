@@ -15,30 +15,27 @@ export class SkipCommand extends Command {
   }
 
   execute(interaction: CommandInteraction, context: BotContext): Promise<any> {
-    let reply;
     const skipOption = interaction.options.getString(skipCommandOption, false);
-    if (context.botAudioPlayer.player.state.status === 'idle' && context.soundQueue.length === 0) { // If player is Idle
+    const count = Number(skipOption);
+    if (context.botAudioPlayer.state === 'idle' && context.soundQueue.length === 0)
       // eslint-disable-next-line no-useless-escape
-      reply = 'No sounds currently playing or in queue! Why not try "/sound limmy are you deaf" ? \:ear_with_hearing_aid: \:smile:';
-    } else if (skipOption) { // If not Idle and option
-      if (skipOption === 'all') {
-        context.botAudioPlayer.player.stop();
-        context.soundQueue.clear();
-        reply = 'Skipped all sounds. Queue is now empty.';
-      } else if (Number.isInteger(Number(skipOption))) {
-        if (Number(skipOption) > context.soundQueue.length) reply = 'All sounds skipped (count option was >= number of current sounds.)';
-        else reply = `Skipped ${ skipOption } sound(s).`;
-        context.botAudioPlayer.player.stop();
-        const int = Number(skipOption);
-        context.soundQueue.splice(0, int - 1);
-      } else {
-        reply = 'Invalid value for count entered. Try an integer or "all" without quotes.';
-      }
-    } else { // If not Idle and no option
-      context.botAudioPlayer.player.stop();
-      reply = 'Current sound skipped.';
+      return interaction.reply({ content: 'No sounds currently playing or in queue! Why not try "/sound limmy are you deaf" ? \:ear_with_hearing_aid: \:smile:', ephemeral: true });
+    if (!skipOption) {
+      context.botAudioPlayer.stop();
+      return interaction.reply({ content: 'Current sound skipped', ephemeral: false });
     }
-    return interaction.reply({ content: reply, ephemeral: false });
+    if (skipOption === 'all') {
+      context.botAudioPlayer.stop();
+      context.soundQueue.clear();
+      return interaction.reply({ content: 'Skipped all sounds. Queue is now empty.', ephemeral: false });
+    }
+    if (Number.isInteger(count)) {
+      const reply = (count > context.soundQueue.length) ? 'All sounds skipped (count option was >= number of current sounds.)' : `Skipped ${ skipOption } sound(s).`;
+      context.botAudioPlayer.stop();
+      context.soundQueue.splice(0, count - 1);
+      return interaction.reply({ content: reply, ephemeral: false });
+    }
+    return interaction.reply({ content: 'Invalid value for count entered. Try a whole number or "all" without quotes.', ephemeral: true });
   }
 }
 export default new SkipCommand();

@@ -1,5 +1,5 @@
 import { BaseGuildVoiceChannel } from 'discord.js';
-import { createAudioPlayer, createAudioResource, AudioPlayerStatus } from '@discordjs/voice';
+import { createAudioPlayer, createAudioResource, AudioPlayerStatus, VoiceConnection } from '@discordjs/voice';
 import SoundFile from './sound-file';
 import logger from '../logger';
 
@@ -26,7 +26,11 @@ class SoundQueue extends Array<SoundQueueItem> {
   }
 }
 class BotAudioPlayer {
-  player = createAudioPlayer();
+  private player = createAudioPlayer();
+
+  subscribe(connection: VoiceConnection) {
+    connection.subscribe(this.player);
+  }
 
   play(fileName: string): Promise<any> {
     logger.debug('Attempting to play file %s', fileName);
@@ -35,6 +39,14 @@ class BotAudioPlayer {
     return new Promise(resolve => {
       this.player.on(AudioPlayerStatus.Idle, resolve);
     });
+  }
+
+  stop() {
+    this.player.stop();
+  }
+
+  get state() {
+    return this.player.state.status;
   }
 }
 

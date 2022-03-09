@@ -81,7 +81,7 @@ export default class Bot {
         selfDeaf: false,
       });
 
-      connection.subscribe(this.context.botAudioPlayer.player);
+      this.context.botAudioPlayer.subscribe(connection);
       logger.info('Playing sound "%s", %s sounds in the queue.', current.sound.name, this.context.soundQueue.length);
 
       const soundFileName = constants.soundsDirectory + current.sound.fullName;
