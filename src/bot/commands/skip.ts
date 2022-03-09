@@ -18,8 +18,7 @@ export class SkipCommand extends Command {
     const skipOption = interaction.options.getString(skipCommandOption);
     const count = Number(skipOption);
     if (context.botAudioPlayer.state === 'idle' && context.soundQueue.length === 0)
-      // eslint-disable-next-line no-useless-escape
-      return interaction.reply({ content: 'No sounds currently playing or in queue! Why not try "/sound limmy are you deaf" ? \:ear_with_hearing_aid: \:smile:', ephemeral: true });
+      return interaction.reply({ content: 'No sounds currently playing or in queue! Why not try "/sound limmy are you deaf" ? :ear_with_hearing_aid: :smile:', ephemeral: true });
     if (!skipOption) {
       context.botAudioPlayer.stop();
       return interaction.reply({ content: 'Current sound skipped', ephemeral: false });
