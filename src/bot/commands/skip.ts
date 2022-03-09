@@ -15,7 +15,7 @@ export class SkipCommand extends Command {
   }
 
   execute(interaction: CommandInteraction, context: BotContext): Promise<any> {
-    const skipOption = interaction.options.getString(skipCommandOption, false);
+    const skipOption = interaction.options.getString(skipCommandOption);
     const count = Number(skipOption);
     if (context.botAudioPlayer.state === 'idle' && context.soundQueue.length === 0)
       // eslint-disable-next-line no-useless-escape
