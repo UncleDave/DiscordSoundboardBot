@@ -60,6 +60,7 @@
     "implicit-arrow-linebreak": "off",
     "no-confusing-arrow": "off",
     "linebreak-style": "off",
-    "lines-between-class-members": "off"
+    "lines-between-class-members": "off",
+    "@typescript-eslint/lines-between-class-members": "off"
   }
 }
