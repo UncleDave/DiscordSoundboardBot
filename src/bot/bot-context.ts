@@ -52,6 +52,5 @@ class BotAudioPlayer {
 
 export default class BotContext {
   soundQueue = new SoundQueue();
-
   botAudioPlayer = new BotAudioPlayer();
 }
