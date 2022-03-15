@@ -15,11 +15,9 @@ export class SkipCommand extends Command {
   }
 
   execute(interaction: CommandInteraction, context: BotContext): Promise<any> {
-    const skipOption = interaction.options.getString(skipCommandOption, false);
-    const count = Number(skipOption);
+    const skipOption = interaction.options.getString(skipCommandOption);
     if (context.botAudioPlayer.state === 'idle' && context.soundQueue.length === 0)
-      // eslint-disable-next-line no-useless-escape
-      return interaction.reply({ content: 'No sounds currently playing or in queue! Why not try "/sound limmy are you deaf" ? \:ear_with_hearing_aid: \:smile:', ephemeral: true });
+      return interaction.reply({ content: 'No sounds currently playing or in queue! Why not try "/sound limmy are you deaf" ? :ear_with_hearing_aid: :smile:', ephemeral: true });
     if (!skipOption) {
       context.botAudioPlayer.stop();
       return interaction.reply({ content: 'Current sound skipped', ephemeral: false });
@@ -29,6 +27,7 @@ export class SkipCommand extends Command {
       context.soundQueue.clear();
       return interaction.reply({ content: 'Skipped all sounds. Queue is now empty.', ephemeral: false });
     }
+    const count = Number(skipOption);
     if (Number.isInteger(count)) {
       const reply = (count > context.soundQueue.length) ? 'All sounds skipped (count option was >= number of current sounds.)' : `Skipped ${ skipOption } sound(s).`;
       context.botAudioPlayer.stop();
