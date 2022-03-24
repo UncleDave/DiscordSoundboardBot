@@ -62,7 +62,7 @@ export default class Bot {
   private onVoiceStateUpdate(oldState: VoiceState) {
     if (oldState.channel?.members.every(x => x.id === this.client.user.id)) {
       this.context.soundQueue.removeByChannel(oldState.channelId);
-      if (this.context.currentSound && this.context.currentSound.channel === oldState.channel) this.context.botAudioPlayer.stop();
+      if (this.context.currentSound?.channel === oldState.channel) this.context.botAudioPlayer.stop();
       if (!this.context.soundQueue.length) oldState.guild.me.voice.disconnect();
     }
   }
