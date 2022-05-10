@@ -4,7 +4,8 @@ import logger from '../logger';
 import filesService from './files-service';
 import environment from '../environment';
 
-type ServerRequestSubscriber = () => void;
+type SoundRequestSubscriber = (userID: string, soundRequest: string) => void;
+type SkipRequestSubscriber = (userID: string, skipAll: boolean) => void;
 
 export default class SoundRequestServer {
   constructor(port: number) {
@@ -13,19 +14,14 @@ export default class SoundRequestServer {
   }
 
   private port: number;
-  private soundSubscribers: ServerRequestSubscriber[] = [];
-  private skipSubscribers: ServerRequestSubscriber[] = [];
-  currentRequest = {
-    userID: '',
-    soundChoice: '',
-    skipAll: false,
-  };
+  private soundSubscribers: SoundRequestSubscriber[] = [];
+  private skipSubscribers: SkipRequestSubscriber[] = [];
 
-  onSoundRequest(subscriber: ServerRequestSubscriber) {
+  onSoundRequest(subscriber: SoundRequestSubscriber) {
     this.soundSubscribers.push(subscriber);
   }
 
-  onSkipRequest(subscriber: ServerRequestSubscriber) {
+  onSkipRequest(subscriber: SkipRequestSubscriber) {
     this.skipSubscribers.push(subscriber);
   }
 
@@ -41,13 +37,17 @@ export default class SoundRequestServer {
     app.use(express.json());
     app.use(cors());
 
+    app.get('/health', (req, res) => {
+      res.writeHead(204);
+      res.end();
+    });
+
     app.use((req, res, next) => {
       if (req.headers.authorization === environment.apiKey) return next();
       return res.status(403);
     });
 
     app.get('/soundlist', async (req, res) => {
-      res.setHeader('Access-Control-Allow-Origin', '*');
       await this.getSounds()
         .then(data => {
           res.send(JSON.stringify(data));
@@ -56,20 +56,14 @@ export default class SoundRequestServer {
     });
 
     app.post('/soundrequest', (req, res) => {
-      this.currentRequest.userID = req.body.userID;
-      this.currentRequest.soundChoice = req.body.soundRequest;
-      this.soundSubscribers.forEach(x => x());
-      res.setHeader('Access-Control-Allow-Origin', '*');
+      this.soundSubscribers.forEach(x => x(req.body.userID, req.body.soundRequest));
       res.writeHead(204);
       res.end();
     });
 
     app.post('/skip', (req, res) => {
       logger.info(`Server request to skip. Skip all: ${ req.body.skipAll }`);
-      this.currentRequest.userID = req.body.userID;
-      this.currentRequest.skipAll = req.body.skipAll;
-      this.skipSubscribers.forEach(x => x());
-      res.setHeader('Access-Control-Allow-Origin', '*');
+      this.skipSubscribers.forEach(x => x(req.body.userID, req.body.skipAll));
       res.writeHead(204);
       res.end();
     });
