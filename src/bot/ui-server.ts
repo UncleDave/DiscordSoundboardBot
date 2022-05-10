@@ -1,5 +1,4 @@
 import express from 'express';
-import cors from 'cors';
 import logger from '../logger';
 import filesService from './files-service';
 import environment from '../environment';
