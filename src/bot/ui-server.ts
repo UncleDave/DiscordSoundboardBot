@@ -34,7 +34,6 @@ export default class SoundRequestServer {
     const app = express();
     app.use(express.text());
     app.use(express.json());
-    app.use(cors());
 
     app.get('/health', (req, res) => {
       res.writeHead(204);
