@@ -11,13 +11,6 @@ services:
     entrypoint: ["yarn", "run", "start:dev"]
     ports:
       - "8000:80"
-    networks:
-      - backend
 
   db:
     image: mongo
-    networks:
-      - backend
-
-networks:
-  backend: {}
