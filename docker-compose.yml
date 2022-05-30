@@ -2,14 +2,22 @@
 services:
   bot:
     build:
-      context: projects/bot
+      context: .
       args:
         NODE_ENV: development
     env_file: projects/bot/.env
     volumes:
-      - ./projects/bot/src:/app/src
-      - ./projects/bot/sounds:/app/sounds
-      - ./projects/bot/logs:/app/logs
+      - ./projects:/app/projects
     entrypoint: ["yarn", "run", "start:dev"]
     ports:
       - "8000:80"
+    networks:
+      - backend
+
+  db:
+    image: mongo
+    networks:
+      - backend
+
+networks:
+  backend: {}
