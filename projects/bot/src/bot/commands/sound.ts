@@ -94,17 +94,14 @@ export class SoundCommand extends Command {
     await interaction.reply({
       content: `Found multiple sounds that start with "${ searchTerm }", please choose one:`,
       ephemeral: true,
-      components: this.createInteractionButtons(files),
+      components: this.createInteractionButtons(files, interaction.id),
     });
 
-    const filter = (i: MessageComponentInteraction) => {
-      i.deferUpdate();
-      return i.user.id === interaction.user.id;
-    };
+    const filter = (i: MessageComponentInteraction) => i.customId.includes(interaction.id);
 
     try {
       const collectedButton = await interaction.channel!.awaitMessageComponent({ filter, componentType: 'BUTTON', time: 30000 });
-      const chosenFileIndex = Number(collectedButton.customId.slice(12));
+      const chosenFileIndex = Number(collectedButton.customId.replace(interaction.id, ''));
       interaction.editReply({ content: `You picked: ${ files[chosenFileIndex].name }.`, components: [] });
 
       return files[chosenFileIndex];
@@ -118,10 +115,10 @@ export class SoundCommand extends Command {
     return Promise.reject(new Error('Timed out waiting for sound choice'));
   }
 
-  private createInteractionButtons(buttonLabels: SoundFile[]) {
+  private createInteractionButtons(buttonLabels: SoundFile[], interactionId: string) {
     const buttons: MessageButton[] = buttonLabels.map((b, index) => {
       const btn = new MessageButton()
-        .setCustomId(`soundChoice_${ index }`)
+        .setCustomId(interactionId + index)
         .setLabel(b.name)
         .setStyle(1);
       return btn;
@@ -129,7 +126,7 @@ export class SoundCommand extends Command {
     const components: MessageActionRow[] = [];
     while (buttons.length > 0) {
       const row = new MessageActionRow()
-        .addComponents(buttons.splice(0, 4));
+        .addComponents(buttons.splice(0, 5));
       components.push(row);
     }
     return components;
