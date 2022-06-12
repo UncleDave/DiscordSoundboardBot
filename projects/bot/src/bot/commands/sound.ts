@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMember, MessageActionRow, MessageButton, MessageComponentInteraction } from 'discord.js';
+import { ButtonInteraction, CommandInteraction, GuildMember, Message, MessageActionRow, MessageButton } from 'discord.js';
 import logger from '../../logger';
 import BotContext from '../bot-context';
 import filesService from '../files-service';
@@ -91,44 +91,57 @@ export class SoundCommand extends Command {
   }
 
   private async getUserSoundChoice(searchTerm: string, interaction: CommandInteraction, files: SoundFile[]): Promise<SoundFile> {
-    await interaction.reply({
+    const message = await interaction.reply({
       content: `Found multiple sounds that start with "${ searchTerm }", please choose one:`,
       ephemeral: true,
-      components: this.createInteractionButtons(files, interaction.id),
+      components: this.createInteractionButtons(files.map(x => x.name)),
+      fetchReply: true,
     });
 
-    const filter = (i: MessageComponentInteraction) => i.customId.includes(interaction.id);
+    if (!(message instanceof Message)) {
+      await interaction.editReply({
+        content: 'Something went wrong, my bad, please try again.',
+        components: [],
+      });
 
+      return Promise.reject(new Error('Interaction reply was not of expected type "Message"'));
+    }
+
+    let collectedButton: ButtonInteraction;
     try {
-      const collectedButton = await interaction.channel!.awaitMessageComponent({ filter, componentType: 'BUTTON', time: 30000 });
-      const chosenFileIndex = Number(collectedButton.customId.replace(interaction.id, ''));
-      interaction.editReply({ content: `You picked: ${ files[chosenFileIndex].name }.`, components: [] });
-
-      return files[chosenFileIndex];
+      collectedButton = await message.awaitMessageComponent({ componentType: 'BUTTON', time: 30000 });
     } catch (err) {
       logger.info('%s: User failed to make a selection within the time limit', interaction.id);
+
       await interaction.editReply({
         content: `No selection was made in time, try again ${ pickRandom(insults) }.`,
         components: [],
       });
+
+      return Promise.reject(new Error('Timed out waiting for sound choice'));
     }
-    return Promise.reject(new Error('Timed out waiting for sound choice'));
+
+    const chosenFileIndex = Number(collectedButton.customId);
+    const chosenFile = files[chosenFileIndex];
+    interaction.editReply({ content: `You picked: ${ chosenFile.name }.`, components: [] });
+
+    return chosenFile;
   }
 
-  private createInteractionButtons(buttonLabels: SoundFile[], interactionId: string) {
-    const buttons: MessageButton[] = buttonLabels.map((b, index) => {
-      const btn = new MessageButton()
-        .setCustomId(interactionId + index)
-        .setLabel(b.name)
-        .setStyle(1);
-      return btn;
-    });
+  private createInteractionButtons(buttonLabels: string[]) {
+    const buttons: MessageButton[] = buttonLabels.map((x, index) =>
+      new MessageButton()
+        .setCustomId(String(index))
+        .setLabel(x)
+        .setStyle(1));
+
     const components: MessageActionRow[] = [];
+
     while (buttons.length > 0) {
-      const row = new MessageActionRow()
-        .addComponents(buttons.splice(0, 5));
+      const row = new MessageActionRow().addComponents(buttons.splice(0, 5));
       components.push(row);
     }
+
     return components;
   }
 }
