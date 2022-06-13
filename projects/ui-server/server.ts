@@ -41,7 +41,7 @@ const hasAuth: RequestHandler = async (req, res, next) => {
     }
   }
 
-  if (req.url !== '/'){
+  if (req.url !== '/') {
     res.writeHead(401);
     res.end();
     return;
