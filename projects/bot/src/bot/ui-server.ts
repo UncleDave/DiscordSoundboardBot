@@ -21,7 +21,7 @@ export default class SoundRequestServer {
     this.skipSubscribers.push(subscriber);
   }
 
-  private async createServer(port: number) {
+  private createServer(port: number) {
     const app = express();
     app.use(requestLogger);
 
