@@ -1,5 +1,4 @@
 import express from 'express';
-// import { SoundsService } from 'botman-sounds';
 import logger, { requestLogger } from '../logger';
 import Environment from '../environment';
 
