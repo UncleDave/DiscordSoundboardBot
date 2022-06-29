@@ -3,6 +3,7 @@ import express from 'express';
 import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import multer from 'multer';
 import { ReadOnlySoundsService } from 'botman-sounds';
 import environment from './environment';
 import { discordAuth, soundRequest, skipRequest } from './ui-client';
@@ -21,6 +22,7 @@ const serveStatic = express.static('public', { extensions: ['html'] });
 app.use(cookieParser());
 app.use(cors({ origin: environment.UIServerURL }));
 app.use(express.text());
+const upload = multer();
 
 app.get('/logout', (req, res, next) => {
   res.clearCookie('accesstoken');
@@ -30,7 +32,7 @@ app.get('/logout', (req, res, next) => {
 
 app.use(discordAuth);
 
-app.get('/user', async (req, res) => {
+app.get('/api/user', async (req, res) => {
   try {
     const soundRes = await soundsService.getAllSounds();
     req.userData.soundList = soundRes.map(x => x.name);
@@ -40,17 +42,22 @@ app.get('/user', async (req, res) => {
   }
 });
 
-app.post('/soundrequest', async (req, res) => {
+app.post('/api/soundrequest', async (req, res) => {
   console.log('Sound request.');
   await soundRequest(req.userData.userID, req.body);
   res.end();
 });
 
-app.get('/skip', async (req, res) => {
+app.get('/api/skip', async (req, res) => {
   console.log(`Skip request. All: ${ req.query.skipAll }`);
   if (req.query.skipAll === 'true') await skipRequest(true, req.userData.userID);
   else await skipRequest(false, req.userData.userID);
   res.end();
+});
+
+app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
+  console.log(req.body);
+  res.send(204);
 });
 
 app.use(serveStatic);
