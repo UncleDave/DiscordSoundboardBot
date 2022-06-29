@@ -75,7 +75,7 @@ function debounce(func, wait, immediate) {
 }
 
 function fetchUser() {
-  fetch('/user')
+  fetch('/api/user')
     .then(response => response.json())
     .then(data => {
       document.getElementById('username').innerHTML = data.name;
@@ -109,8 +109,71 @@ function searchFilter(cancelButton = false) {
   if (buttons.every(i => i.classList.contains('btn-hide'))) searchMessage.classList.add('message-container-show');
 }
 
+// Addsound logic
+// //////////////
+
+const addSoundButton = document.getElementById('add-sound-button');
+const addSoundDialog = document.getElementById('add-sound-dialog');
+const fileInput = document.getElementById('file-upload');
+const confirmButton = document.getElementById('addsound-confirm-btn');
+const nameInput = document.getElementById('sound-name-input');
+const dialogMessage = document.getElementById('add-sound-text');
+
+addSoundButton.addEventListener('click', () => {
+  if (addSoundDialog.classList.contains('btn-hide')) {
+    addSoundDialog.classList.remove('btn-hide');
+    return;
+  }
+  fileInput.value = null;
+  nameInput.value = null;
+  confirmButton.classList.add('btn-hide');
+  addSoundDialog.classList.add('btn-hide');
+});
+
+fileInput.addEventListener('change', () => {
+  if (fileInput.value) confirmButton.classList.remove('btn-hide');
+  else confirmButton.classList.add('btn-hide');
+});
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function addSound() {
+  if (!fileInput.value) return;
+  const formData = new FormData();
+  if (nameInput.value) formData.append('custom-name', nameInput.value);
+  formData.append('sound-file', fileInput.files[0]);
+
+  fetch('/api/addsound', {
+    method: 'POST',
+    body: formData,
+  })
+    .catch(error => console.log(error));
+  addSoundButton.disabled = true;
+  addSoundButton.classList.add('btn-green');
+  addSoundButton.classList.remove('btn');
+  dialogMessage.innerHTML = 'The cloud awaits...';
+  confirmButton.classList.add('btn-hide');
+  addSoundDialog.classList.add('add-sound-displace', 'btn-green');
+  fileInput.disabled = true;
+  nameInput.disabled = true;
+  fileInput.value = null;
+  nameInput.value = null;
+  setTimeout(() => {
+    addSoundButton.classList.remove('btn-green');
+    addSoundButton.classList.add('btn');
+    fileInput.disabled = false;
+    nameInput.disabled = false;
+    dialogMessage.innerHTML = 'Upload a new sound file';
+    addSoundDialog.classList.add('btn-hide');
+    addSoundDialog.classList.remove('add-sound-displace', 'btn-green');
+    addSoundButton.disabled = false;
+  }, 2100);
+}
+
+// Soundreqest/skip logic
+// /////////////////////
+
 const postSound = debounce(soundButton => {
-  fetch('/soundrequest', {
+  fetch('/api/soundrequest', {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
     body: soundButton.parentElement.dataset.soundName,
@@ -125,7 +188,7 @@ const postSound = debounce(soundButton => {
 }, 2000, true);
 
 const skipRequest = debounce(async (all = false) => {
-  await fetch(`/skip?skipAll=${ all }`, { headers: { 'Content-Type': 'text/plain' } })
+  await fetch(`/api/skip?skipAll=${ all }`, { headers: { 'Content-Type': 'text/plain' } })
     .then(res => {
       if (res.status === 401) window.location.reload();
     })
