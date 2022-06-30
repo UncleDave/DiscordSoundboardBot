@@ -23,7 +23,7 @@ const serveStatic = express.static('public', { extensions: ['html'] });
 app.use(cookieParser());
 app.use(cors({ origin: environment.UIServerURL }));
 app.use(express.text());
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer();
 
 app.get('/logout', (req, res, next) => {
   res.clearCookie('accesstoken');
