@@ -135,6 +135,12 @@ fileInput.addEventListener('change', () => {
   else confirmButton.classList.add('btn-hide');
 });
 
+function randomSuccessMessage() {
+  const messages = ['The cloud awaits...', 'sv_gravity -800', 'Maybe you\'re actually falling tho.', 'ZOOM', 'TO THE SKY REALM',
+    'SOUNDS FOR THE SOUND GOD', 'NOOOOO THIS FILE IS FULL OF HELIUM'];
+  return messages[Math.floor(Math.random() * messages.length)];
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function addSound() {
   if (!fileInput.value) return;
@@ -150,16 +156,16 @@ function addSound() {
   addSoundButton.disabled = true;
   addSoundButton.classList.add('btn-green');
   addSoundButton.classList.remove('btn');
-  dialogMessage.innerHTML = 'The cloud awaits...';
+  dialogMessage.innerHTML = randomSuccessMessage();
   confirmButton.classList.add('btn-hide');
   addSoundDialog.classList.add('add-sound-displace', 'btn-green');
   fileInput.disabled = true;
   nameInput.disabled = true;
-  fileInput.value = null;
-  nameInput.value = null;
   setTimeout(() => {
     addSoundButton.classList.remove('btn-green');
     addSoundButton.classList.add('btn');
+    fileInput.value = null;
+    nameInput.value = null;
     fileInput.disabled = false;
     nameInput.disabled = false;
     dialogMessage.innerHTML = 'Upload a new sound file';

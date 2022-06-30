@@ -4,7 +4,8 @@ import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import multer from 'multer';
-import { ReadOnlySoundsService } from 'botman-sounds';
+import streamifier from 'streamifier';
+import { SoundsService, AddSoundOptions } from 'botman-sounds';
 import environment from './environment';
 import { discordAuth, soundRequest, skipRequest } from './ui-client';
 
@@ -14,7 +15,7 @@ if (process.env.NODE_ENV === 'production') {
   applicationInsights.start();
 }
 
-const soundsService = new ReadOnlySoundsService(environment.soundsConnectionString);
+const soundsService = new SoundsService(environment.soundsConnectionString, '../bot/sounds');
 
 const app = express();
 const serveStatic = express.static('public', { extensions: ['html'] });
@@ -22,7 +23,7 @@ const serveStatic = express.static('public', { extensions: ['html'] });
 app.use(cookieParser());
 app.use(cors({ origin: environment.UIServerURL }));
 app.use(express.text());
-const upload = multer();
+const upload = multer({ storage: multer.memoryStorage() });
 
 app.get('/logout', (req, res, next) => {
   res.clearCookie('accesstoken');
@@ -56,8 +57,14 @@ app.get('/api/skip', async (req, res) => {
 });
 
 app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
-  console.log(req.body);
-  res.send(204);
+  const newSound: AddSoundOptions = {
+    name: req.body['custom-name'] ?? req.file.originalname.split('.')[0],
+    fileName: req.file.originalname,
+    fileStream: streamifier.createReadStream(req.file.buffer),
+  };
+  soundsService.addSound(newSound);
+  res.sendStatus(204);
+  res.end();
 });
 
 app.use(serveStatic);
