@@ -43,7 +43,7 @@ app.get('/api/user', async (req, res) => {
   }
 });
 
-app.post('/api/soundrequest', async (req, res) => {
+app.post('/api/sound', async (req, res) => {
   console.log('Sound request.');
   await soundRequest(req.userData.userID, req.body);
   res.end();
@@ -62,7 +62,7 @@ app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
     fileName: req.file.originalname,
     fileStream: streamifier.createReadStream(req.file.buffer),
   };
-  soundsService.addSound(newSound);
+  await soundsService.addSound(newSound);
   res.sendStatus(204);
   res.end();
 });
