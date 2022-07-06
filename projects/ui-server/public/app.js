@@ -97,6 +97,8 @@ const fileInput = document.getElementById('file-upload');
 const confirmButton = document.getElementById('addsound-confirm-btn');
 const nameInput = document.getElementById('sound-name-input');
 const dialogMessage = document.getElementById('add-sound-text');
+const defaultMessage = 'Upload a new sound file';
+const toolTip = document.getElementById('input-tooltip');
 
 addSoundButton.addEventListener('click', () => {
   if (addSoundDialog.classList.contains('btn-hide')) {
@@ -114,22 +116,39 @@ fileInput.addEventListener('change', () => {
   const path = fileInput.value.split('.');
   const extension = path[path.length - 1];
 
-  if (!supportedFileTypes.includes(extension)) {
+  if (!supportedFileTypes.includes(extension) && fileInput.value) {
     fileInput.value = null;
     addSoundDialog.classList.add('btn-red', 'add-sound-shake');
     dialogMessage.innerHTML = 'WRONG FILE TYPE (try: wav mp3 webm ogg)';
     setTimeout(() => {
       addSoundDialog.classList.remove('btn-red', 'add-sound-shake');
-      dialogMessage.innerHTML = 'Upload a new sound file';
+      dialogMessage.innerHTML = defaultMessage;
     }, 3500);
     return;
   }
 
-  if (fileInput.value) confirmButton.classList.remove('btn-hide');
+  if (fileInput.value && nameInput.value) confirmButton.classList.remove('btn-hide');
   else confirmButton.classList.add('btn-hide');
 });
 
-nameInput.onkeyup = e => { if (e.key === 'Enter') e.target.blur(); };
+const inputAllowed = /[a-zA-Z0-9]/;
+let toolTipTimeout;
+nameInput.onkeydown = e => {
+  if (e.key === 'Enter') e.target.blur();
+  if (!inputAllowed.test(e.key) && e.key !== ' ') {
+    clearTimeout(toolTipTimeout);
+    e.preventDefault();
+    toolTip.classList.remove('input-tooltip-hide');
+    toolTipTimeout = setTimeout(() => toolTip.classList.add('input-tooltip-hide'), 2000);
+  }
+};
+nameInput.addEventListener('keyup', () => {
+  if (!fileInput.value || !nameInput.value) {
+    confirmButton.classList.add('btn-hide');
+    return;
+  }
+  if (fileInput.value && nameInput.value) confirmButton.classList.remove('btn-hide');
+});
 
 function randomSuccessMessage() {
   const messages = ['The cloud awaits...', 'sv_gravity -800', 'Maybe you\'re actually falling tho.', 'ZOOM', 'TO THE SKY REALM',
@@ -164,7 +183,7 @@ async function addSound() {
       nameInput.value = null;
       fileInput.disabled = false;
       nameInput.disabled = false;
-      dialogMessage.innerHTML = 'Upload a new sound file';
+      dialogMessage.innerHTML = defaultMessage;
       addSoundDialog.classList.add('btn-hide');
       addSoundDialog.classList.remove('add-sound-displace', 'btn-green');
       addSoundButton.disabled = false;
@@ -175,7 +194,7 @@ async function addSound() {
     dialogMessage.innerHTML = 'Yikes! Something went wrong';
     setTimeout(() => {
       addSoundDialog.classList.remove('btn-red', 'add-sound-shake');
-      dialogMessage.innerHTML = 'Upload a new sound file';
+      dialogMessage.innerHTML = defaultMessage;
     }, 3500);
   }
 }
