@@ -98,7 +98,6 @@ const confirmButton = document.getElementById('addsound-confirm-btn');
 const nameInput = document.getElementById('sound-name-input');
 const dialogMessage = document.getElementById('add-sound-text');
 const defaultMessage = 'Upload a new sound file';
-const tooltip = document.getElementById('input-tooltip');
 
 addSoundButton.addEventListener('click', () => {
   if (addSoundDialog.classList.contains('btn-hide')) {
@@ -131,17 +130,8 @@ fileInput.addEventListener('change', () => {
   else confirmButton.classList.add('btn-hide');
 });
 
-const inputAllowed = /[a-zA-Z0-9]/;
-let tooltipTimeout;
-nameInput.onkeydown = e => {
-  if (e.key === 'Enter') e.target.blur();
-  if (!inputAllowed.test(e.key) && e.key !== ' ') {
-    clearTimeout(tooltipTimeout);
-    e.preventDefault();
-    tooltip.classList.remove('input-tooltip-hide');
-    tooltipTimeout = setTimeout(() => tooltip.classList.add('input-tooltip-hide'), 2000);
-  }
-};
+nameInput.onkeydown = e => { if (e.key === 'Enter') e.target.blur(); };
+
 nameInput.addEventListener('keyup', () => {
   if (!fileInput.value || !nameInput.value) {
     confirmButton.classList.add('btn-hide');
@@ -167,7 +157,8 @@ async function addSound() {
       method: 'POST',
       body: formData,
     });
-    if (addSoundRes.status !== 204) throw new Error('addsound failed');
+    if (addSoundRes.status === 400) throw new Error('addsound failed');
+    if (addSoundRes.status === 409) throw new Error('Sound already exists', { cause: 409 });
     addSoundButton.disabled = true;
     addSoundButton.classList.add('btn-green');
     addSoundButton.classList.remove('btn');
@@ -190,8 +181,9 @@ async function addSound() {
     }, 2100);
   } catch (error) {
     console.log(error);
-    addSoundDialog.classList.add('btn-red');
-    dialogMessage.innerHTML = 'Yikes! Something went wrong';
+    addSoundDialog.classList.add('btn-red', 'add-sound-shake');
+    if (error.cause === 409) dialogMessage.innerHTML = 'Whoops, a sound already has that name';
+    else dialogMessage.innerHTML = 'Yikes! Something went wrong';
     setTimeout(() => {
       addSoundDialog.classList.remove('btn-red', 'add-sound-shake');
       dialogMessage.innerHTML = defaultMessage;

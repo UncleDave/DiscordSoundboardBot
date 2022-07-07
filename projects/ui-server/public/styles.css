@@ -368,26 +368,6 @@ p {
     width: auto;
 }
 
-.input-tooltip {
-    pointer-events: none;
-    color: white;
-    position: absolute;
-    top: 72px;
-    left: 60px;
-    background-color: #2b2c2e;
-    padding: 5px 8px;
-    border: #c1b8fd solid 1px;
-    border-radius: 6px;
-    box-shadow: inherit;
-    opacity: 100%;
-    transition-property: opacity;
-    transition: .5s;
-}
-
-.input-tooltip-hide {
-    opacity: 0%;
-}
-
 .btn-container {
     display: flex;
     flex-wrap: wrap;

@@ -1,10 +1,10 @@
 import * as applicationInsights from 'applicationinsights';
 import express from 'express';
-import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import multer from 'multer';
 import streamifier from 'streamifier';
+import sanitize from 'sanitize-filename';
 import { SoundsService, AddSoundOptions } from 'botman-sounds';
 import environment from './environment';
 import { discordAuth, soundRequest, skipRequest } from './ui-client';
@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === 'production') {
   applicationInsights.start();
 }
 
-const soundsService = new SoundsService(environment.soundsConnectionString, '../bot/sounds');
+const soundsService = new SoundsService(environment.soundsConnectionString, environment.soundsDirectory);
 
 const app = express();
 const serveStatic = express.static('public', { extensions: ['html'] });
@@ -56,21 +56,28 @@ app.get('/api/skip', async (req, res) => {
   res.end();
 });
 
-const soundNameRegex = /[a-zA-Z0-9]/;
 const validContentTypes = ['audio/wav', 'audio/mpeg', 'audio/webm', 'audio/ogg'];
 const extensions = ['.wav', '.mp3', '.webm', '.ogg'];
 app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
-  if (!soundNameRegex.test(req.body['custom-name']) || !req.body['custom-name'] || !validContentTypes.includes(req.file.mimetype)) {
+  console.log('Addsound request');
+  if (!validContentTypes.includes(req.file.mimetype) || !req.body['custom-name']) {
     res.sendStatus(400);
     res.end();
     return;
   }
   const newSound: AddSoundOptions = {
     name: req.body['custom-name'],
-    fileName: req.body['custom-name'] + extensions[validContentTypes.indexOf(req.file.mimetype)],
+    fileName: sanitize(req.body['custom-name']) + extensions[validContentTypes.indexOf(req.file.mimetype)],
     fileStream: streamifier.createReadStream(req.file.buffer),
   };
-  await soundsService.addSound(newSound);
+  try {
+    await soundsService.addSound(newSound);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(409);
+    res.end();
+    return;
+  }
   res.sendStatus(204);
   res.end();
 });
