@@ -57,18 +57,19 @@ app.get('/api/skip', async (req, res) => {
 });
 
 const soundNameRegex = /[a-zA-Z0-9]/;
-const validFileTypes = [['audio/wav', 'audio/mpeg', 'audio/webm', 'audio/ogg'], ['.wav', '.mp3', '.webm', '.ogg']];
+const validContentTypes = ['audio/wav', 'audio/mpeg', 'audio/webm', 'audio/ogg'];
+const extensions = ['.wav', '.mp3', '.webm', '.ogg'];
 app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
-  if (!soundNameRegex.test(req.body['custom-name']) || !req.body['custom-name'] || !validFileTypes[0].includes(req.file.mimetype)) {
+  if (!soundNameRegex.test(req.body['custom-name']) || !req.body['custom-name'] || !validContentTypes.includes(req.file.mimetype)) {
     res.sendStatus(400);
+    res.end();
     return;
   }
   const newSound: AddSoundOptions = {
     name: req.body['custom-name'],
-    fileName: req.body['custom-name'] + validFileTypes[1][validFileTypes[0].indexOf(req.file.mimetype)],
+    fileName: req.body['custom-name'] + extensions[validContentTypes.indexOf(req.file.mimetype)],
     fileStream: streamifier.createReadStream(req.file.buffer),
   };
-  console.log(newSound.fileName);
   await soundsService.addSound(newSound);
   res.sendStatus(204);
   res.end();

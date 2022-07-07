@@ -98,7 +98,7 @@ const confirmButton = document.getElementById('addsound-confirm-btn');
 const nameInput = document.getElementById('sound-name-input');
 const dialogMessage = document.getElementById('add-sound-text');
 const defaultMessage = 'Upload a new sound file';
-const toolTip = document.getElementById('input-tooltip');
+const tooltip = document.getElementById('input-tooltip');
 
 addSoundButton.addEventListener('click', () => {
   if (addSoundDialog.classList.contains('btn-hide')) {
@@ -132,14 +132,14 @@ fileInput.addEventListener('change', () => {
 });
 
 const inputAllowed = /[a-zA-Z0-9]/;
-let toolTipTimeout;
+let tooltipTimeout;
 nameInput.onkeydown = e => {
   if (e.key === 'Enter') e.target.blur();
   if (!inputAllowed.test(e.key) && e.key !== ' ') {
-    clearTimeout(toolTipTimeout);
+    clearTimeout(tooltipTimeout);
     e.preventDefault();
-    toolTip.classList.remove('input-tooltip-hide');
-    toolTipTimeout = setTimeout(() => toolTip.classList.add('input-tooltip-hide'), 2000);
+    tooltip.classList.remove('input-tooltip-hide');
+    tooltipTimeout = setTimeout(() => tooltip.classList.add('input-tooltip-hide'), 2000);
   }
 };
 nameInput.addEventListener('keyup', () => {
