@@ -5,7 +5,7 @@ import cors from 'cors';
 import multer from 'multer';
 import streamifier from 'streamifier';
 import sanitize from 'sanitize-filename';
-import { SoundsService, AddSoundOptions } from 'botman-sounds';
+import { SoundsService, AddSoundOptions, errors as soundErrors } from 'botman-sounds';
 import environment from './environment';
 import { discordAuth, soundRequest, skipRequest } from './ui-client';
 
@@ -65,19 +65,24 @@ app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
     res.end();
     return;
   }
+  const lowerCaseName = req.body['custom-name'].toLowerCase();
   const newSound: AddSoundOptions = {
-    name: req.body['custom-name'],
-    fileName: sanitize(req.body['custom-name']) + extensions[validContentTypes.indexOf(req.file.mimetype)],
+    name: lowerCaseName,
+    fileName: sanitize(lowerCaseName) + extensions[validContentTypes.indexOf(req.file.mimetype)],
     fileStream: streamifier.createReadStream(req.file.buffer),
   };
   try {
     await soundsService.addSound(newSound);
   } catch (error) {
-    console.log(error);
-    res.sendStatus(409);
-    res.end();
-    return;
+    if (error.message === soundErrors.soundAlreadyExists) {
+      console.log(error);
+      res.sendStatus(409);
+      res.end();
+      return;
+    }
+    throw new Error(error);
   }
+  console.log('oh no');
   res.sendStatus(204);
   res.end();
 });

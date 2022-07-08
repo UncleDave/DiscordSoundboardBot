@@ -153,17 +153,16 @@ async function addSound() {
   formData.append('sound-file', fileInput.files[0]);
 
   try {
+    confirmButton.classList.add('btn-hide');
     const addSoundRes = await fetch('/api/addsound', {
       method: 'POST',
       body: formData,
     });
-    if (addSoundRes.status === 400) throw new Error('addsound failed');
     if (addSoundRes.status === 409) throw new Error('Sound already exists', { cause: 409 });
     addSoundButton.disabled = true;
     addSoundButton.classList.add('btn-green');
     addSoundButton.classList.remove('btn');
     dialogMessage.innerHTML = randomSuccessMessage();
-    confirmButton.classList.add('btn-hide');
     addSoundDialog.classList.add('add-sound-displace', 'btn-green');
     fileInput.disabled = true;
     nameInput.disabled = true;
@@ -187,6 +186,7 @@ async function addSound() {
     setTimeout(() => {
       addSoundDialog.classList.remove('btn-red', 'add-sound-shake');
       dialogMessage.innerHTML = defaultMessage;
+      confirmButton.classList.remove('btn-hide');
     }, 3500);
   }
 }
