@@ -82,7 +82,6 @@ app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
     }
     throw new Error(error);
   }
-  console.log('oh no');
   res.sendStatus(204);
   res.end();
 });
