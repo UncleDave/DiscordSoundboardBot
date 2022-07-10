@@ -1,10 +1,12 @@
 import * as applicationInsights from 'applicationinsights';
-import express from 'express';
+import express, { request } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import multer from 'multer';
 import streamifier from 'streamifier';
 import sanitize from 'sanitize-filename';
+import webpack from 'webpack';
+import { webPackConfig } from './webpack-config';
 import { SoundsService, AddSoundOptions, errors as soundErrors } from 'botman-sounds';
 import environment from './environment';
 import { discordAuth, soundRequest, skipRequest } from './ui-client';
@@ -16,6 +18,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const soundsService = new SoundsService(environment.soundsConnectionString, environment.soundsDirectory);
+
+webpack(webPackConfig, (err?) => console.log('webpack errors?:', err));
 
 const app = express();
 const serveStatic = express.static('public', { extensions: ['html'] });
@@ -91,3 +95,4 @@ app.use(serveStatic);
 app.listen(environment.port, () => {
   console.log(`ui-server listening on port ${ environment.port }`);
 });
+
