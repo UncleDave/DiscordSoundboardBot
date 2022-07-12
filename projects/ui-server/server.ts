@@ -1,12 +1,12 @@
 import * as applicationInsights from 'applicationinsights';
-import express, { request } from 'express';
+import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import multer from 'multer';
 import streamifier from 'streamifier';
 import sanitize from 'sanitize-filename';
-import runWebpack from './webpack-frontend';
 import { SoundsService, AddSoundOptions, errors as soundErrors } from 'botman-sounds';
+import runWebpack from './webpack-frontend';
 import environment from './environment';
 import { discordAuth, soundRequest, skipRequest } from './ui-client';
 
@@ -94,4 +94,3 @@ app.use(serveStatic);
 app.listen(environment.port, () => {
   console.log(`ui-server listening on port ${ environment.port }`);
 });
-

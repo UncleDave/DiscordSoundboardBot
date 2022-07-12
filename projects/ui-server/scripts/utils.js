@@ -65,56 +65,54 @@ export function debounce(func, wait, immediate) {
 }
 
 export function addSoundLogic() {
+  const addSoundButton = document.getElementById('add-sound-button');
+  const addSoundDialog = document.getElementById('add-sound-dialog');
+  const fileInput = document.getElementById('file-upload');
+  const confirmButton = document.getElementById('addsound-confirm-btn');
+  const nameInput = document.getElementById('sound-name-input');
+  const dialogMessage = document.getElementById('add-sound-text');
+  const defaultMessage = 'Upload a new sound file';
 
-const addSoundButton = document.getElementById('add-sound-button');
-const addSoundDialog = document.getElementById('add-sound-dialog');
-const fileInput = document.getElementById('file-upload');
-const confirmButton = document.getElementById('addsound-confirm-btn');
-const nameInput = document.getElementById('sound-name-input');
-const dialogMessage = document.getElementById('add-sound-text');
-const defaultMessage = 'Upload a new sound file';
-
-addSoundButton.addEventListener('click', () => {
-  if (addSoundDialog.classList.contains('btn-hide')) {
-    addSoundDialog.classList.remove('btn-hide');
-    return;
-  }
-  fileInput.value = null;
-  nameInput.value = null;
-  confirmButton.classList.add('btn-hide');
-  addSoundDialog.classList.add('btn-hide');
-});
-
-fileInput.addEventListener('change', () => {
-  const supportedFileTypes = ['wav', 'mp3', 'webm', 'ogg'];
-  const path = fileInput.value.split('.');
-  const extension = path[path.length - 1];
-
-  if (!supportedFileTypes.includes(extension) && fileInput.value) {
+  addSoundButton.addEventListener('click', () => {
+    if (addSoundDialog.classList.contains('btn-hide')) {
+      addSoundDialog.classList.remove('btn-hide');
+      return;
+    }
     fileInput.value = null;
-    addSoundDialog.classList.add('btn-red', 'add-sound-shake');
-    dialogMessage.innerHTML = 'WRONG FILE TYPE (try: wav mp3 webm ogg)';
-    setTimeout(() => {
-      addSoundDialog.classList.remove('btn-red', 'add-sound-shake');
-      dialogMessage.innerHTML = defaultMessage;
-    }, 3500);
-    return;
-  }
-
-  if (fileInput.value && nameInput.value) confirmButton.classList.remove('btn-hide');
-  else confirmButton.classList.add('btn-hide');
-});
-
-nameInput.onkeydown = e => { if (e.key === 'Enter') e.target.blur(); };
-
-nameInput.addEventListener('keyup', () => {
-  if (!fileInput.value || !nameInput.value) {
+    nameInput.value = null;
     confirmButton.classList.add('btn-hide');
-    return;
-  }
-  if (fileInput.value && nameInput.value) confirmButton.classList.remove('btn-hide');
-});
+    addSoundDialog.classList.add('btn-hide');
+  });
 
-document.getElementById('addsound-confirm-btn').addEventListener('click', () => addSound());
+  fileInput.addEventListener('change', () => {
+    const supportedFileTypes = ['wav', 'mp3', 'webm', 'ogg'];
+    const path = fileInput.value.split('.');
+    const extension = path[path.length - 1];
 
+    if (!supportedFileTypes.includes(extension) && fileInput.value) {
+      fileInput.value = null;
+      addSoundDialog.classList.add('btn-red', 'add-sound-shake');
+      dialogMessage.innerHTML = 'WRONG FILE TYPE (try: wav mp3 webm ogg)';
+      setTimeout(() => {
+        addSoundDialog.classList.remove('btn-red', 'add-sound-shake');
+        dialogMessage.innerHTML = defaultMessage;
+      }, 3500);
+      return;
+    }
+
+    if (fileInput.value && nameInput.value) confirmButton.classList.remove('btn-hide');
+    else confirmButton.classList.add('btn-hide');
+  });
+
+  nameInput.onkeydown = e => { if (e.key === 'Enter') e.target.blur(); };
+
+  nameInput.addEventListener('keyup', () => {
+    if (!fileInput.value || !nameInput.value) {
+      confirmButton.classList.add('btn-hide');
+      return;
+    }
+    if (fileInput.value && nameInput.value) confirmButton.classList.remove('btn-hide');
+  });
+
+  document.getElementById('addsound-confirm-btn').addEventListener('click', () => addSound());
 }

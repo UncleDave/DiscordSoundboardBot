@@ -1,7 +1,7 @@
 import { debounce } from './utils';
 
 export async function fetchUser() {
-  try{ 
+  try {
     const userResponse = await fetch('/api/user');
     const userData = await userResponse.json();
     document.getElementById('username').innerHTML = userData.name;
@@ -12,8 +12,8 @@ export async function fetchUser() {
     document.getElementById('body').classList.add('body-error');
     document.getElementById('error-container').classList.add('message-container-show');
     document.getElementById('search-container').classList.add('search-hide');
-    return;
   }
+  return null;
 }
 
 export const postSound = debounce(soundButton => {

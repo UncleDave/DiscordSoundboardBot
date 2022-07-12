@@ -1,13 +1,13 @@
 import { fetchUser, postSound, skipRequest } from './requests';
 import { makeSoundButtons, searchFilter, addSoundLogic } from './utils';
-import Favorites from './favorites'
+import Favorites from './favorites';
 
-const favorites = new Favorites;
+const favorites = new Favorites();
 
 document.addEventListener('DOMContentLoaded', async () => {
   const userData = await fetchUser();
   makeSoundButtons(userData.soundList, favorites);
-})
+});
 
 addSoundLogic();
 

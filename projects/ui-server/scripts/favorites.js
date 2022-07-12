@@ -5,14 +5,14 @@ export default class Favorites {
   list = [];
   save() {
     window.localStorage.setItem('favorites', JSON.stringify(this.list));
-  };
+  }
   load() {
     const stored = JSON.parse(window.localStorage.getItem('favorites'));
     if (stored) this.list = stored;
-  };
+  }
   remove(soundName) {
     this.list = this.list.filter(i => i !== soundName);
-  };
+  }
   toggleBtnAsFav(favStar) {
     const star = favStar;
     if (star.classList.contains('fav-set')) {
@@ -25,5 +25,5 @@ export default class Favorites {
     star.classList.toggle('fav-set');
     star.parentElement.classList.toggle('fav');
     this.save();
-  };
-};
+  }
+}
