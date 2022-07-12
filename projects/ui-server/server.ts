@@ -5,8 +5,7 @@ import cors from 'cors';
 import multer from 'multer';
 import streamifier from 'streamifier';
 import sanitize from 'sanitize-filename';
-import webpack from 'webpack';
-import { webPackConfig } from './webpack-config';
+import runWebpack from './webpack-frontend';
 import { SoundsService, AddSoundOptions, errors as soundErrors } from 'botman-sounds';
 import environment from './environment';
 import { discordAuth, soundRequest, skipRequest } from './ui-client';
@@ -17,9 +16,9 @@ if (process.env.NODE_ENV === 'production') {
   applicationInsights.start();
 }
 
-const soundsService = new SoundsService(environment.soundsConnectionString, environment.soundsDirectory);
+runWebpack();
 
-webpack(webPackConfig, (err?) => console.log('webpack errors?:', err));
+const soundsService = new SoundsService(environment.soundsConnectionString, environment.soundsDirectory);
 
 const app = express();
 const serveStatic = express.static('public', { extensions: ['html'] });
