@@ -10,7 +10,7 @@ import { SoundsService, AddSoundOptions, errors as soundErrors } from 'botman-so
 import environment from './environment';
 import { discordAuth, soundRequest, skipRequest } from './ui-client';
 
-if (process.env.NODE_ENV === 'production') {
+if (environment.environment === 'production') {
   applicationInsights.setup();
   applicationInsights.defaultClient.context.tags[applicationInsights.defaultClient.context.keys.cloudRole] = 'Web backend';
   applicationInsights.start();

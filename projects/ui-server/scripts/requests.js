@@ -47,6 +47,12 @@ const nameInput = document.getElementById('sound-name-input');
 const dialogMessage = document.getElementById('add-sound-text');
 const defaultMessage = 'Upload a new sound file';
 
+function randomSuccessMessage() {
+  const messages = ['The cloud awaits...', 'sv_gravity -800', 'Maybe you\'re actually falling tho.', 'ZOOM', 'TO THE SKY REALM',
+    'SOUNDS FOR THE SOUND GOD', 'NOOOOO THIS FILE IS FULL OF HELIUM'];
+  return messages[Math.floor(Math.random() * messages.length)];
+}
+
 export async function addSound() {
   if (!fileInput.value) return;
   const formData = new FormData();

@@ -3,7 +3,8 @@ import environment from './environment';
 import path from 'path';
 
 const webPackConfig: Configuration = {
-  entry: './scripts/app.js',
+  mode: environment.environment === 'development' ? 'development' : 'production',
+  entry: './scripts/main.js',
   output: {
     path: path.resolve(__dirname, 'public'),
     filename: 'app.js',

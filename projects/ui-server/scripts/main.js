@@ -1,23 +1,15 @@
 import { fetchUser, postSound, skipRequest } from './requests';
-import { makeSoundButtons, searchFilter } from './utils';
+import { makeSoundButtons, searchFilter, addSoundLogic } from './utils';
 import Favorites from './favorites'
 
-let userData;
 const favorites = new Favorites;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  userData = await fetchUser();
+  const userData = await fetchUser();
   makeSoundButtons(userData.soundList, favorites);
 })
 
-// Addsound
-
-// functions randomSuccessMessage() and addSound()
-// fileInput event listener
-// Nameinput property, event listener
-// DOCUMENT ADDSOUND CONFIRM event listener => addSound()
-
-// Sound/Skip
+addSoundLogic();
 
 document.getElementById('btn-container').addEventListener('click', e => {
   if (e.target.classList.contains('sound-btn')) {
