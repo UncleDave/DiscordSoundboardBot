@@ -21,7 +21,7 @@ runWebpack();
 const soundsService = new SoundsService(environment.soundsConnectionString, environment.soundsDirectory);
 
 const app = express();
-const serveStatic = express.static('public', { extensions: ['html'] });
+const serveStatic = express.static('src/public', { extensions: ['html'] });
 
 app.use(cookieParser());
 app.use(cors({ origin: environment.UIServerURL }));

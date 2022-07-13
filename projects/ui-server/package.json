@@ -2,10 +2,10 @@
   "name": "discordbot-web-interface",
   "version": "1.0.0",
   "description": "",
-  "main": "server.ts",
+  "main": "src/server.ts",
   "scripts": {
-    "start": "ts-node server",
-    "start:dev": "ts-node-dev --poll --respawn server"
+    "start": "ts-node src/server",
+    "start:dev": "ts-node-dev --poll --respawn src/server"
   },
   "keywords": [],
   "author": "",

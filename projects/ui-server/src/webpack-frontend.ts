@@ -4,9 +4,9 @@ import environment from './environment';
 
 const webPackConfig: Configuration = {
   mode: environment.environment === 'development' ? 'development' : 'production',
-  entry: './scripts/main.js',
+  entry: './src/scripts/main.js',
   output: {
-    path: path.resolve(__dirname, 'public'),
+    path: path.resolve(__dirname, '../src/public'),
     filename: 'app.js',
   },
   watch: environment.environment === 'development',
