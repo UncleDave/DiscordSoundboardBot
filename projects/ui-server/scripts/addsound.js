@@ -1,44 +1,3 @@
-import { debounce } from './utils';
-
-export async function fetchUser() {
-  try {
-    const userResponse = await fetch('/api/user');
-    const userData = await userResponse.json();
-    document.getElementById('username').innerHTML = userData.name;
-    document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${ userData.userID }/${ userData.avatar }.png`;
-    return userData;
-  } catch (error) {
-    console.error(error);
-    document.getElementById('body').classList.add('body-error');
-    document.getElementById('error-container').classList.add('message-container-show');
-    document.getElementById('search-container').classList.add('search-hide');
-  }
-  return null;
-}
-
-export const postSound = debounce(soundButton => {
-  fetch('/api/sound', {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: soundButton.parentElement.dataset.soundName,
-  })
-    .then(res => {
-      if (res.status === 401) window.location.reload();
-    })
-    .catch(error => console.log(error));
-  soundButton.classList.remove('btn-red');
-  soundButton.classList.add('btn-green');
-  setTimeout(() => soundButton.classList.remove('btn-green'), 1);
-}, 2000, true);
-
-export const skipRequest = debounce(async (all = false) => {
-  await fetch(`/api/skip?skipAll=${ all }`, { headers: { 'Content-Type': 'text/plain' } })
-    .then(res => {
-      if (res.status === 401) window.location.reload();
-    })
-    .catch(error => console.log(error));
-}, 500, true);
-
 const addSoundButton = document.getElementById('add-sound-button');
 const addSoundDialog = document.getElementById('add-sound-dialog');
 const fileInput = document.getElementById('file-upload');
@@ -53,7 +12,7 @@ function randomSuccessMessage() {
   return messages[Math.floor(Math.random() * messages.length)];
 }
 
-export async function addSound() {
+async function addSound() {
   if (!fileInput.value) return;
   const formData = new FormData();
   if (nameInput.value) formData.append('custom-name', nameInput.value);
@@ -97,3 +56,46 @@ export async function addSound() {
     }, 3500);
   }
 }
+
+addSoundButton.addEventListener('click', () => {
+  if (addSoundDialog.classList.contains('btn-hide')) {
+    addSoundDialog.classList.remove('btn-hide');
+    return;
+  }
+  fileInput.value = null;
+  nameInput.value = null;
+  confirmButton.classList.add('btn-hide');
+  addSoundDialog.classList.add('btn-hide');
+});
+
+fileInput.addEventListener('change', () => {
+  const supportedFileTypes = ['wav', 'mp3', 'webm', 'ogg'];
+  const path = fileInput.value.split('.');
+  const extension = path[path.length - 1];
+
+  if (!supportedFileTypes.includes(extension) && fileInput.value) {
+    fileInput.value = null;
+    addSoundDialog.classList.add('btn-red', 'add-sound-shake');
+    dialogMessage.innerHTML = 'WRONG FILE TYPE (try: wav mp3 webm ogg)';
+    setTimeout(() => {
+      addSoundDialog.classList.remove('btn-red', 'add-sound-shake');
+      dialogMessage.innerHTML = defaultMessage;
+    }, 3500);
+    return;
+  }
+
+  if (fileInput.value && nameInput.value) confirmButton.classList.remove('btn-hide');
+  else confirmButton.classList.add('btn-hide');
+});
+
+nameInput.onkeydown = e => { if (e.key === 'Enter') e.target.blur(); };
+
+nameInput.addEventListener('keyup', () => {
+  if (!fileInput.value || !nameInput.value) {
+    confirmButton.classList.add('btn-hide');
+    return;
+  }
+  if (fileInput.value && nameInput.value) confirmButton.classList.remove('btn-hide');
+});
+
+document.getElementById('addsound-confirm-btn').addEventListener('click', () => addSound());

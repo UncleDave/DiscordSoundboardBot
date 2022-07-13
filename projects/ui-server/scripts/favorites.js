@@ -1,8 +1,18 @@
 export default class Favorites {
   constructor() {
+    this.addListeners();
     this.load();
   }
   list = [];
+  addListeners() {
+    document.getElementById('favorites-btn').addEventListener('click', e => {
+      const buttons = Array.from(document.getElementById('btn-container').children);
+      if (e.target.classList.contains('filter-btn-on')) buttons.forEach(i => i.classList.remove('btn-filter-fav'));
+      else buttons.forEach(i => { if (!i.classList.contains('fav')) i.classList.add('btn-filter-fav'); });
+      e.target.classList.toggle('filter-btn-on');
+    });
+    document.getElementById('btn-container').addEventListener('click', e => { if (e.target.classList.contains('favStar')) this.toggleBtnAsFav(e.target); });
+  }
   save() {
     window.localStorage.setItem('favorites', JSON.stringify(this.list));
   }
