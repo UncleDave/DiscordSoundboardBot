@@ -70,7 +70,7 @@ export class ReadOnlySoundsService {
 }
 
 export class SoundsService extends ReadOnlySoundsService {
-  private static readonly validFileExtensions = ['.wav', '.mp3', '.webm', '.ogg'];
+  private static readonly validFileExtensions = ['wav', 'mp3', 'webm', 'ogg'];
 
   private readonly filesService: FilesService;
 
