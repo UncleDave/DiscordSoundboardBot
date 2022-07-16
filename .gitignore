@@ -63,3 +63,4 @@ typings/
 .idea/
 deploy.ps1
 data/
+blobs/

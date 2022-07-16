@@ -32,3 +32,11 @@ services:
       - ./data:/data/db
     ports:
       - "27017:27017"
+
+  blob-storage:
+    image: mcr.microsoft.com/azure-storage/azurite
+    command: azurite --blobHost 0.0.0.0
+    volumes:
+      - ./blobs:/data
+    ports:
+      - "10000:10000"

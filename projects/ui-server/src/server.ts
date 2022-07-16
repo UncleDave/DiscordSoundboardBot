@@ -4,9 +4,8 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import axios, { AxiosRequestConfig } from 'axios';
 import multer from 'multer';
-import streamifier from 'streamifier';
-import sanitize from 'sanitize-filename';
 import { SoundsService, AddSoundOptions, errors as soundErrors } from 'botman-sounds';
+import { extname } from 'node:path';
 import fs from 'node:fs';
 import DiscordAuth from './discord-auth';
 import environment from './environment';
@@ -17,7 +16,7 @@ if (environment.environment === 'production') {
   applicationInsights.start();
 }
 
-const soundsService = new SoundsService(environment.soundsConnectionString, environment.soundsDirectory);
+const soundsService = new SoundsService(environment.soundsConnectionString, environment.blobStorageConnectionString);
 
 const app = express();
 const serveStatic = express.static('src/public', { extensions: ['html'] });
@@ -62,20 +61,22 @@ app.get('/api/skip', (req, res) => {
   res.end();
 });
 
-const validContentTypes = ['audio/wav', 'audio/mpeg', 'audio/webm', 'audio/ogg'];
-const extensions = ['.wav', '.mp3', '.webm', '.ogg'];
 app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
   console.log('Addsound request.');
-  if (!validContentTypes.includes(req.file.mimetype) || !req.body['custom-name']) {
+  const name = req.body['custom-name'];
+
+  if (!name) {
     res.sendStatus(400);
     res.end();
     return;
   }
+
   const newSound: AddSoundOptions = {
-    name: req.body['custom-name'],
-    fileName: sanitize(req.body['custom-name']) + extensions[validContentTypes.indexOf(req.file.mimetype)],
-    fileStream: streamifier.createReadStream(req.file.buffer),
+    name,
+    extension: extname(name),
+    file: req.file.buffer,
   };
+
   try {
     await soundsService.addSound(newSound);
   } catch (error) {
@@ -85,8 +86,17 @@ app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
       res.end();
       return;
     }
+
+    if (error.message === soundErrors.unsupportedFileExtension) {
+      console.log(error);
+      res.sendStatus(400);
+      res.end();
+      return;
+    }
+
     throw error;
   }
+
   res.sendStatus(204);
   res.end();
 });
