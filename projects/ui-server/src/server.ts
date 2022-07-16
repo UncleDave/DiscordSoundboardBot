@@ -68,10 +68,9 @@ app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
     res.end();
     return;
   }
-  const lowerCaseName = req.body['custom-name'].toLowerCase();
   const newSound: AddSoundOptions = {
-    name: lowerCaseName,
-    fileName: sanitize(lowerCaseName) + extensions[validContentTypes.indexOf(req.file.mimetype)],
+    name: req.body['custom-name'],
+    fileName: sanitize(req.body['custom-name']) + extensions[validContentTypes.indexOf(req.file.mimetype)],
     fileStream: streamifier.createReadStream(req.file.buffer),
   };
   try {
@@ -83,7 +82,7 @@ app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
       res.end();
       return;
     }
-    throw new Error(error);
+    throw error;
   }
   res.sendStatus(204);
   res.end();
