@@ -6,7 +6,6 @@ import multer from 'multer';
 import streamifier from 'streamifier';
 import sanitize from 'sanitize-filename';
 import { SoundsService, AddSoundOptions, errors as soundErrors } from 'botman-sounds';
-import runWebpack from './webpack-frontend';
 import environment from './environment';
 import { discordAuth, soundRequest, skipRequest } from './ui-client';
 
@@ -15,8 +14,6 @@ if (environment.environment === 'production') {
   applicationInsights.defaultClient.context.tags[applicationInsights.defaultClient.context.keys.cloudRole] = 'Web backend';
   applicationInsights.start();
 }
-
-runWebpack();
 
 const soundsService = new SoundsService(environment.soundsConnectionString, environment.soundsDirectory);
 
@@ -62,7 +59,7 @@ app.get('/api/skip', async (req, res) => {
 const validContentTypes = ['audio/wav', 'audio/mpeg', 'audio/webm', 'audio/ogg'];
 const extensions = ['.wav', '.mp3', '.webm', '.ogg'];
 app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
-  console.log('Addsound request');
+  console.log('Addsound request.');
   if (!validContentTypes.includes(req.file.mimetype) || !req.body['custom-name']) {
     res.sendStatus(400);
     res.end();
