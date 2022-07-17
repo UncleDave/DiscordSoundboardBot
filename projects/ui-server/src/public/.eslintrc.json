@@ -2,5 +2,6 @@
   "env": {
     "node": false,
     "browser": true
-  }
+  },
+  "ignorePatterns": "app.js"
 }
