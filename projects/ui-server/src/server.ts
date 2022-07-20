@@ -6,6 +6,7 @@ import multer from 'multer';
 import streamifier from 'streamifier';
 import sanitize from 'sanitize-filename';
 import { SoundsService, AddSoundOptions, errors as soundErrors } from 'botman-sounds';
+import fs from 'node:fs';
 import environment from './environment';
 import { discordAuth, soundRequest, skipRequest } from './ui-client';
 
@@ -83,6 +84,12 @@ app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
   }
   res.sendStatus(204);
   res.end();
+});
+
+app.get('/api/preview', async (req, res) => {
+  const sound = await soundsService.getSound(String(req.query.soundName));
+  const readStream = fs.createReadStream(`../bot/sounds/${ sound.file.fullName }`);
+  readStream.on('open', () => readStream.pipe(res));
 });
 
 app.use(serveStatic);

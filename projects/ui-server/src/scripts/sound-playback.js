@@ -23,7 +23,34 @@ const skipRequest = debounce(async (all = false) => {
     .catch(error => console.log(error));
 }, 500, true);
 
+const volume = document.getElementById('preview-volume');
+
+async function previewSound(soundButton) {
+  try {
+    const audioRes = await fetch(`/api/preview?soundName=${ soundButton.parentElement.dataset.soundName }`, { headers: { 'Content-Type': 'text/plain' } });
+    const resBuffer = await audioRes.arrayBuffer();
+    const context = new AudioContext();
+    const gain = context.createGain();
+    gain.gain.value = volume.value;
+    await context.decodeAudioData(resBuffer, buffer => {
+      const source = context.createBufferSource();
+      source.buffer = buffer;
+      source.connect(gain).connect(context.destination);
+      source.start(0);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+let previewSounds = false;
+
 document.getElementById('btn-container').addEventListener('click', e => {
+  if (e.target.classList.contains('sound-btn') && previewSounds) {
+    previewSound(e.target);
+    return;
+  }
+
   if (e.target.classList.contains('sound-btn')) {
     e.target.classList.add('btn-red');
     postSound(e.target);
@@ -34,4 +61,11 @@ document.getElementById('btn-container').addEventListener('click', e => {
 document.getElementById('skip-container').addEventListener('click', e => {
   if (e.target === document.getElementById('skip-one')) skipRequest();
   if (e.target === document.getElementById('skip-all')) skipRequest(true);
+});
+
+document.getElementById('sound-preview-button').addEventListener('click', e => {
+  previewSounds = !previewSounds;
+  document.getElementById('btn-container').classList.toggle('btn-container-preview');
+  document.getElementById('preview-instructions').classList.toggle('button-instructions-hide');
+  e.target.classList.toggle('filter-btn-on');
 });
