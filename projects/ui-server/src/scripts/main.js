@@ -1,15 +1,14 @@
+import Cookies from 'js-cookies';
 import { makeSoundButtons, searchFilter } from './utils';
 import Favorites from './favorites';
 import './sound-playback';
 import './addsound';
 
-async function fetchUser() {
+async function getSounds() {
   try {
-    const userResponse = await fetch('/api/user');
-    const userData = await userResponse.json();
-    document.getElementById('username').innerHTML = userData.name;
-    document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${ userData.userID }/${ userData.avatar }.png`;
-    return userData;
+    const soundsResponse = await fetch('/api/soundlist');
+    const soundList = await soundsResponse.json();
+    return soundList;
   } catch (error) {
     console.error(error);
     document.getElementById('body').classList.add('body-error');
@@ -22,8 +21,10 @@ async function fetchUser() {
 const favorites = new Favorites();
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const userData = await fetchUser();
-  makeSoundButtons(userData.soundList, favorites);
+  const soundList = await getSounds();
+  document.getElementById('username').innerHTML = Cookies.getItem('username');
+  document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${ Cookies.getItem('userid') }/${ Cookies.getItem('avatar') }.png`;
+  makeSoundButtons(soundList, favorites);
 });
 
 document.addEventListener('click', e => {

@@ -16,7 +16,7 @@ const postSound = debounce(soundButton => {
 }, 2000, true);
 
 const skipRequest = debounce(async (all = false) => {
-  await fetch(`/api/skip?skipAll=${ all }`, { headers: { 'Content-Type': 'text/plain' } })
+  await fetch(`/api/skip${ all ? '?skipAll=true' : '' }`, { headers: { 'Content-Type': 'text/plain' } })
     .then(res => {
       if (res.status === 401) window.location.reload();
     })
