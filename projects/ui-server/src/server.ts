@@ -95,6 +95,7 @@ app.get('/api/preview', async (req, res) => {
   const sound = await soundsService.getSound(String(req.query.soundName));
   const readStream = fs.createReadStream(`../bot/sounds/${ sound.file.fullName }`);
   readStream.on('open', () => readStream.pipe(res));
+  readStream.on('close', () => res.end());
 });
 
 app.use(serveStatic);

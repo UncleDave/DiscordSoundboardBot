@@ -32,6 +32,7 @@ async function previewSound(soundButton) {
     const context = new AudioContext();
     const gain = context.createGain();
     gain.gain.value = volume.value;
+    volume.oninput = () => { gain.gain.value = volume.value; };
     await context.decodeAudioData(resBuffer, buffer => {
       const source = context.createBufferSource();
       source.buffer = buffer;
@@ -65,7 +66,15 @@ document.getElementById('skip-container').addEventListener('click', e => {
 
 document.getElementById('sound-preview-button').addEventListener('click', e => {
   previewSounds = !previewSounds;
+  const buttons = Array.from(document.getElementById('btn-container').children);
+  buttons.forEach(i => { i.firstChild.classList.toggle('preview-btn'); });
   document.getElementById('btn-container').classList.toggle('btn-container-preview');
   document.getElementById('preview-instructions').classList.toggle('button-instructions-hide');
   e.target.classList.toggle('filter-btn-on');
+});
+
+document.querySelector('input[type="range"]').addEventListener('input', e => {
+  const { min } = e.target;
+  const { max } = e.target;
+  e.target.style.backgroundSize = `${ ((e.target.value - min) * 100) / (max - min) }% 100%`;
 });
