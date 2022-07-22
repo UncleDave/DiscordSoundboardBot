@@ -74,7 +74,6 @@ document.getElementById('sound-preview-button').addEventListener('click', e => {
 });
 
 document.querySelector('input[type="range"]').addEventListener('input', e => {
-  const { min } = e.target;
-  const { max } = e.target;
+  const { min, max } = e.target;
   e.target.style.backgroundSize = `${ ((e.target.value - min) * 100) / (max - min) }% 100%`;
 });
