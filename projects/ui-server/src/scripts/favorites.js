@@ -1,7 +1,6 @@
 export default class Favorites {
   constructor() {
     this.addListeners();
-    this.load();
   }
   list = [];
   addListeners() {
@@ -13,12 +12,15 @@ export default class Favorites {
     });
     document.getElementById('btn-container').addEventListener('click', e => { if (e.target.classList.contains('favStar')) this.toggleBtnAsFav(e.target); });
   }
-  save() {
-    window.localStorage.setItem('favorites', JSON.stringify(this.list));
+  async export() {
+    await fetch('/api/favorites', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(this.list),
+    });
   }
-  load() {
-    const stored = JSON.parse(window.localStorage.getItem('favorites'));
-    if (stored) this.list = stored;
+  import(userFavorites) {
+    this.list = userFavorites;
   }
   remove(soundName) {
     this.list = this.list.filter(i => i !== soundName);
@@ -34,6 +36,6 @@ export default class Favorites {
     }
     star.classList.toggle('fav-set');
     star.parentElement.classList.toggle('fav');
-    this.save();
+    this.export();
   }
 }
