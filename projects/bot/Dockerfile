@@ -2,7 +2,8 @@
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
 EXPOSE 80
-RUN apk add git yarn
+RUN apk add git yarn python3 make gcc g++ musl-dev
+RUN yarn global add node-gyp
 WORKDIR app/
 COPY package.json yarn.lock tsconfig.json ./
 WORKDIR projects/bot

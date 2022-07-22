@@ -5,7 +5,6 @@ import cors from 'cors';
 import axios, { AxiosRequestConfig } from 'axios';
 import multer from 'multer';
 import { SoundsService, AddSoundOptions, errors as soundErrors } from 'botman-sounds';
-import fs from 'node:fs';
 import DiscordAuth from './discord-auth';
 import environment from './environment';
 
