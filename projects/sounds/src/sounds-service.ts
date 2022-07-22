@@ -1,6 +1,8 @@
 import { Collection, Filter, FindOptions, MongoClient } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import sanitize from 'sanitize-filename';
+import fileType from 'file-type';
+import { Readable } from 'node:stream';
 import { Sound, SoundFile } from './sound';
 import { SoundDocument } from './sound-document';
 import { FilesService } from './files-service';
@@ -9,7 +11,6 @@ import { SaveableSoundFile } from './saveable-sound-file';
 
 export interface AddSoundOptions {
   name: string;
-  extension: string;
   file: SaveableSoundFile;
 }
 
@@ -82,11 +83,13 @@ export class SoundsService extends ReadOnlySoundsService {
     this.filesService = new FilesService(blobStorageConnectionString);
   }
 
-  async addSound({ name, extension, file }: AddSoundOptions): Promise<void> {
-    if (SoundsService.validFileExtensions.indexOf(extension) === -1)
+  async addSound({ name, file }: AddSoundOptions): Promise<void> {
+    const fileTypeResult = file instanceof Readable ? await fileType.fromStream(file) : await fileType.fromBuffer(file);
+
+    if (!fileTypeResult || SoundsService.validFileExtensions.indexOf(fileTypeResult.ext) === -1)
       throw new Error(errors.unsupportedFileExtension);
 
-    const uniqueFileName = `${ sanitize(name) }.${ uuidv4() }.${ extension }`;
+    const uniqueFileName = `${ sanitize(name) }.${ uuidv4() }.${ fileTypeResult.ext }`;
 
     await this.filesService.saveFile(uniqueFileName, file);
 

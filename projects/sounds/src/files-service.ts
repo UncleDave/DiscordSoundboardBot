@@ -25,7 +25,7 @@ export class FilesService {
   }
 
   private async getBlockBlobClient(name: string): Promise<BlockBlobClient> {
-    await this.soundsContainerClient.create({ access: 'blob' });
+    await this.soundsContainerClient.createIfNotExists({ access: 'blob' });
     return this.soundsContainerClient.getBlockBlobClient(name);
   }
 }

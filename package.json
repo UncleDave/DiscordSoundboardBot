@@ -9,7 +9,9 @@
     "projects/*"
   ],
   "dependencies": {
-    "@tsconfig/node17": "^1.0.0"
+    "@tsconfig/node17": "^1.0.0",
+    "ts-node": "^10.9.1",
+    "mongodb": "^4.8.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.28.0",
