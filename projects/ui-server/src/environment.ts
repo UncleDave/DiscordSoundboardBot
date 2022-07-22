@@ -8,4 +8,5 @@ export default {
   port: process.env.PORT ?? 80,
   soundsConnectionString: process.env.SOUNDS_CONNECTION_STRING,
   blobStorageConnectionString: process.env.BLOB_STORAGE_CONNECTION_STRING,
+  soundsBaseUrl: process.env.SOUNDS_BASE_URL,
 };
