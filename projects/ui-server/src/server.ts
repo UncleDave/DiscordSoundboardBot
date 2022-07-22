@@ -46,7 +46,7 @@ app.get('/api/soundlist', async (req, res) => {
 
 const botConfig: AxiosRequestConfig = { headers: { Authorization: environment.botApiKey } };
 
-app.post('/api/sound', async (req, res) => {
+app.post('/api/sound', (req, res) => {
   console.log('Sound request.');
   const body = { userID: req.cookies.userid, sound: req.body };
   axios.post(`${ environment.botURL }/soundrequest`, body, botConfig)
@@ -54,7 +54,7 @@ app.post('/api/sound', async (req, res) => {
   res.end();
 });
 
-app.get('/api/skip', async (req, res) => {
+app.get('/api/skip', (req, res) => {
   console.log(`Skip request. All: ${ req.query.skipAll }`);
   const skipAll = !!req.query?.skipAll;
   axios.post(`${ environment.botURL }/skip`, { skipAll, userID: req.cookies.userid }, botConfig)
