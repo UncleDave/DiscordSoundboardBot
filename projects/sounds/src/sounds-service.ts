@@ -18,11 +18,13 @@ export class ReadOnlySoundsService {
   private static readonly soundFindOptions: FindOptions<SoundDocument> = { projection: { _id: 0 } };
 
   protected readonly soundsCollection: Promise<Collection<SoundDocument>>;
+  private readonly mongoClient: MongoClient;
 
   constructor(connectionUri: string) {
     if (!connectionUri) throw new Error('Couldn\'t instantiate SoundsService: connectionUri must be provided');
 
-    this.soundsCollection = new MongoClient(connectionUri).connect().then(x => x.db('botman').collection('sounds'));
+    this.mongoClient = new MongoClient(connectionUri);
+    this.soundsCollection = this.mongoClient.connect().then(x => x.db('botman').collection('sounds'));
   }
 
   async getSound(name: string): Promise<Sound | null> {
@@ -40,6 +42,10 @@ export class ReadOnlySoundsService {
 
   searchSounds(searchTerm: string): Promise<Sound[]> {
     return this.find({ name: new RegExp(`^${ searchTerm }`, 'i') });
+  }
+
+  close(): Promise<void> {
+    return this.mongoClient.close();
   }
 
   private async find(filter: Filter<SoundDocument> = {}): Promise<Sound[]> {
