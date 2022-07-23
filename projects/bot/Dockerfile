@@ -1,7 +1,6 @@
-﻿FROM alpine:3.15
+﻿FROM alpine:3.15 as builder
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
-EXPOSE 80
 RUN apk add git yarn python3 make gcc g++ musl-dev
 RUN yarn global add node-gyp
 WORKDIR app/
@@ -14,4 +13,12 @@ COPY projects/sounds/package.json projects/sounds/tsconfig.json ./
 COPY projects/sounds/src/ src/
 WORKDIR ../bot
 RUN yarn --pure-lockfile
+
+FROM alpine:3.15
+ARG NODE_ENV=production
+ENV NODE_ENV $NODE_ENV
+EXPOSE 80
+RUN apk add yarn
+COPY --from=builder app/ app/
+WORKDIR app/projects/bot
 ENTRYPOINT ["yarn", "run", "start"]

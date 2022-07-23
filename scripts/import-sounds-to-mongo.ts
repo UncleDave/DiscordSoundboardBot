@@ -7,7 +7,7 @@ import { SoundDocument } from '../projects/sounds/src/sound-document';
 // Doesn't check for or clear existing documents, so running it twice will produce duplicates.
 
 const connectionUri = 'mongodb://localhost:27017';
-const soundsDirectory = 'projects/bot/sounds';
+const soundsDirectory = 'sounds';
 
 function splitFileName(name: string): SoundFile {
   const fullName = name.toLowerCase();

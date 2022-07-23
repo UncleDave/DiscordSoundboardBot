@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { FilesService } from '../projects/sounds/src/files-service';
 
-const soundsDirectory = 'projects/bot/sounds';
+const soundsDirectory = 'sounds';
 
 (async function run() {
   const files = await fs.readdir(soundsDirectory);
