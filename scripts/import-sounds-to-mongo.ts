@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 import { promises as fs } from 'fs';
-import { SoundFile } from '../projects/sounds/src/sound';
-import { SoundDocument } from '../projects/sounds/src/sound-document';
+import { SoundFile } from 'botman-sounds';
+import { SoundDocument } from 'botman-sounds/src/sound-document';
 
 // Use this script to import sounds from a folder into a mongo database.
 // Doesn't check for or clear existing documents, so running it twice will produce duplicates.
