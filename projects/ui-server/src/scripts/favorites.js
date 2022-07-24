@@ -26,16 +26,15 @@ export default class Favorites {
     this.list = this.list.filter(i => i !== soundName);
   }
   toggleBtnAsFav(favStar) {
-    const star = favStar;
-    if (star.classList.contains('fav-set')) {
-      star.innerHTML = 'star_outline';
-      this.remove(star.parentElement.dataset.soundName);
+    if (favStar.classList.contains('fav-set')) {
+      favStar.innerHTML = 'star_outline';
+      this.remove(favStar.parentElement.dataset.soundName);
     } else {
-      star.innerHTML = 'star';
-      this.list.push(star.parentElement.dataset.soundName);
+      favStar.innerHTML = 'star';
+      this.list.push(favStar.parentElement.dataset.soundName);
     }
-    star.classList.toggle('fav-set');
-    star.parentElement.classList.toggle('fav');
+    favStar.classList.toggle('fav-set');
+    favStar.parentElement.classList.toggle('fav');
     this.export();
   }
 }
