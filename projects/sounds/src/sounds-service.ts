@@ -1,4 +1,4 @@
-import { Collection, Filter, FindOptions, MongoClient } from 'mongodb';
+import { Collection, Filter, MongoClient, ObjectId } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import sanitize from 'sanitize-filename';
 import fileType, { FileTypeResult } from 'file-type';
@@ -15,8 +15,6 @@ export interface AddSoundOptions {
 }
 
 export class ReadOnlySoundsService {
-  private static readonly soundFindOptions: FindOptions<SoundDocument> = { projection: { _id: 0 } };
-
   protected readonly soundsCollection: Promise<Collection<SoundDocument>>;
   private readonly mongoClient: MongoClient;
 
@@ -29,7 +27,7 @@ export class ReadOnlySoundsService {
 
   async getSound(name: string): Promise<Sound | null> {
     const collection = await this.soundsCollection;
-    const document = await collection.findOne({ name }, ReadOnlySoundsService.soundFindOptions);
+    const document = await collection.findOne({ name });
 
     if (!document) return null;
 
@@ -52,7 +50,7 @@ export class ReadOnlySoundsService {
     const collection = await this.soundsCollection;
 
     return collection
-      .find(filter, { ...ReadOnlySoundsService.soundFindOptions, collation: { locale: 'en', strength: 2 } })
+      .find(filter, { collation: { locale: 'en', strength: 2 } })
       .sort({ name: 1 })
       .map(ReadOnlySoundsService.mapSoundDocumentToSound)
       .toArray();
@@ -60,6 +58,7 @@ export class ReadOnlySoundsService {
 
   private static mapSoundDocumentToSound(document: SoundDocument): Sound {
     return {
+      id: document._id.toString(),
       name: document.name,
       file: ReadOnlySoundsService.mapFileNameToSoundFile(document.fileName),
     };
@@ -106,7 +105,7 @@ export class SoundsService extends ReadOnlySoundsService {
 
     try {
       const collection = await this.soundsCollection;
-      await collection.insertOne({ name, fileName: uniqueFileName });
+      await collection.insertOne({ _id: new ObjectId(), name, fileName: uniqueFileName });
     } catch (error: any) {
       await this.filesService.deleteFile(uniqueFileName);
 
