@@ -1,11 +1,14 @@
-import { Collection, MongoClient } from 'mongodb';
+import { Collection } from 'mongodb';
+import { MongoService } from 'botman-mongo';
 import { FavoritesDocument } from './favorites-document';
 
-export class FavoritesService {
+export class FavoritesService extends MongoService {
   protected readonly favoritesCollection: Promise<Collection<FavoritesDocument>>;
 
   constructor(connectionUri: string) {
-    this.favoritesCollection = new MongoClient(connectionUri).connect().then(x => x.db('botman').collection('ui-favorites'));
+    super(connectionUri);
+
+    this.favoritesCollection = this.db.then(db => db.collection('ui-favorites'));
   }
 
   async getUserFavorites(userID: string) {

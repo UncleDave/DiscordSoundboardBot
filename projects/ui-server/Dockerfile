@@ -7,6 +7,9 @@ COPY package.json yarn.lock tsconfig.json ./
 WORKDIR projects/ui-server
 COPY projects/ui-server/package.json projects/ui-server/tsconfig.json projects/ui-server/webpack.config.ts ./
 COPY projects/ui-server/src/ src/
+WORKDIR ../mongo
+COPY projects/mongo/package.json projects/mongo/tsconfig.json ./
+COPY projects/mongo/src/ src/
 WORKDIR ../sounds
 COPY projects/sounds/package.json projects/sounds/tsconfig.json ./
 COPY projects/sounds/src/ src/
