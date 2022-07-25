@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadSoundData(data.soundList, favorites);
   } catch (error) {
     console.error(error);
-    document.getElementById('body').classList.add('body-error');
+    document.body.classList.add('body-error');
     document.getElementById('error-container').classList.add('message-container-show');
     document.getElementById('search-container').classList.add('search-hide');
   }
