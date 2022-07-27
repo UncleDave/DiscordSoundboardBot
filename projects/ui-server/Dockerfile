@@ -13,9 +13,9 @@ COPY projects/mongo/src/ src/
 WORKDIR ../sounds
 COPY projects/sounds/package.json projects/sounds/tsconfig.json ./
 COPY projects/sounds/src/ src/
-WORKDIR ../favorites
-COPY projects/favorites/package.json projects/favorites/tsconfig.json ./
-COPY projects/favorites/src/ src/
+WORKDIR ../users
+COPY projects/users/package.json projects/users/tsconfig.json ./
+COPY projects/users/src/ src/
 WORKDIR ../ui-server
 RUN yarn --pure-lockfile
 RUN if [ "$NODE_ENV" = "production" ] ; then yarn run build:web ; rm -rf webpack.config.ts src/scripts/ ; fi

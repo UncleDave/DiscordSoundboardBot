@@ -15,7 +15,7 @@
   "dependencies": {
     "applicationinsights": "^2.3.3",
     "axios": "^0.27.2",
-    "botman-favorites": "^1.0.0",
+    "botman-users": "^1.0.0",
     "botman-sounds": "^1.0.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

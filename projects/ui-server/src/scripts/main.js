@@ -4,6 +4,7 @@ import Favorites from './favorites';
 import './sound-playback';
 import './addsound';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const favorites = new Favorites();
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -12,8 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const soundsRes = await fetch('/api/soundlist');
     const data = await soundsRes.json();
-    favorites.import(data.favorites);
-    loadSoundData(data.soundList, favorites);
+    loadSoundData(data);
   } catch (error) {
     console.error(error);
     document.body.classList.add('body-error');

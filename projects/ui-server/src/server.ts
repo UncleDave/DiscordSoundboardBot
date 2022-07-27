@@ -5,7 +5,7 @@ import cors from 'cors';
 import axios, { AxiosRequestConfig } from 'axios';
 import multer from 'multer';
 import { SoundsService, AddSoundOptions, errors as soundErrors } from 'botman-sounds';
-import { FavoritesService } from 'botman-favorites';
+import { FavoritesService } from 'botman-users';
 import DiscordAuth from './discord-auth';
 import environment from './environment';
 
@@ -38,9 +38,10 @@ app.use(DiscordAuth);
 app.get('/api/soundlist', async (req, res) => {
   try {
     const soundRes = await soundsService.getAllSounds();
+    const favorites = await favoritesService.getFavorites(req.cookies.userid);
     const data = {
-      soundList: soundRes.map(x => x.name),
-      favorites: await favoritesService.getUserFavorites(req.cookies.userid) ?? [],
+      soundList: soundRes.map(x => ({ id: x.id, name: x.name })),
+      favorites,
     };
     res.send(data);
   } catch (error) {
@@ -48,8 +49,14 @@ app.get('/api/soundlist', async (req, res) => {
   }
 });
 
-app.post('/api/favorites', (req, res) => {
-  favoritesService.saveUserFavorites(req.cookies.userid, req.body);
+app.put('/api/favorites', (req, res) => {
+  favoritesService.addToFavorites({ userId: String(req.cookies.userid), soundId: req.body });
+  res.sendStatus(204);
+  res.end();
+});
+
+app.delete('/api/favorites', (req, res) => {
+  favoritesService.removeFromFavorites({ userId: String(req.cookies.userid), soundId: req.body });
   res.sendStatus(204);
   res.end();
 });

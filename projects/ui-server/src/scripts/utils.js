@@ -1,19 +1,20 @@
-export async function loadSoundData(soundList, userFavorites) {
-  soundList.forEach(i => {
+export async function loadSoundData(data) {
+  data.soundList.forEach(i => {
     const div = document.createElement('div');
     const btn = document.createElement('button');
     const fav = document.createElement('span');
     fav.classList.add('material-icons', 'favStar', 'icon-btn');
-    if (userFavorites.list.find(x => x === i)) {
+    if (data.favorites.find(x => x === i.id)) {
       div.classList.add('fav');
       fav.innerHTML = 'star';
       fav.classList.add('fav-set');
     } else {
       fav.innerHTML = 'star_outline';
     }
-    btn.innerHTML = i;
+    btn.innerHTML = i.name;
     btn.classList.add('btn', 'sound-btn');
-    div.dataset.soundName = i;
+    div.dataset.id = i.id;
+    div.dataset.soundName = i.name;
     div.classList.add('sound-tile');
     div.appendChild(btn);
     div.appendChild(fav);

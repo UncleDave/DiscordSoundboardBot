@@ -1,4 +1,4 @@
-export interface FavoritesDocument {
+export interface UserDocument {
   userId: string;
   favorites: string[];
 }

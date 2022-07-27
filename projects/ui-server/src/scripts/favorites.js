@@ -2,7 +2,6 @@ export default class Favorites {
   constructor() {
     this.addListeners();
   }
-  list = [];
   addListeners() {
     document.getElementById('favorites-btn').addEventListener('click', e => {
       const buttons = Array.from(document.getElementById('btn-container').children);
@@ -19,22 +18,23 @@ export default class Favorites {
       body: JSON.stringify(this.list),
     });
   }
-  import(userFavorites) {
-    this.list = userFavorites;
-  }
-  remove(soundName) {
-    this.list = this.list.filter(i => i !== soundName);
+  async update(soundId, remove = false) {
+    await fetch('/api/favorites', {
+      method: remove ? 'DELETE' : 'PUT',
+      headers: { 'Content-Type': 'text/plain' },
+      body: soundId,
+    });
   }
   toggleBtnAsFav(favStar) {
+    const soundData = favStar.parentElement.dataset;
     if (favStar.classList.contains('fav-set')) {
       favStar.innerHTML = 'star_outline';
-      this.remove(favStar.parentElement.dataset.soundName);
+      this.update(soundData.id, true);
     } else {
       favStar.innerHTML = 'star';
-      this.list.push(favStar.parentElement.dataset.soundName);
+      this.update(soundData.id);
     }
     favStar.classList.toggle('fav-set');
     favStar.parentElement.classList.toggle('fav');
-    this.export();
   }
 }
