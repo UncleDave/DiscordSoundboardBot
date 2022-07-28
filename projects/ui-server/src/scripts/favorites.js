@@ -1,7 +1,7 @@
-export default class Favorites {
+const favorites = {
   constructor() {
     this.addListeners();
-  }
+  },
   addListeners() {
     document.getElementById('favorites-btn').addEventListener('click', e => {
       const buttons = Array.from(document.getElementById('btn-container').children);
@@ -10,21 +10,13 @@ export default class Favorites {
       e.target.classList.toggle('filter-btn-on');
     });
     document.getElementById('btn-container').addEventListener('click', e => { if (e.target.classList.contains('favStar')) this.toggleBtnAsFav(e.target); });
-  }
-  async export() {
-    await fetch('/api/favorites', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(this.list),
-    });
-  }
+  },
   async update(soundId, remove = false) {
-    await fetch('/api/favorites', {
+    await fetch(`/api/favorites/${ soundId }`, {
       method: remove ? 'DELETE' : 'PUT',
-      headers: { 'Content-Type': 'text/plain' },
-      body: soundId,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     });
-  }
+  },
   toggleBtnAsFav(favStar) {
     const soundData = favStar.parentElement.dataset;
     if (favStar.classList.contains('fav-set')) {
@@ -36,5 +28,9 @@ export default class Favorites {
     }
     favStar.classList.toggle('fav-set');
     favStar.parentElement.classList.toggle('fav');
-  }
-}
+  },
+};
+
+favorites.addListeners();
+
+export default favorites;

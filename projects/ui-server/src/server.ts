@@ -23,7 +23,6 @@ const serveStatic = express.static('src/public', { extensions: ['html'] });
 
 app.use(cookieParser());
 app.use(cors({ origin: environment.UIServerURL }));
-app.use(express.json());
 app.use(express.text());
 const upload = multer();
 
@@ -49,14 +48,14 @@ app.get('/api/soundlist', async (req, res) => {
   }
 });
 
-app.put('/api/favorites', (req, res) => {
-  favoritesService.addToFavorites({ userId: String(req.cookies.userid), soundId: req.body });
+app.put('/api/favorites/:id', async (req, res) => {
+  await favoritesService.addToFavorites({ userId: String(req.cookies.userid), soundId: req.params.id });
   res.sendStatus(204);
   res.end();
 });
 
-app.delete('/api/favorites', (req, res) => {
-  favoritesService.removeFromFavorites({ userId: String(req.cookies.userid), soundId: req.body });
+app.delete('/api/favorites/:id', async (req, res) => {
+  await favoritesService.removeFromFavorites({ userId: String(req.cookies.userid), soundId: req.params.id });
   res.sendStatus(204);
   res.end();
 });

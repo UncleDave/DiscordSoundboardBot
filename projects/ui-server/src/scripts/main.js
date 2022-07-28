@@ -1,11 +1,8 @@
 import Cookies from 'js-cookies';
 import { loadSoundData, searchFilter } from './utils';
-import Favorites from './favorites';
+import './favorites';
 import './sound-playback';
 import './addsound';
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const favorites = new Favorites();
 
 document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('username').innerHTML = Cookies.getItem('username');

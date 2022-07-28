@@ -1,1 +1,1 @@
-export const errors = { UserDoesNotExist: 'User does not exist' };
+export const errors = { userDoesNotExist: 'User does not exist' };
