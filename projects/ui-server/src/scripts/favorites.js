@@ -1,7 +1,4 @@
 const favorites = {
-  constructor() {
-    this.addListeners();
-  },
   addListeners() {
     document.getElementById('favorites-btn').addEventListener('click', e => {
       const buttons = Array.from(document.getElementById('btn-container').children);
@@ -11,23 +8,18 @@ const favorites = {
     });
     document.getElementById('btn-container').addEventListener('click', e => { if (e.target.classList.contains('favStar')) this.toggleBtnAsFav(e.target); });
   },
-  async update(soundId, remove = false) {
-    await fetch(`/api/favorites/${ soundId }`, {
-      method: remove ? 'DELETE' : 'PUT',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
-  },
-  toggleBtnAsFav(favStar) {
+  async toggleBtnAsFav(favStar) {
     const soundData = favStar.parentElement.dataset;
+    let method = 'PUT';
     if (favStar.classList.contains('fav-set')) {
       favStar.innerHTML = 'star_outline';
-      this.update(soundData.id, true);
+      method = 'DELETE';
     } else {
       favStar.innerHTML = 'star';
-      this.update(soundData.id);
     }
     favStar.classList.toggle('fav-set');
     favStar.parentElement.classList.toggle('fav');
+    await fetch(`/api/favorites/${ soundData.id }`, { method });
   },
 };
 

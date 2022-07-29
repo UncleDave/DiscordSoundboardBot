@@ -1,5 +1,4 @@
 import { UsersService } from './users-service';
-import { errors } from './errors';
 
 export interface FavoriteUpdateOptions {
   userId: string;
@@ -18,14 +17,8 @@ export class FavoritesService extends UsersService {
   }
 
   async getFavorites(userId: string): Promise<string[]> {
-    try {
-      const collection = await this.usersCollection;
-      const user = await collection.findOne({ userId }, { projection: { favorites: 1 } });
-      if (!user) throw new Error(errors.userDoesNotExist);
-      return user.favorites;
-    } catch (error: any) {
-      if (error.message === errors.userDoesNotExist) return [];
-      throw error;
-    }
+    const collection = await this.usersCollection;
+    const user = await collection.findOne({ userId }, { projection: { favorites: 1 } });
+    return user?.favorites ?? [];
   }
 }
