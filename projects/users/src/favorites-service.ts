@@ -8,7 +8,7 @@ export interface FavoriteUpdateOptions {
 export class FavoritesService extends UsersService {
   async addToFavorites(options: FavoriteUpdateOptions): Promise<void> {
     const collection = await this.usersCollection;
-    await collection.updateOne({ userId: options.userId }, { $push: { favorites: options.soundId } }, { upsert: true });
+    await collection.updateOne({ userId: options.userId }, { $addToSet: { favorites: options.soundId } }, { upsert: true });
   }
 
   async removeFromFavorites(options: FavoriteUpdateOptions): Promise<void> {
