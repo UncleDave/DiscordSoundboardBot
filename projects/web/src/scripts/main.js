@@ -28,3 +28,6 @@ document.addEventListener('click', e => {
 });
 
 document.getElementById('search').addEventListener('keyup', () => searchFilter());
+
+document.getElementById('size-toggle-btn').addEventListener('click', () =>
+  document.getElementById('btn-container').classList.toggle('btn-container-scale'));

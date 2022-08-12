@@ -382,24 +382,32 @@ nav {
     width: auto;
 }
 
-.button-instructions {
-    color: rgb(152, 152, 152);
-    font-size: 1.2rem;
-    font-weight: bold;
+.sort-toolbar {
     display: flex;
-    justify-content: center;
-    margin: 30px 4vw 0px;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 20px 4vw 0px;
 }
 
 .preview-instructions {
     color: var(--c-btn-border);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: left;
+    flex-grow: 2;
 }
 
 .button-instructions-hide {
     display: none;
+}
+
+.size-toggle-btn {
+    display: flex;
+}
+
+.resize-icon {
+    color: var(--c-btn-border);
+    margin-right: -10px;
 }
 
 .btn-container {
@@ -407,7 +415,7 @@ nav {
     flex-wrap: wrap;
     justify-content: center;
     margin: 0px 20px;
-    padding: 20px 15px 0px;
+    padding: 10px 15px 0px;
 }
 
 @media only screen and (max-width: 780px) {
@@ -415,6 +423,12 @@ nav {
         padding: 8px 0px;
         margin: 0px 8px;
     }
+}
+
+.btn-container-scale {
+    transform: scale(0.5);
+    transform-origin: left top;
+    width: 190vw;
 }
 
 .sound-tile {
