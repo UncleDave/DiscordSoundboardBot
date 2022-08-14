@@ -1,12 +1,24 @@
-import Cookies from 'js-cookies';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
 import { loadSoundData, searchFilter } from './utils';
-import './favorites';
-import './sound-playback';
-import './addsound';
+// import './favorites';
+// import './sound-playback';
+// import './addsound';
+
+import('./favorites');
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root'),
+);
 
 document.addEventListener('DOMContentLoaded', async () => {
-  document.getElementById('username').innerHTML = Cookies.getItem('username');
-  document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${ Cookies.getItem('userid') }/${ Cookies.getItem('avatar') }.png`;
+  import('./favorites');
+  import('./sound-playback');
+  import('./addsound');
   try {
     const soundsRes = await fetch('/api/soundlist');
     const data = await soundsRes.json();

@@ -30,74 +30,7 @@
     </script>
 </head>
 <body>
-<nav class="nav">
-    <div class="nav-left">
-        <div class="title-container">
-            <h1>DiscordSoundboardBot</h1>
-        </div>
-        <div class="username-container">
-            <h2 class="username" id="username"></h2>
-        </div>
-    </div>
-    <div id="avatar-container" class="avatar-container">
-        <img id="avatar" src="" class="avatar" alt="" width="50px">
-        <div id="log-out-menu" class="log-out-menu log-out-menu-hide">
-            <img id="log-out-pointer" class="log-out-pointer" src="log-out-pointer.png" alt="">
-            <button id="log-out-button" class="btn log-out-button" onclick="document.location.href = '/logout'">log out</button>
-        </div>
-    </div>
-</nav>
-<main>
-    <div class="main-container">
-        <div id="error-container" class="message-container error-container">
-            <h1>Server error.</h1><h4>*/sound horrible mistake*</h4>
-        </div>
-        <div class="features-container">
-            <div id="skip-container" class="skip-container">
-                <button id="skip-one" class="skip-button btn">Skip one</button>
-                <button id="skip-all" class="skip-button btn">Skip all</button>
-            </div>
-            <div class="filters-container">
-                <div id="search-container" class="search-container">
-                    <input type="text" placeholder=" search for a sound..." id="search" class="text-input">
-                    <span id="search-cancel" class="material-icons search-cancel icon-btn">cancel</span>
-                </div>
-                <div class="option-btns-container">
-                    <div class="filter-btns-container">
-                        <button id="favorites-btn" class="filter-btn btn">Favorites</button>
-                    </div>
-                    <div id="right-toolbar-container" class="right-toolbar-container">
-                        <button id="sound-preview-button" class="filter-btn btn">Preview Sounds</button>
-                        <button id="add-sound-button" class="add-sound-button filter-btn btn">Add Sound</button>
-                    </div>
-                </div>
-                <div id="add-sound-dialog" class="add-sound-dialog btn-hide">
-                    <h4 id="add-sound-text">Upload a new sound file</h4>
-                    <input id="file-upload" type="file" accept=".wav, .mp3, .webm, .ogg" class="file-upload text-input add-sound-input">
-                    <input id="sound-name-input" type="text" name="" placeholder="Enter a name for the sound" enterkeyhint="done" class="add-sound-input text-input">
-                    <button id="addsound-confirm-btn" class="btn filter-btn btn-hide add-sound-button">Go!</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="sort-toolbar" class="sort-toolbar">
-            <div id="preview-instructions" class="preview-instructions button-instructions-hide">
-                <p>Sounds will only play through your browser</p>
-                <input type="range" id="preview-volume" min="0" max="2" value=".5" step="0.01">
-            </div>
-            <div class="sort-buttons">
-                <div id="size-toggle-btn" class="size-toggle-btn icon-btn">
-                    <span class="material-icons resize-icon" style="font-size: 1.5rem">crop_square</span>
-                    <span class="material-icons resize-icon" style="font-size: 2.5rem">crop_square</span>
-                </div>
-            </div>
-        </div>
-            <div id="btn-container" class="btn-container btn-container-show"></div></div>
-        <div id="empty-search-container" class="message-container">
-            <h1>No results ¯\_(ツ)_/¯</h1>
-        </div>
-    </div>
-</main>
-<script src="app.js"></script>
+  <div id="root"></div>
 </body>
+<script src="app.js"></script>
 </html>
