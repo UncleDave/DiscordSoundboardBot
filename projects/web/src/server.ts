@@ -6,6 +6,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import multer from 'multer';
 import { SoundsService, AddSoundOptions, errors as soundErrors } from 'botman-sounds';
 import { FavoritesService } from 'botman-users';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import DiscordAuth from './discord-auth';
 import environment from './environment';
 
@@ -128,7 +129,8 @@ app.get('/api/preview', async (req, res) => {
   res.send(`${ environment.soundsBaseUrl }/${ sound.file.fullName }`);
 });
 
-app.use(serveStatic);
+if (environment.environment === 'production') app.use(serveStatic);
+else app.use('/', createProxyMiddleware({ target: 'http://frontend:3000', changeOrigin: true }));
 
 app.listen(environment.port, () => {
   console.log(`web server listening on port ${ environment.port }`);

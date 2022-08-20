@@ -26,6 +26,20 @@ services:
     ports:
       - "8080:80"
 
+  frontend:
+    build:
+      dockerfile: projects/frontend/Dockerfile
+      context: .
+      args:
+        NODE_ENV: development
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./projects:/app/projects
+    entrypoint: [ "yarn", "run", "start:dev" ]
+    ports:
+      - "3000:80"
+
   db:
     image: mongo
     volumes:

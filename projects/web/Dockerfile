@@ -5,7 +5,7 @@ RUN apk add yarn
 WORKDIR app/
 COPY package.json yarn.lock tsconfig.json ./
 WORKDIR projects/web
-COPY projects/web/package.json projects/web/tsconfig.json projects/web/webpack.config.ts ./
+COPY projects/web/package.json projects/web/tsconfig.json ./
 COPY projects/web/src/ src/
 WORKDIR ../mongo
 COPY projects/mongo/package.json projects/mongo/tsconfig.json ./

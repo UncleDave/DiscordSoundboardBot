@@ -1,4 +1,5 @@
 import React from 'react';
+import ButtonContainer from './Button-Container';
 
 class Main extends React.Component {
   render() {
@@ -64,7 +65,7 @@ class Main extends React.Component {
                 type="text"
                 name=""
                 placeholder="Enter a name for the sound"
-                enterkeyhint="done"
+                enterKeyHint="done"
                 className="add-sound-input text-input"
               />
               <button
@@ -109,7 +110,7 @@ class Main extends React.Component {
           </div>
         </div>
       </div>
-      <div id="btn-container" className="btn-container btn-container-show" />
+      <ButtonContainer />
       <div id="empty-search-container" className="message-container">
         <h1>No results ¯\_(ツ)_/¯</h1>
       </div>
