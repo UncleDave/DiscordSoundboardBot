@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "../../.eslintrc.json"
+  ],
+  "rules": {
+    "react/function-component-definition": "off",
+    "react/jsx-curly-spacing": [
+      "error",
+      {
+        "when": "always"
+      }
+    ]
+  }
+}

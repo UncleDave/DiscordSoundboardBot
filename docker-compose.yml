@@ -30,15 +30,13 @@ services:
     build:
       dockerfile: projects/frontend/Dockerfile
       context: .
-      args:
-        NODE_ENV: development
     environment:
-      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     volumes:
       - ./projects:/app/projects
-    entrypoint: [ "yarn", "run", "start:dev" ]
+    entrypoint: [ "yarn", "run", "start" ]
     ports:
-      - "3000:80"
+      - "3000:3000"
 
   db:
     image: mongo

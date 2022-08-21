@@ -27,26 +27,19 @@ app.use(cors({ origin: environment.webServerURL }));
 app.use(express.text());
 const upload = multer();
 
-app.get('/logout', (req, res, next) => {
+app.post('/logout', (req, res) => {
   res.clearCookie('accesstoken');
   res.clearCookie('refreshtoken');
-  next();
-}, serveStatic);
+  res.sendStatus(201);
+  res.end();
+});
 
 app.use(DiscordAuth);
 
-app.get('/api/soundlist', async (req, res) => {
-  try {
-    const soundRes = await soundsService.getAllSounds();
-    const favorites = await favoritesService.getFavorites(req.cookies.userid);
-    const data = {
-      soundList: soundRes.map(x => ({ id: x.id, name: x.name })),
-      favorites,
-    };
-    res.send(data);
-  } catch (error) {
-    console.log(error);
-  }
+app.get('/api/sounds', async (req, res) => {
+  const sounds = await soundsService.getAllSounds();
+  const favorites = await favoritesService.getFavorites(req.cookies.userid);
+  res.send(sounds.map(x => ({ id: x.id, name: x.name, isFavorite: favorites.indexOf(x.id) !== -1 })));
 });
 
 app.put('/api/favorites/:id', async (req, res) => {
@@ -71,11 +64,13 @@ app.post('/api/sound', (req, res) => {
   res.end();
 });
 
-app.get('/api/skip', (req, res) => {
+app.post('/api/skip', async (req, res) => {
   console.log(`Skip request. All: ${ req.query.skipAll }`);
   const skipAll = !!req.query?.skipAll;
-  axios.post(`${ environment.botURL }/skip`, { skipAll, userID: req.cookies.userid }, botConfig)
-    .catch(error => console.log(error));
+
+  await axios.post(`${ environment.botURL }/skip`, { skipAll, userID: req.cookies.userid }, botConfig);
+
+  res.sendStatus(204);
   res.end();
 });
 

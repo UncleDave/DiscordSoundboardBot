@@ -2,7 +2,7 @@ FROM alpine:3.15 as builder
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
 RUN apk add yarn
-WORKDIR app/
+WORKDIR app
 COPY package.json yarn.lock tsconfig.json ./
 WORKDIR projects/web
 COPY projects/web/package.json projects/web/tsconfig.json ./

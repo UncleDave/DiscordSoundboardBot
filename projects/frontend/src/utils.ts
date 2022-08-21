@@ -1,7 +1,7 @@
-export function debounce(func, wait, immediate) {
-  let timeout;
+export default function debounce(func: Function, wait: number, immediate = false) {
+  let timeout: NodeJS.Timeout | null;
 
-  return function executedFunction(...args) {
+  return function executedFunction(this: any, ...args: any[]) {
     const context = this;
 
     const later = () => {
@@ -11,7 +11,8 @@ export function debounce(func, wait, immediate) {
 
     const callNow = immediate && !timeout;
 
-    clearTimeout(timeout);
+    if (timeout)
+      clearTimeout(timeout);
 
     timeout = setTimeout(later, wait);
 
