@@ -2,7 +2,6 @@
   "name": "botman-sounds",
   "version": "1.0.0",
   "main": "src/index.ts",
-  "license": "MIT",
   "private": true,
   "scripts": {
     "build": "tsc"
@@ -11,9 +10,9 @@
     "@azure/storage-blob": "^12.11.0",
     "botman-mongo": "^1.0.0",
     "file-type": "^16.5.4",
-    "mongodb": "^4.8.0",
-    "uuid": "^8.3.2",
-    "sanitize-filename": "^1.6.3"
+    "mongodb": "^4.9.0",
+    "sanitize-filename": "^1.6.3",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/node": "^17.0.44",

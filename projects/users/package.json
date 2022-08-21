@@ -2,14 +2,13 @@
   "name": "botman-users",
   "version": "1.0.0",
   "main": "src/index.ts",
-  "license": "MIT",
   "private": true,
   "scripts": {
     "build": "tsc"
   },
   "dependencies": {
     "botman-mongo": "^1.0.0",
-    "mongodb": "^4.8.0"
+    "mongodb": "^4.9.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.44",

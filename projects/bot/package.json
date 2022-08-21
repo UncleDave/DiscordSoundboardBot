@@ -1,11 +1,7 @@
 {
   "name": "botman",
   "version": "1.0.0",
-  "repository": "https://github.com/UncleDave/DiscordSoundboardBot.git",
-  "author": "Dave Pringle <3244206+UncleDave@users.noreply.github.com>",
-  "license": "MIT",
   "private": true,
-  "homepage": "https://github.com/UncleDave/DiscordSoundboardBot",
   "scripts": {
     "start": "ts-node -T src/index.ts",
     "start:dev": "ts-node-dev --poll --respawn -s src/index.ts",
@@ -13,7 +9,7 @@
   },
   "dependencies": {
     "@discordjs/opus": "^0.8.0",
-    "@discordjs/voice": "^0.9.0",
+    "@discordjs/voice": "^0.11.0",
     "applicationinsights": "^2.3.3",
     "axios": "^0.27.2",
     "body-parser": "^1.20.0",
