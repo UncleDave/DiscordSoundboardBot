@@ -1,14 +1,22 @@
 import React, { FC, useCallback, useState } from 'react';
 import debounce from '../utils';
 import AddSoundDialog from './AddSoundDialog';
-import SortContainer from './SortContainer';
+import SearchContainer from './SearchContainer';
 
-const Features: FC = () => {
-  const [showAddsound, setShowAddsound] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
+interface FeaturesProps {
+  favoritesToggled: boolean
+  previewToggled: boolean;
+  favsCallback: () => void;
+  previewCallback: () => void;
+  searchCallback: (search: string) => void;
+}
+
+const Features: FC<FeaturesProps> = ({ favoritesToggled, previewToggled, favsCallback, previewCallback, searchCallback }) => {
+  const [showAddSound, setShowAddSound] = useState(false);
+  const [disableAddSoundButton, setDisableAddSoundButton] = useState(false);
 
   const skipSound = useCallback(debounce((all = false) => {
-    fetch(`/api/skip${ all ? '?skipAll=true' : '' }`, { headers: { 'Content-Type': 'text/plain' } });
+    fetch(`/api/skip${ all ? '?skipAll=true' : '' }`, { method: 'POST', headers: { 'Content-Type': 'text/plain' } });
   }, 500, true), []);
 
   return (
@@ -23,23 +31,10 @@ const Features: FC = () => {
           </button>
         </div>
         <div className="filters-container">
-          <div id="search-container" className="search-container">
-            <input
-              type="text"
-              placeholder=" search for a sound..."
-              id="search"
-              className="text-input"
-            />
-            <span
-              id="search-cancel"
-              className="material-icons search-cancel icon-btn"
-            >
-              cancel
-            </span>
-          </div>
+          <SearchContainer searchCallback={ searchCallback } />
           <div className="option-btns-container">
             <div className="filter-btns-container">
-              <button id="favorites-btn" type="button" className="filter-btn btn">
+              <button id="favorites-btn" type="button" className={ `filter-btn btn${ favoritesToggled ? ' filter-btn-on' : '' }` } onClick={ favsCallback }>
                 Favorites
               </button>
             </div>
@@ -47,25 +42,25 @@ const Features: FC = () => {
               <button
                 id="sound-preview-button"
                 type="button"
-                className="filter-btn btn"
-                onClick={ () => setShowPreview(!showPreview) }
+                className={ `filter-btn btn${ previewToggled ? ' filter-btn-on' : '' }` }
+                onClick={ previewCallback }
               >
                 Preview Sounds
               </button>
               <button
                 id="add-sound-button"
                 type="button"
-                className="add-sound-button filter-btn btn"
-                onClick={ () => setShowAddsound(!showAddsound) }
+                className={ `add-sound-button filter-btn${ disableAddSoundButton ? ' btn-green' : ' btn' }` }
+                disabled={ disableAddSoundButton }
+                onClick={ () => setShowAddSound(!showAddSound) }
               >
                 Add Sound
               </button>
             </div>
           </div>
-          { showAddsound ? <AddSoundDialog /> : null }
+          { showAddSound ? <AddSoundDialog setShowAddsound={ setShowAddSound } setDisableAddSoundButton={ setDisableAddSoundButton } /> : null }
         </div>
       </div>
-      <SortContainer showPreview={ showPreview } />
     </div>
   );
 };

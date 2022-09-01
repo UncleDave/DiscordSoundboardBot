@@ -5,6 +5,7 @@
   "dependencies": {
     "js-cookie": "^3.0.1",
     "react": "^18.2.0",
+    "react-detect-click-outside": "^1.1.7",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
     "swr": "^1.3.0"

@@ -1,32 +1,44 @@
 import React, { FC } from 'react';
-import cookies from 'js-cookie';
-import { Link } from 'react-router-dom';
+import { useDetectClickOutside } from 'react-detect-click-outside';
+import useUser from '../hooks/use-user';
+import LogoutMenu from './LogoutMenu';
 
-// TODO: Move user info to hook
-// TODO: Log out menu
+interface NavProps {
+  showLogoutMenu: boolean;
+  setShowLogoutMenu: (show: boolean) => void;
+}
 
-const Nav: FC = () => (
-  <nav className="nav">
-    <div className="nav-left">
-      <div className="title-container">
-        <h1>DiscordSoundboardBot</h1>
+const Nav: FC<NavProps> = ({ showLogoutMenu, setShowLogoutMenu }) => {
+  const user = useUser();
+  const ref = useDetectClickOutside({ onTriggered: () => { if (showLogoutMenu) setShowLogoutMenu(false); } });
+
+  return (
+    <nav className="nav">
+      <div className="nav-left">
+        <div className="title-container">
+          <h1>DiscordSoundboardBot</h1>
+        </div>
+        <div className="username-container">
+          <h2 className="username" id="username">
+            { user.name }
+          </h2>
+        </div>
       </div>
-      <div className="username-container">
-        <h2 className="username" id="username">
-          { cookies.get('username') }
-        </h2>
+      <div id="avatar-container" className="avatar-container">
+        <img
+          ref={ ref }
+          id="avatar"
+          src={ `https://cdn.discordapp.com/avatars/${ user.id }/${ user.avatarId }.png` }
+          className="avatar"
+          alt=""
+          width="50px"
+          role="presentation"
+          onClick={ () => setShowLogoutMenu(!showLogoutMenu) }
+        />
+        { showLogoutMenu ? <LogoutMenu /> : null }
       </div>
-    </div>
-    <div id="avatar-container" className="avatar-container">
-      <img id="avatar" src={ `https://cdn.discordapp.com/avatars/${ cookies.get('userid') }/${ cookies.get('avatar') }.png` } className="avatar" alt="" width="50px" />
-      <div id="log-out-menu" className="log-out-menu log-out-menu-hide">
-        <img id="log-out-pointer" className="log-out-pointer" src="log-out-pointer.png" alt="" />
-        <Link to="/logout">
-          <button id="log-out-button" type="button" className="btn log-out-button">log out</button>
-        </Link>
-      </div>
-    </div>
-  </nav>
-);
+    </nav>
+  );
+};
 
 export default Nav;

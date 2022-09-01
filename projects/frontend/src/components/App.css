@@ -145,12 +145,12 @@ nav {
 .log-out-menu {
     position: absolute;
     top: 90px;
-    left: -20px;
+    left: -18px;
 }
 
 .log-out-pointer {
     position: absolute;
-    top: -9px;
+    top: -8px;
     left: 40px;
 }
 
@@ -165,10 +165,6 @@ nav {
         top: -7px;
         left: 23px;
     }
-}
-
-.log-out-menu-hide {
-    display: none;
 }
 
 .log-out-button {
@@ -262,10 +258,6 @@ nav {
     opacity: 100%;
 }
 
-.search-hide {
-    display: none;
-}
-
 .text-input {
     color: white;
     background-color: var(--c-inner-B);
@@ -290,15 +282,10 @@ nav {
 }
 
 .search-cancel {
-    display: none;
     right: 8px;
     top: 7px;
     position: absolute;
     opacity: 50%;
-}
-
-.search-cancel-show {
-    display: block;
 }
 
 @media only screen and (max-width: 780px) {
@@ -397,10 +384,6 @@ nav {
     flex-grow: 2;
 }
 
-.button-instructions-hide {
-    display: none;
-}
-
 .size-toggle-btn {
     display: flex;
 }
@@ -489,7 +472,7 @@ nav {
      }
 }
 
-.btn-hide, .btn-filter-fav {
+.btn-filter-fav {
     display: none;
 }
 
@@ -505,6 +488,10 @@ nav {
 
 .btn-green {
     border-color: #8cffa5;
+}
+
+.no-select {
+    user-select: none;
 }
 
 .add-sound-shake {
