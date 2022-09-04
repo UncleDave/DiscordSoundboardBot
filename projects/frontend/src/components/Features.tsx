@@ -6,12 +6,12 @@ import SearchContainer from './SearchContainer';
 interface FeaturesProps {
   favoritesToggled: boolean
   previewToggled: boolean;
-  favsCallback: () => void;
-  previewCallback: () => void;
+  toggleFavs: () => void;
+  toggleShowPreview: () => void;
   searchCallback: (search: string) => void;
 }
 
-const Features: FC<FeaturesProps> = ({ favoritesToggled, previewToggled, favsCallback, previewCallback, searchCallback }) => {
+const Features: FC<FeaturesProps> = ({ favoritesToggled, previewToggled, toggleFavs, toggleShowPreview, searchCallback }) => {
   const [showAddSound, setShowAddSound] = useState(false);
   const [disableAddSoundButton, setDisableAddSoundButton] = useState(false);
 
@@ -34,7 +34,7 @@ const Features: FC<FeaturesProps> = ({ favoritesToggled, previewToggled, favsCal
           <SearchContainer searchCallback={ searchCallback } />
           <div className="option-btns-container">
             <div className="filter-btns-container">
-              <button id="favorites-btn" type="button" className={ `filter-btn btn${ favoritesToggled ? ' filter-btn-on' : '' }` } onClick={ favsCallback }>
+              <button id="favorites-btn" type="button" className={ `filter-btn btn${ favoritesToggled ? ' filter-btn-on' : '' }` } onClick={ toggleFavs }>
                 Favorites
               </button>
             </div>
@@ -43,7 +43,7 @@ const Features: FC<FeaturesProps> = ({ favoritesToggled, previewToggled, favsCal
                 id="sound-preview-button"
                 type="button"
                 className={ `filter-btn btn${ previewToggled ? ' filter-btn-on' : '' }` }
-                onClick={ previewCallback }
+                onClick={ toggleShowPreview }
               >
                 Preview Sounds
               </button>

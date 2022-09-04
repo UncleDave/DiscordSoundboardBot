@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useState, useRef } from 'react';
 
 interface SearchContainerProps {
   searchCallback: (search: string) => void;
@@ -7,6 +7,8 @@ interface SearchContainerProps {
 const SearchContainer: FC<SearchContainerProps> = ({ searchCallback }) => {
   const [showCancel, setShowCancel] = useState(false);
   const [inputValue, setInputValue] = useState('');
+
+  const textInput = useRef<HTMLInputElement>(null);
 
   const handleSearchInput = useCallback((event: React.FormEvent<HTMLInputElement>) => {
     const searchTerm = event.currentTarget.value;
@@ -19,6 +21,7 @@ const SearchContainer: FC<SearchContainerProps> = ({ searchCallback }) => {
     searchCallback('');
     setShowCancel(false);
     setInputValue('');
+    textInput.current?.focus();
   }, []);
 
   return (
@@ -29,6 +32,7 @@ const SearchContainer: FC<SearchContainerProps> = ({ searchCallback }) => {
         id="search"
         className="text-input"
         value={ inputValue }
+        ref={ textInput }
         onChange={ event => handleSearchInput(event) }
       />
       { showCancel ? (

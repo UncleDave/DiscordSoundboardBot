@@ -1,11 +1,11 @@
 import React, { FC, useCallback } from 'react';
 
 interface PreviewInstructionsProps {
-  volumeCallback: (volume: string) => void;
+  setPreviewVolume: (volume: string) => void;
 }
 
-const PreviewInstructions: FC<PreviewInstructionsProps> = ({ volumeCallback }) => {
-  const inputStyle = useCallback((event: React.FormEvent<HTMLInputElement>) => {
+const PreviewInstructions: FC<PreviewInstructionsProps> = ({ setPreviewVolume }) => {
+  const animateVolumeInput = useCallback((event: React.FormEvent<HTMLInputElement>) => {
     const min = Number(event.currentTarget.min);
     const max = Number(event.currentTarget.max);
     event.currentTarget.style.backgroundSize = `${ ((Number(event.currentTarget.value) - min) * 100) / (max - min) }% 100%`;
@@ -25,8 +25,8 @@ const PreviewInstructions: FC<PreviewInstructionsProps> = ({ volumeCallback }) =
         defaultValue=".5"
         step="0.01"
         onInput={ event => {
-          volumeCallback(event.currentTarget.value);
-          inputStyle(event);
+          setPreviewVolume(event.currentTarget.value);
+          animateVolumeInput(event);
         } }
       />
     </div>

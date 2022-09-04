@@ -3,15 +3,15 @@ import PreviewInstructions from './PreviewInstructions';
 
 interface SortContainerProps {
   showPreview: boolean;
-  smallCallback: () => void;
-  volumeCallback: (volume: string) => void;
+  toggleSmallButtons: () => void;
+  setPreviewVolume: (volume: string) => void;
 }
 
-const SortContainer: FC<SortContainerProps> = ({ showPreview, smallCallback, volumeCallback }) => (
+const SortContainer: FC<SortContainerProps> = ({ showPreview, toggleSmallButtons, setPreviewVolume }) => (
   <div id="sort-toolbar" className="sort-toolbar">
-    { showPreview && <PreviewInstructions volumeCallback={ volumeCallback } /> }
+    { showPreview && <PreviewInstructions setPreviewVolume={ setPreviewVolume } /> }
     <div className="sort-buttons">
-      <div id="size-toggle-btn" className="size-toggle-btn icon-btn" role="presentation" onClick={ smallCallback }>
+      <div id="size-toggle-btn" className="size-toggle-btn icon-btn" role="presentation" onClick={ toggleSmallButtons }>
         <span
           className="material-icons resize-icon no-select"
           style={ { fontSize: '1.5rem' } }

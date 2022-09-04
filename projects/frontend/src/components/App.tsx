@@ -25,7 +25,7 @@ const App: FC = () => {
 
   const setSearch = useCallback((search: string) => {
     setSortRules(oldState => ({ ...oldState, search }));
-  }, [sortRules.favorites]);
+  }, [sortRules.search]);
 
   const [previewVolume, setPreviewVolume] = useState('.5');
   const [previewGain, setPreviewGain] = useState<GainNode | null>(null);
@@ -69,15 +69,22 @@ const App: FC = () => {
   return (
     <div className="App">
       <SWRProvider>
-        <Nav showLogoutMenu={ showLogoutMenu } setShowLogoutMenu={ setShowLogoutMenu } />
+        <Nav
+          showLogoutMenu={ showLogoutMenu }
+          setShowLogoutMenu={ setShowLogoutMenu }
+        />
         <Features
           favoritesToggled={ sortRules.favorites }
           previewToggled={ showPreview }
-          favsCallback={ toggleFavs }
-          previewCallback={ toggleShowPreview }
+          toggleFavs={ toggleFavs }
+          toggleShowPreview={ toggleShowPreview }
           searchCallback={ setSearch }
         />
-        <SortContainer showPreview={ showPreview } smallCallback={ toggleSmallButtons } volumeCallback={ setPreviewVolume } />
+        <SortContainer
+          showPreview={ showPreview }
+          toggleSmallButtons={ toggleSmallButtons }
+          setPreviewVolume={ setPreviewVolume }
+        />
         <ButtonContainer
           preview={ showPreview }
           soundRequest={ soundRequest }

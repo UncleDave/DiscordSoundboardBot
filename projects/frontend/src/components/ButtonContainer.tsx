@@ -15,19 +15,22 @@ interface ButtonContainerProps {
 }
 
 const ButtonContainer: FC<ButtonContainerProps> = ({ preview, soundRequest, previewRequest, sortRules: { favorites, small, search } }) => {
-  const { data: sounds, error, mutate } = useSWR<Sound[]>('/api/sounds');
+  const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
 
   const updateFavoritesRequest = useCallback(async (soundName: string) => {
     if (sounds) {
       let method = 'PUT';
       const sound = sounds?.find(x => x.name === soundName);
       if (sound?.isFavorite) method = 'DELETE';
-      await fetch(`/api/favorites/${ sound?.id }`, { method });
       if (sound) {
         const newSounds = [...sounds];
         const soundIndex = newSounds.findIndex(x => x.id === sound?.id);
         newSounds[soundIndex] = { ...(sound), isFavorite: !sound?.isFavorite };
-        mutate(newSounds, { revalidate: false, rollbackOnError: true });
+        const updateFav = async () => {
+          await fetch(`/api/favorites/${ sound?.id }`, { method });
+          return newSounds;
+        };
+        await mutateSounds(updateFav(), { optimisticData: newSounds, rollbackOnError: true });
       }
     }
   }, [sounds]);
@@ -45,7 +48,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ preview, soundRequest, prev
 
   return (
     <div className="btn-container">
-      { error ? 'Something went wrong :(' : 'Loading sounds...' }
+      { error ? <h1>Something broke eeeeeek</h1> : <h1>Loading yo sounds...</h1> }
     </div>
   );
 };
