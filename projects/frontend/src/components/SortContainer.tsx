@@ -8,10 +8,10 @@ interface SortContainerProps {
 }
 
 const SortContainer: FC<SortContainerProps> = ({ showPreview, toggleSmallButtons, setPreviewVolume }) => (
-  <div id="sort-toolbar" className="sort-toolbar">
+  <div className="sort-toolbar">
     { showPreview && <PreviewInstructions setPreviewVolume={ setPreviewVolume } /> }
     <div className="sort-buttons">
-      <div id="size-toggle-btn" className="size-toggle-btn icon-btn" role="presentation" onClick={ toggleSmallButtons }>
+      <div className="size-toggle-btn icon-btn" role="presentation" onClick={ toggleSmallButtons }>
         <span
           className="material-icons resize-icon no-select"
           style={ { fontSize: '1.5rem' } }

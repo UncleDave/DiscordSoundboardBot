@@ -361,7 +361,7 @@ nav {
     top: -50vh;
 }
 
-#add-sound-text {
+.add-sound-text {
     margin-bottom: 10px;
 }
 
@@ -408,12 +408,6 @@ nav {
     }
 }
 
-.btn-container-scale {
-    transform: scale(0.5);
-    transform-origin: left top;
-    width: 190vw;
-}
-
 .sound-tile {
      position: relative;
  }
@@ -422,7 +416,6 @@ nav {
     font-size: 1.2rem;
     color: white;
     border: 5px solid var(--c-btn-border);
-    border-width: 5px;
     border-radius: 3px;
     /* good 1080p box size is 150px; */
     min-width: 150px;
@@ -431,6 +424,16 @@ nav {
     margin: 6px 6px;
     background-color:var(--c-inner-A);
     word-wrap: break-word;
+}
+
+.sound-btn-small {
+    font-size: 0.6rem;
+    border: 2px solid var(--c-btn-border);
+    border-radius: 2px;
+    min-width: 75px;
+    min-height: 75px;
+    max-width: 75px;
+    margin: 4px 4px;
 }
 
 .preview-btn {
@@ -442,6 +445,12 @@ nav {
     right: 12px;
     top: 12px;
     opacity: 50%
+}
+
+.favStar-small {
+    font-size: 12px;
+    right: 8px;
+    top: 8px;
 }
 
 @media only screen and (max-width: 780px) {

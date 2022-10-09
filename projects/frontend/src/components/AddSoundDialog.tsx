@@ -98,10 +98,9 @@ const AddSoundDialog: FC<AddSoundDialogProps> = ({ setShowAddsound, setDisableAd
   }, [fileInputValue]);
 
   return (
-    <div id="add-sound-dialog" className={ `add-sound-dialog${ addSoundStyle }` }>
-      <h4 id="add-sound-text">{ message }</h4>
+    <div className={ `add-sound-dialog${ addSoundStyle }` }>
+      <h4 className='add-sound-text'>{ message }</h4>
       <input
-        id="file-upload"
         type="file"
         accept=".wav, .mp3, .webm, .ogg"
         className="file-upload text-input add-sound-input"
@@ -110,7 +109,6 @@ const AddSoundDialog: FC<AddSoundDialogProps> = ({ setShowAddsound, setDisableAd
         onChange={ event => handleFileInputChange(event) }
       />
       <input
-        id="sound-name-input"
         type="text"
         name=""
         placeholder="Enter a name for the sound"
@@ -125,7 +123,6 @@ const AddSoundDialog: FC<AddSoundDialogProps> = ({ setShowAddsound, setDisableAd
         ? (
           <button
             type="submit"
-            id="addsound-confirm-btn"
             className="btn filter-btn add-sound-button"
             onClick={ addSound }
           >

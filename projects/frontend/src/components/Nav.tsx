@@ -19,15 +19,14 @@ const Nav: FC<NavProps> = ({ showLogoutMenu, setShowLogoutMenu }) => {
           <h1>DiscordSoundboardBot</h1>
         </div>
         <div className="username-container">
-          <h2 className="username" id="username">
+          <h2 className="username">
             { user.name }
           </h2>
         </div>
       </div>
-      <div id="avatar-container" className="avatar-container">
+      <div className="avatar-container">
         <img
           ref={ ref }
-          id="avatar"
           src={ `https://cdn.discordapp.com/avatars/${ user.id }/${ user.avatarId }.png` }
           className="avatar"
           alt=""

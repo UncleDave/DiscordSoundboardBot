@@ -3,13 +3,14 @@ import Sound from '../models/sound';
 
 interface SoundTileProps {
   preview: boolean;
+  small: boolean;
   sound: Sound;
   soundRequest: (soundName: string, borderCallback: () => void) => void;
   previewRequest: (soundName: string) => void;
   updateFavRequest: (soundId: string) => void;
 }
 
-const SoundTile: FC<SoundTileProps> = ({ preview, sound: { name, isFavorite }, soundRequest, previewRequest, updateFavRequest }) => {
+const SoundTile: FC<SoundTileProps> = ({ preview, small, sound: { name, isFavorite }, soundRequest, previewRequest, updateFavRequest }) => {
   const [statusBorder, setStatusBorder] = useState('');
 
   const raiseStatusSet = useCallback(() => setStatusBorder(' btn-green'), []);
@@ -22,9 +23,16 @@ const SoundTile: FC<SoundTileProps> = ({ preview, sound: { name, isFavorite }, s
 
   return (
     <div className={ `${ isFavorite ? 'fav ' : '' }sound-tile` }>
-      <button type="button" className={ `btn sound-btn${ preview ? ' preview-btn' : '' }${ statusBorder }` } onClick={ preview ? () => previewRequest(name) : handleSoundClick }>{ name }</button>
+      <button
+        type="button"
+        className={ `btn sound-btn${ preview ? ' preview-btn' : '' }${ statusBorder }${ small ? ' sound-btn-small' : '' }` }
+        onClick={ preview ? () => previewRequest(name) : handleSoundClick }
+      >
+        { name }
+
+      </button>
       <span
-        className={ `material-icons favStar icon-btn ${ isFavorite ? 'fav-set' : '' }` }
+        className={ `material-icons favStar ${ small ? 'favStar-small' : '' } icon-btn ${ isFavorite ? 'fav-set' : '' }` }
         role="presentation"
         onClick={ () => updateFavRequest(name) }
       >

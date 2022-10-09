@@ -10,24 +10,22 @@ interface ButtonContainerProps {
   sortRules: {
     favorites: boolean;
     small: boolean;
-    search: string;
+    searchTerm: string;
   }
 }
 
-const ButtonContainer: FC<ButtonContainerProps> = ({ preview, soundRequest, previewRequest, sortRules: { favorites, small, search } }) => {
+const ButtonContainer: FC<ButtonContainerProps> = ({ preview, soundRequest, previewRequest, sortRules: { favorites, small, searchTerm } }) => {
   const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
 
   const updateFavoritesRequest = useCallback(async (soundName: string) => {
     if (sounds) {
-      let method = 'PUT';
       const sound = sounds?.find(x => x.name === soundName);
-      if (sound?.isFavorite) method = 'DELETE';
       if (sound) {
         const newSounds = [...sounds];
         const soundIndex = newSounds.findIndex(x => x.id === sound?.id);
         newSounds[soundIndex] = { ...(sound), isFavorite: !sound?.isFavorite };
         const updateFav = async () => {
-          await fetch(`/api/favorites/${ sound?.id }`, { method });
+          await fetch(`/api/favorites/${ sound?.id }`, { method: sound?.isFavorite ? 'DELETE' : 'PUT' });
           return newSounds;
         };
         await mutateSounds(updateFav(), { optimisticData: newSounds, rollbackOnError: true });
@@ -37,11 +35,11 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ preview, soundRequest, prev
 
   if (sounds)
     return (
-      <div className={ `btn-container${ small ? ' btn-container-scale' : '' }` }>
+      <div className='btn-container'>
         { sounds.map(x => {
           if (favorites && !x.isFavorite) return null;
-          if (search && !x.name.toUpperCase().includes(search)) return null;
-          return <SoundTile key={ x.id } preview={ preview } sound={ x } soundRequest={ soundRequest } previewRequest={ previewRequest } updateFavRequest={ updateFavoritesRequest } />;
+          if (searchTerm && !x.name.toUpperCase().includes(searchTerm)) return null;
+          return <SoundTile key={ x.id } preview={ preview } small={ small } sound={ x } soundRequest={ soundRequest } previewRequest={ previewRequest } updateFavRequest={ updateFavoritesRequest } />;
         })}
       </div>
     );

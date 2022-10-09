@@ -8,10 +8,10 @@ interface FeaturesProps {
   previewToggled: boolean;
   toggleFavs: () => void;
   toggleShowPreview: () => void;
-  searchCallback: (search: string) => void;
+  setSearchTerm: (search: string) => void;
 }
 
-const Features: FC<FeaturesProps> = ({ favoritesToggled, previewToggled, toggleFavs, toggleShowPreview, searchCallback }) => {
+const Features: FC<FeaturesProps> = ({ favoritesToggled, previewToggled, toggleFavs, toggleShowPreview, setSearchTerm }) => {
   const [showAddSound, setShowAddSound] = useState(false);
   const [disableAddSoundButton, setDisableAddSoundButton] = useState(false);
 
@@ -22,25 +22,24 @@ const Features: FC<FeaturesProps> = ({ favoritesToggled, previewToggled, toggleF
   return (
     <div>
       <div className="features-container">
-        <div id="skip-container" className="skip-container">
-          <button id="skip-one" type="button" className="skip-button btn" onClick={ skipSound }>
+        <div className="skip-container">
+          <button type="button" className="skip-button btn" onClick={ skipSound }>
             Skip one
           </button>
-          <button id="skip-all" type="button" className="skip-button btn" onClick={ () => skipSound(true) }>
+          <button type="button" className="skip-button btn" onClick={ () => skipSound(true) }>
             Skip all
           </button>
         </div>
         <div className="filters-container">
-          <SearchContainer searchCallback={ searchCallback } />
+          <SearchContainer setSearchTerm={ setSearchTerm } />
           <div className="option-btns-container">
             <div className="filter-btns-container">
-              <button id="favorites-btn" type="button" className={ `filter-btn btn${ favoritesToggled ? ' filter-btn-on' : '' }` } onClick={ toggleFavs }>
+              <button type="button" className={ `filter-btn btn${ favoritesToggled ? ' filter-btn-on' : '' }` } onClick={ toggleFavs }>
                 Favorites
               </button>
             </div>
-            <div id="right-toolbar-container" className="right-toolbar-container">
+            <div className="right-toolbar-container">
               <button
-                id="sound-preview-button"
                 type="button"
                 className={ `filter-btn btn${ previewToggled ? ' filter-btn-on' : '' }` }
                 onClick={ toggleShowPreview }
@@ -48,7 +47,6 @@ const Features: FC<FeaturesProps> = ({ favoritesToggled, previewToggled, toggleF
                 Preview Sounds
               </button>
               <button
-                id="add-sound-button"
                 type="button"
                 className={ `add-sound-button filter-btn${ disableAddSoundButton ? ' btn-green' : ' btn' }` }
                 disabled={ disableAddSoundButton }

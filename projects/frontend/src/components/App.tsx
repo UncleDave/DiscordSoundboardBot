@@ -8,7 +8,7 @@ import SortContainer from './SortContainer';
 import debounce from '../utils';
 
 const App: FC = () => {
-  const [sortRules, setSortRules] = useState({ favorites: false, small: false, search: '' });
+  const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '' });
 
   const toggleSmallButtons = useCallback(() => {
     setSortRules(oldState => ({ ...oldState, small: !oldState.small }));
@@ -23,9 +23,9 @@ const App: FC = () => {
     setShowPreview(!showPreview);
   }, [showPreview]);
 
-  const setSearch = useCallback((search: string) => {
-    setSortRules(oldState => ({ ...oldState, search }));
-  }, [sortRules.search]);
+  const setSearchTerm = useCallback((searchTerm: string) => {
+    setSortRules(oldState => ({ ...oldState, searchTerm }));
+  }, [sortRules.searchTerm]);
 
   const [previewVolume, setPreviewVolume] = useState('.5');
   const [previewGain, setPreviewGain] = useState<GainNode | null>(null);
@@ -78,7 +78,7 @@ const App: FC = () => {
           previewToggled={ showPreview }
           toggleFavs={ toggleFavs }
           toggleShowPreview={ toggleShowPreview }
-          searchCallback={ setSearch }
+          setSearchTerm={ setSearchTerm }
         />
         <SortContainer
           showPreview={ showPreview }
@@ -89,7 +89,7 @@ const App: FC = () => {
           preview={ showPreview }
           soundRequest={ soundRequest }
           previewRequest={ previewRequest }
-          sortRules={ { favorites: sortRules.favorites, small: sortRules.small, search: sortRules.search } }
+          sortRules={ { favorites: sortRules.favorites, small: sortRules.small, searchTerm: sortRules.searchTerm } }
         />
       </SWRProvider>
     </div>

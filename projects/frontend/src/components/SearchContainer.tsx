@@ -1,10 +1,10 @@
 import React, { FC, useCallback, useState, useRef } from 'react';
 
 interface SearchContainerProps {
-  searchCallback: (search: string) => void;
+  setSearchTerm: (search: string) => void;
 }
 
-const SearchContainer: FC<SearchContainerProps> = ({ searchCallback }) => {
+const SearchContainer: FC<SearchContainerProps> = ({ setSearchTerm }) => {
   const [showCancel, setShowCancel] = useState(false);
   const [inputValue, setInputValue] = useState('');
 
@@ -13,23 +13,22 @@ const SearchContainer: FC<SearchContainerProps> = ({ searchCallback }) => {
   const handleSearchInput = useCallback((event: React.FormEvent<HTMLInputElement>) => {
     const searchTerm = event.currentTarget.value;
     setInputValue(searchTerm);
-    searchCallback(searchTerm.toUpperCase());
+    setSearchTerm(searchTerm.toUpperCase());
     setShowCancel(Boolean(searchTerm));
   }, []);
 
   const handleCancelClick = useCallback(() => {
-    searchCallback('');
+    setSearchTerm('');
     setShowCancel(false);
     setInputValue('');
     textInput.current?.focus();
   }, []);
 
   return (
-    <div id="search-container" className="search-container">
+    <div className="search-container">
       <input
         type="text"
         placeholder=" search for a sound..."
-        id="search"
         className="text-input"
         value={ inputValue }
         ref={ textInput }
@@ -37,7 +36,6 @@ const SearchContainer: FC<SearchContainerProps> = ({ searchCallback }) => {
       />
       { showCancel ? (
         <span
-          id="search-cancel"
           className="material-icons search-cancel icon-btn"
           role="presentation"
           onClick={ handleCancelClick }
