@@ -1,5 +1,98 @@
 import React, { FC, useCallback, useState } from 'react';
+import styled, { css } from 'styled-components';
+import theme from '../styles/main';
+import * as mixins from '../styles/mixins';
 import Sound from '../models/sound';
+
+interface SoundTileMainProps {
+  preview: boolean;
+  statusBorder: string;
+  small: boolean;
+  isFavorite: boolean;
+}
+
+const soundTileSmall = css`
+  font-size: 0.6rem;
+  border: 2px solid ${ theme.colors.borderDefault };
+  border-radius: 2px;
+  min-width: 75px;
+  min-height: 75px;
+  max-width: 75px;
+  margin: 4px 4px;
+`;
+
+const SoundTileMain = styled.div<SoundTileMainProps>`
+  position: relative;
+
+  > button {
+    ${ mixins.button }
+    
+    font-size: 1.2rem;
+    color: white;
+    border: 5px solid ${ theme.colors.borderDefault };
+    border-radius: 3px;
+    /* good 1080p box size is 150px; */
+    min-width: 150px;
+    min-height: 150px;
+    max-width: 150px;
+    margin: 6px 6px;
+    background-color: ${ theme.colors.innerA };
+    word-wrap: break-word;
+  
+    ${ props => props.small ? soundTileSmall : '' }
+
+    ${ props => props.preview ? 'border-style: dashed;' : '' }
+    ${ props => {
+    if (props.statusBorder === 'success') return mixins.buttonGreen;
+    if (props.statusBorder === 'error') return mixins.buttonRed;
+    return css`
+      transition-property: border-color;
+      transition-duration: 1s;
+      transition-delay: 2s;
+    `;
+  }
+}
+  
+  @media only screen and (max-width: 780px) {
+    border: 3px solid ${ theme.colors.borderDefault };
+    border-width: 3px;
+    border-radius: 2px;
+    min-width: 20vw;
+    min-height: 20vw;
+    max-width: 20vw;
+  }
+  }
+
+  > span {
+    ${ mixins.iconButton }
+    
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    opacity: 50%;
+    
+    ${ props => props.small ? css`
+    font-size: 12px;
+    right: 8px;
+    top: 8px;
+    ` : '' }
+
+    ${ props => props.isFavorite ? css`
+      color:#fcc82a;
+      opacity: 75%;
+    ` : '' }
+
+    &:hover {
+      opacity: 100%;
+    }
+
+    @media only screen and (max-width: 780px) {
+      font-size: 1.4rem;
+      right: 11px;
+      top: 11px; 
+    }
+  }
+`;
 
 interface SoundTileProps {
   preview: boolean;
@@ -13,32 +106,36 @@ interface SoundTileProps {
 const SoundTile: FC<SoundTileProps> = ({ preview, small, sound: { name, isFavorite }, soundRequest, previewRequest, updateFavRequest }) => {
   const [statusBorder, setStatusBorder] = useState('');
 
-  const raiseStatusSet = useCallback(() => setStatusBorder(' btn-green'), []);
+  const raiseStatusSet = useCallback(() => setStatusBorder('success'), []);
 
   const handleSoundClick = useCallback(() => {
-    setStatusBorder(' btn-red');
+    setStatusBorder('error');
     soundRequest(name, raiseStatusSet);
     setTimeout(() => setStatusBorder(''), 1);
   }, []);
 
   return (
-    <div className={ `${ isFavorite ? 'fav ' : '' }sound-tile` }>
+    <SoundTileMain
+      preview={ preview }
+      statusBorder={ statusBorder }
+      small={ small }
+      isFavorite={ isFavorite }
+    >
       <button
         type="button"
-        className={ `btn sound-btn${ preview ? ' preview-btn' : '' }${ statusBorder }${ small ? ' sound-btn-small' : '' }` }
         onClick={ preview ? () => previewRequest(name) : handleSoundClick }
       >
         { name }
 
       </button>
       <span
-        className={ `material-icons favStar ${ small ? 'favStar-small' : '' } icon-btn ${ isFavorite ? 'fav-set' : '' }` }
+        className='material-icons'
         role="presentation"
         onClick={ () => updateFavRequest(name) }
       >
         { isFavorite ? 'star' : 'star_outline' }
       </span>
-    </div>
+    </SoundTileMain>
   );
 };
 

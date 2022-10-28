@@ -1,0 +1,35 @@
+import { createGlobalStyle } from 'styled-components';
+import theme from './main';
+
+const GlobalStyle = createGlobalStyle`
+  html {
+    font-size: 14pt;
+  }
+   
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    color: white;
+    background-color: ${ theme.colors.bg };
+    margin: 0;
+
+    h1 {
+      color: ${ theme.colors.borderDefault }
+    }
+  }  
+
+  @media only screen and (max-width: 780px) {
+    html {
+        font-size: 8pt;
+    }
+  }
+
+  *:focus {
+    outline: none;
+  }
+`;
+
+export default GlobalStyle;

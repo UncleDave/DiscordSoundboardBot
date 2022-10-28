@@ -1,11 +1,13 @@
 import React, { FC, useState, useCallback, useEffect } from 'react';
-import './App.css';
+import { ThemeProvider } from 'styled-components';
 import SWRProvider from '../providers/SWRProvider';
-import Nav from './Nav';
-import Features from './Features';
+import Nav from './nav/Nav';
+import Features from './features/Features';
 import ButtonContainer from './ButtonContainer';
 import SortContainer from './SortContainer';
 import debounce from '../utils';
+import theme from '../styles/main';
+import GlobalStyle from '../styles/global-style';
 
 const App: FC = () => {
   const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '' });
@@ -69,28 +71,31 @@ const App: FC = () => {
   return (
     <div className="App">
       <SWRProvider>
-        <Nav
-          showLogoutMenu={ showLogoutMenu }
-          setShowLogoutMenu={ setShowLogoutMenu }
-        />
-        <Features
-          favoritesToggled={ sortRules.favorites }
-          previewToggled={ showPreview }
-          toggleFavs={ toggleFavs }
-          toggleShowPreview={ toggleShowPreview }
-          setSearchTerm={ setSearchTerm }
-        />
-        <SortContainer
-          showPreview={ showPreview }
-          toggleSmallButtons={ toggleSmallButtons }
-          setPreviewVolume={ setPreviewVolume }
-        />
-        <ButtonContainer
-          preview={ showPreview }
-          soundRequest={ soundRequest }
-          previewRequest={ previewRequest }
-          sortRules={ { favorites: sortRules.favorites, small: sortRules.small, searchTerm: sortRules.searchTerm } }
-        />
+        <GlobalStyle />
+        <ThemeProvider theme={ theme }>
+          <Nav
+            showLogoutMenu={ showLogoutMenu }
+            setShowLogoutMenu={ setShowLogoutMenu }
+          />
+          <Features
+            favoritesToggled={ sortRules.favorites }
+            previewToggled={ showPreview }
+            toggleFavs={ toggleFavs }
+            toggleShowPreview={ toggleShowPreview }
+            setSearchTerm={ setSearchTerm }
+          />
+          <SortContainer
+            showPreview={ showPreview }
+            toggleSmallButtons={ toggleSmallButtons }
+            setPreviewVolume={ setPreviewVolume }
+          />
+          <ButtonContainer
+            preview={ showPreview }
+            soundRequest={ soundRequest }
+            previewRequest={ previewRequest }
+            sortRules={ { favorites: sortRules.favorites, small: sortRules.small, searchTerm: sortRules.searchTerm } }
+          />
+        </ThemeProvider>
       </SWRProvider>
     </div>
   );

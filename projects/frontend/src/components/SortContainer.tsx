@@ -1,5 +1,35 @@
 import React, { FC } from 'react';
+import styled from 'styled-components';
+import theme from '../styles/main';
+import { iconButton } from '../styles/mixins';
 import PreviewInstructions from './PreviewInstructions';
+
+const SortToolbar = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 20px 4vw 0px;
+
+  div {
+    display: flex;
+  }
+`;
+
+const ResizeIcon = styled.div`
+  ${ iconButton }
+`;
+
+const ResizeSpan = styled.span`
+  color: ${ theme.colors.borderDefault };
+
+  font-size: 2.5rem;
+  margin-right: -10px;
+  user-select: none;
+
+  &:first-child {
+    font-size: 1.5rem;
+  }
+`;
 
 interface SortContainerProps {
   showPreview: boolean;
@@ -8,25 +38,15 @@ interface SortContainerProps {
 }
 
 const SortContainer: FC<SortContainerProps> = ({ showPreview, toggleSmallButtons, setPreviewVolume }) => (
-  <div className="sort-toolbar">
+  <SortToolbar>
     { showPreview && <PreviewInstructions setPreviewVolume={ setPreviewVolume } /> }
-    <div className="sort-buttons">
-      <div className="size-toggle-btn icon-btn" role="presentation" onClick={ toggleSmallButtons }>
-        <span
-          className="material-icons resize-icon no-select"
-          style={ { fontSize: '1.5rem' } }
-        >
-          crop_square
-        </span>
-        <span
-          className="material-icons resize-icon no-select"
-          style={ { fontSize: '2.5rem' } }
-        >
-          crop_square
-        </span>
-      </div>
+    <div>
+      <ResizeIcon role="presentation" onClick={ toggleSmallButtons }>
+        <ResizeSpan className='material-icons'>crop_square</ResizeSpan>
+        <ResizeSpan className='material-icons'>crop_square</ResizeSpan>
+      </ResizeIcon>
     </div>
-  </div>
+  </SortToolbar>
 );
 
 export default SortContainer;

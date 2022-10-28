@@ -1,7 +1,21 @@
 import React, { FC, useCallback } from 'react';
 import useSWR from 'swr';
+import styled from 'styled-components';
 import SoundTile from './SoundTile';
 import Sound from '../models/sound';
+
+const ButtonContainerMain = styled.div`
+  display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0px 20px;
+    padding: 10px 15px 0px;
+
+  @media only screen and (max-width: 780px) {
+    padding: 8px 0px;
+    margin: 0px 8px;
+  }
+`;
 
 interface ButtonContainerProps {
   preview: boolean;
@@ -35,19 +49,19 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ preview, soundRequest, prev
 
   if (sounds)
     return (
-      <div className='btn-container'>
+      <ButtonContainerMain>
         { sounds.map(x => {
           if (favorites && !x.isFavorite) return null;
           if (searchTerm && !x.name.toUpperCase().includes(searchTerm)) return null;
           return <SoundTile key={ x.id } preview={ preview } small={ small } sound={ x } soundRequest={ soundRequest } previewRequest={ previewRequest } updateFavRequest={ updateFavoritesRequest } />;
         })}
-      </div>
+      </ButtonContainerMain>
     );
 
   return (
-    <div className="btn-container">
+    <ButtonContainerMain>
       { error ? <h1>Something broke eeeeeek</h1> : <h1>Loading yo sounds...</h1> }
-    </div>
+    </ButtonContainerMain>
   );
 };
 
