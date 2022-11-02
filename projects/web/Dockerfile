@@ -16,9 +16,12 @@ COPY projects/sounds/src/ src/
 WORKDIR ../users
 COPY projects/users/package.json projects/users/tsconfig.json ./
 COPY projects/users/src/ src/
-WORKDIR ../web
+WORKDIR ../frontend
+COPY projects/frontend/package.json projects/frontend/tsconfig.json ./
+COPY projects/frontend/src/ src/
+COPY projects/frontend/public/ public/
 RUN yarn --pure-lockfile
-RUN if [ "$NODE_ENV" = "production" ] ; then yarn run build:web ; rm -rf webpack.config.ts src/scripts/ ; fi
+RUN if [ "$NODE_ENV" = "production" ] ; then yarn run build ; mv build ../web/src/public ; rm -rf ../frontend ; fi
 
 FROM alpine:3.15
 ARG NODE_ENV=production

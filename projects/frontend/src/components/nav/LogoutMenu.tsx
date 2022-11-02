@@ -12,7 +12,7 @@ const LogOutMenuMain = styled.div`
 
   @media only screen and (max-width: 780px) {
     top: 84px;
-        left: 0px;
+    left: 0px;
   }
 
   button {

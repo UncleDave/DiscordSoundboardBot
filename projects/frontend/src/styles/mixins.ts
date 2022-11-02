@@ -1,7 +1,6 @@
 import { css } from 'styled-components';
 import theme from './main';
 
-// eslint-disable-next-line import/prefer-default-export
 export const button = css`
   cursor: pointer;
 
@@ -12,7 +11,7 @@ export const button = css`
 
   @media only screen and (min-width: 780px) {
     &:hover:not(:active) {
-        background-color: #7c779e;
+      background-color: #7c779e;
     }
 }
 `;
