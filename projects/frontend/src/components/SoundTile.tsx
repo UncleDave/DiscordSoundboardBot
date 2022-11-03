@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
-import theme from '../styles/main';
+import theme from '../styles/theme';
 import * as mixins from '../styles/mixins';
 import Sound from '../models/sound';
 
@@ -53,14 +53,14 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
   }
 }
   
-  @media only screen and (max-width: 780px) {
-    border: 3px solid ${ theme.colors.borderDefault };
-    border-width: 3px;
-    border-radius: 2px;
-    min-width: 20vw;
-    min-height: 20vw;
-    max-width: 20vw;
-  }
+    @media only screen and (max-width: 780px) {
+      border: 3px solid ${ theme.colors.borderDefault };
+      border-width: 3px;
+      border-radius: 2px;
+      min-width: 20vw;
+      min-height: 20vw;
+     max-width: 20vw;
+    }
   }
 
   > span {

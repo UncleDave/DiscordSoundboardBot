@@ -1,6 +1,7 @@
 import React, { FC, useEffect } from 'react';
+import { createGlobalStyle } from 'styled-components';
 
-const style = `
+const LogoutStyle = createGlobalStyle`
   html, body {
     height: 100%;
   }
@@ -18,7 +19,8 @@ const style = `
 
   a {
     color: white;
-  }`;
+  }
+`;
 
 const Logout: FC = () => {
   useEffect(() => {
@@ -27,7 +29,7 @@ const Logout: FC = () => {
 
   return (
     <>
-      <style>{style}</style>
+      <LogoutStyle />
       <h1>Bye then</h1>
 
       <a href="/">Regret</a>

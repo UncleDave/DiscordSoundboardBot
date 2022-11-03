@@ -6,7 +6,7 @@ import Features from './features/Features';
 import ButtonContainer from './ButtonContainer';
 import SortContainer from './SortContainer';
 import debounce from '../utils';
-import theme from '../styles/main';
+import theme from '../styles/theme';
 import GlobalStyle from '../styles/global-style';
 
 const App: FC = () => {

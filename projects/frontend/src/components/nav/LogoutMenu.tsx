@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import LogoutPointer from './LogoutPointer';
-import theme from '../../styles/main';
+import theme from '../../styles/theme';
 import { button } from '../../styles/mixins';
 
 const LogOutMenuMain = styled.div`

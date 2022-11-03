@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import theme from './main';
+import theme from './theme';
 
 export const button = css`
   cursor: pointer;
@@ -17,7 +17,7 @@ export const button = css`
 `;
 
 export const filterButton = css`
-  min-height: 4vh;
+  min-height: 42px;
   font-weight: bold;
   color: white;
   border: 5px solid ${ theme.colors.borderDefault };
@@ -26,6 +26,7 @@ export const filterButton = css`
   margin-right: 5px;
 
   @media only screen and (max-width: 780px) {
+    min-height: 30px;
     font-size: 1.2rem;
     font-weight: normal;
     margin-top: 8px;

@@ -1,6 +1,6 @@
 import React, { FC, useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import theme from '../styles/main';
+import theme from '../styles/theme';
 
 const sliderThumb = css`
   -webkit-appearance: none;

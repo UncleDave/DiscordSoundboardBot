@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import theme from '../../styles/main';
+import theme from '../../styles/theme';
 import useUser from '../../hooks/use-user';
 import AvatarContainer from './AvatarContainer';
 

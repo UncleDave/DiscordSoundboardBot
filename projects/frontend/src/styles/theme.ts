@@ -1,4 +1,6 @@
-const theme = {
+import { DefaultTheme } from 'styled-components';
+
+const theme: DefaultTheme = {
   colors: {
     bg: '#383b43',
     nav: '#2f3136',

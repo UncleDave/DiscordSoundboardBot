@@ -1,6 +1,6 @@
 import React, { FC, useCallback } from 'react';
 import styled from 'styled-components';
-import theme from '../../styles/main';
+import theme from '../../styles/theme';
 import { button } from '../../styles/mixins';
 import debounce from '../../utils';
 
@@ -25,6 +25,11 @@ const SkipContainerMain = styled.div`
 
   @media only screen and (max-width: 780px) {
     min-height: 15vw;
+
+    > button {
+      border-width: 4px;
+      min-height: 50px;
+    }
   }
 `;
 

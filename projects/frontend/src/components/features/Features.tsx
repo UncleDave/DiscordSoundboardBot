@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import styled from 'styled-components';
-import theme from '../../styles/main';
+import theme from '../../styles/theme';
 import AddSoundDialog from './AddSoundDialog';
 import SearchContainer from './SearchContainer';
 import OptionsFiltersContainer from './OptionsFiltersContainer';

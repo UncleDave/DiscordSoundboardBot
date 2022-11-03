@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import styled from 'styled-components';
-import theme from '../../styles/main';
+import theme from '../../styles/theme';
 import useUser from '../../hooks/use-user';
 import LogoutMenu from './LogoutMenu';
 

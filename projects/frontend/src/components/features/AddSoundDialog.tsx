@@ -1,7 +1,7 @@
 import React, { FC, useState, useCallback } from 'react';
 import { useSWRConfig } from 'swr';
 import styled, { css } from 'styled-components';
-import theme from '../../styles/main';
+import theme from '../../styles/theme';
 import * as mixins from '../../styles/mixins';
 
 function randomSuccessMessage() {
@@ -65,8 +65,6 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
   > button {
     ${ mixins.button }
     ${ mixins.filterButton }
-
-    border-color: ${ theme.colors.borderGold };
   }
 
   @keyframes shake {
@@ -76,6 +74,14 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
     60% { transform: translate(-10px); }
     80% { transform: translate(4px); }
     100% { transform: translate(0px); }
+  }
+
+  @media only screen and (max-width: 780px) {
+    border-width: 3px;
+    
+    > input {
+       margin-bottom: 5px;
+    }
   }
 `;
 

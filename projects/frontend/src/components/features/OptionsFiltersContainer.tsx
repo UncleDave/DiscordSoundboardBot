@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import theme from '../../styles/main';
+import theme from '../../styles/theme';
 import * as mixins from '../../styles/mixins';
 
 const OptionsFiltersContainerMain = styled.div`
@@ -27,6 +27,10 @@ const AddSoundButton = styled.button<ButtonProps>`
   ${ mixins.filterButton }
   
   border-color: ${ theme.colors.borderGold };
+    /* color gets overwritten by mobile 'button' css, same as green below */
+  @media only screen and (max-width: 780px) {
+    border-color: ${ theme.colors.borderGold };
+  }
 
   ${ props => props.toggled ? mixins.buttonGreen : mixins.button }
 `;
