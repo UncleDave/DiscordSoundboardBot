@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import styled from 'styled-components';
 import theme from '../../styles/theme';
 import useUser from '../../hooks/use-user';
@@ -9,13 +9,14 @@ const NavMain = styled.div`
   box-shadow: 0px 5px 5px 2px ${ theme.colors.shadowDefault };
   display: flex;
   justify-content: space-between;
-  padding-left: 20px;
+  width: 100%;
 `;
 
 const NavLeft = styled.div`
   display: flex;
   justify-content: space-between;
   flex-grow: 1;
+  margin-left: 20px;
 
   @media only screen and (max-width: 780px) {
     flex-direction: column;
@@ -48,13 +49,9 @@ const Username = styled.div`
   }
 `;
 
-interface NavProps {
-  showLogoutMenu: boolean;
-  setShowLogoutMenu: (show: boolean) => void;
-}
-
-const Nav: FC<NavProps> = ({ showLogoutMenu, setShowLogoutMenu }) => {
+const Nav: FC = () => {
   const user = useUser();
+  const [showLogoutMenu, setShowLogoutMenu] = useState(false);
 
   return (
     <NavMain>

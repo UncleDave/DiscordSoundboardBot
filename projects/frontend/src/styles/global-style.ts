@@ -14,12 +14,18 @@ const GlobalStyle = createGlobalStyle`
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     color: white;
     background-color: ${ theme.colors.bg };
+    display: flex;
+    width: 100%;
     margin: 0;
+
+    #root {
+      width: 100%;
+    }
 
     h1 {
       color: ${ theme.colors.borderDefault }
     }
-  }  
+  } 
 
   @media only screen and (max-width: 780px) {
     html {
