@@ -21,6 +21,16 @@ const soundTileSmall = css`
   margin: 4px 4px;
 `;
 
+const selectSoundTileMainBorder = (props: any) => {
+  if (props.statusBorder === 'success') return mixins.buttonGreen;
+  if (props.statusBorder === 'error') return mixins.buttonRed;
+  return css`
+    transition-property: border-color;
+    transition-duration: 1s;
+    transition-delay: 2s;
+  `;
+};
+
 const SoundTileMain = styled.div<SoundTileMainProps>`
   position: relative;
 
@@ -31,7 +41,6 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     color: white;
     border: 5px solid ${ theme.colors.borderDefault };
     border-radius: 3px;
-    /* good 1080p box size is 150px; */
     min-width: 150px;
     min-height: 150px;
     max-width: 150px;
@@ -42,16 +51,7 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     ${ props => props.small ? soundTileSmall : '' }
 
     ${ props => props.preview ? 'border-style: dashed;' : '' }
-    ${ props => {
-    if (props.statusBorder === 'success') return mixins.buttonGreen;
-    if (props.statusBorder === 'error') return mixins.buttonRed;
-    return css`
-      transition-property: border-color;
-      transition-duration: 1s;
-      transition-delay: 2s;
-    `;
-  }
-}
+    ${ props => selectSoundTileMainBorder(props) }
   
     @media only screen and (max-width: 780px) {
       border: 3px solid ${ theme.colors.borderDefault };
@@ -59,7 +59,7 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
       border-radius: 2px;
       min-width: 20vw;
       min-height: 20vw;
-     max-width: 20vw;
+      max-width: 20vw;
     }
   }
 
