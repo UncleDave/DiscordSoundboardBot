@@ -1,5 +1,5 @@
 import React, { FC, useState, useCallback, useEffect } from 'react';
-import { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import SWRProvider from '../providers/SWRProvider';
 import Nav from './nav/Nav';
 import Features from './features/Features';
@@ -8,6 +8,13 @@ import SortContainer from './SortContainer';
 import debounce from '../utils';
 import theme from '../styles/theme';
 import GlobalStyle from '../styles/global-style';
+
+const AppMain = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+`;
 
 const App: FC = () => {
   const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '' });
@@ -35,8 +42,6 @@ const App: FC = () => {
     if (previewGain)
       previewGain.gain.value = Number(previewVolume);
   }, [previewVolume, previewGain]);
-
-  const [showLogoutMenu, setShowLogoutMenu] = useState(false);
 
   const soundRequest = useCallback(debounce((soundName: string, borderCallback: () => void) => {
     borderCallback();
@@ -69,14 +74,11 @@ const App: FC = () => {
   }, [previewVolume]);
 
   return (
-    <div className="App">
+    <AppMain>
       <SWRProvider>
         <GlobalStyle />
         <ThemeProvider theme={ theme }>
-          <Nav
-            showLogoutMenu={ showLogoutMenu }
-            setShowLogoutMenu={ setShowLogoutMenu }
-          />
+          <Nav />
           <Features
             favoritesToggled={ sortRules.favorites }
             previewToggled={ showPreview }
@@ -97,7 +99,7 @@ const App: FC = () => {
           />
         </ThemeProvider>
       </SWRProvider>
-    </div>
+    </AppMain>
   );
 };
 

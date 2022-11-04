@@ -7,7 +7,8 @@ import debounce from '../../utils';
 const SkipContainerMain = styled.div`
   display: flex;
   justify-content: space-evenly;
-  margin-top: 1.5vh;
+  margin-top: 15px;
+  width: 100%;
 
   > button {
     ${ button }
