@@ -33,7 +33,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ preview, soundRequest, prev
 
   const updateFavoritesRequest = useCallback(async (soundName: string) => {
     if (sounds) {
-      const sound = sounds?.find(x => x.name === soundName);
+      const sound = sounds.find(x => x.name === soundName);
       if (sound) {
         const newSounds = [...sounds];
         const soundIndex = newSounds.findIndex(x => x.id === sound?.id);

@@ -34,7 +34,6 @@ services:
       - WATCHPACK_POLLING=true
     volumes:
       - ./projects:/app/projects
-    entrypoint: [ "yarn", "run", "start" ]
     ports:
       - "3000:3000"
 
