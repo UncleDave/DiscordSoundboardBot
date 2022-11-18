@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import theme from '../styles/theme';
 import { iconButton } from '../styles/mixins';
 import PreviewInstructions from './PreviewInstructions';
 
@@ -20,7 +19,7 @@ const ResizeIcon = styled.div`
 `;
 
 const ResizeSpan = styled.span`
-  color: ${ theme.colors.borderDefault };
+  color: ${ props => props.theme.colors.borderDefault };
 
   font-size: 2.5rem;
   margin-right: -10px;
@@ -46,7 +45,7 @@ const SortContainer: FC<SortContainerProps> = ({ showPreview, toggleSmallButtons
     { showPreview && <PreviewInstructions setPreviewVolume={ setPreviewVolume } /> }
     <div>
       <ResizeIcon role="presentation" onClick={ toggleSmallButtons }>
-        { [0, 1].map(() => <ResizeSpan className='material-icons'>crop_square</ResizeSpan>) }
+        { [0, 1].map(x => <ResizeSpan key={ x } className='material-icons'>crop_square</ResizeSpan>) }
       </ResizeIcon>
     </div>
   </SortToolbar>

@@ -11,6 +11,7 @@ declare module 'styled-components' {
       borderGold: string;
       borderRed: string;
       borderGreen: string;
+      buttonHover: string;
       buttonHighlighted: string;
       favStarSet: string;
       shadowDefault: string;

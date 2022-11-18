@@ -1,6 +1,5 @@
 import React, { FC, useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import theme from '../styles/theme';
 
 const sliderThumb = css`
   -webkit-appearance: none;
@@ -13,7 +12,7 @@ const sliderThumb = css`
 `;
 
 const PreviewInstructionsMain = styled.div`
-  color: ${ theme.colors.borderDefault };
+  color: ${ props => props.theme.colors.borderDefault };
   display: flex;
   align-items: center;
   justify-content: left;

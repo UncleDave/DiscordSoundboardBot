@@ -1,6 +1,6 @@
 import { DefaultTheme } from 'styled-components';
 
-const theme: DefaultTheme = {
+export const defaultTtheme: DefaultTheme = {
   colors: {
     bg: '#383b43',
     nav: '#2f3136',
@@ -10,10 +10,26 @@ const theme: DefaultTheme = {
     borderGold: '#FFE864',
     borderRed: '#ff7480',
     borderGreen: '#8cffa5',
+    buttonHover: '#7c779e',
     buttonHighlighted: '#a098d2',
     favStarSet: '#fcc82a',
     shadowDefault: '#222324',
   },
 };
 
-export default theme;
+export const christmasTheme = {
+  colors: {
+    bg: '#543D2C',
+    nav: '#524033',
+    innerA: '#548C51',
+    innerB: '#3B2B1E',
+    borderDefault: '#B23838',
+    borderGold: '#FFE864',
+    borderRed: '#FF7400',
+    borderGreen: '#8cffa5',
+    buttonHover: '#B75454',
+    buttonHighlighted: '#D66C6C',
+    favStarSet: '#fcc82a',
+    shadowDefault: '#382C26',
+  },
+};

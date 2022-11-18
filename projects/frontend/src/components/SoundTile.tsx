@@ -1,6 +1,5 @@
 import React, { FC, useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
-import theme from '../styles/theme';
 import * as mixins from '../styles/mixins';
 import Sound from '../models/sound';
 
@@ -13,7 +12,7 @@ interface SoundTileMainProps {
 
 const soundTileSmall = css`
   font-size: 0.6rem;
-  border: 2px solid ${ theme.colors.borderDefault };
+  border: 2px solid ${ props => props.theme.colors.borderDefault };
   border-radius: 2px;
   min-width: 75px;
   min-height: 75px;
@@ -39,13 +38,14 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     
     font-size: 1.2rem;
     color: white;
-    border: 5px solid ${ theme.colors.borderDefault };
+    border: 5px solid ${ props => props.theme.colors.borderDefault };
     border-radius: 3px;
+    box-shadow: 0px 2px 5px 2px ${ props => props.theme.colors.shadowDefault };
     min-width: 150px;
     min-height: 150px;
     max-width: 150px;
     margin: 6px 6px;
-    background-color: ${ theme.colors.innerA };
+    background-color: ${ props => props.theme.colors.innerA };
     word-wrap: break-word;
   
     ${ props => props.small ? soundTileSmall : '' }
@@ -54,7 +54,7 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     ${ props => selectSoundTileMainBorder(props) }
   
     @media only screen and (max-width: 780px) {
-      border: 3px solid ${ theme.colors.borderDefault };
+      border: 3px solid ${ props => props.theme.colors.borderDefault };
       border-width: 3px;
       border-radius: 2px;
       min-width: 20vw;

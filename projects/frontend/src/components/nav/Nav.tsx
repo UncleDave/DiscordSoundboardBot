@@ -1,12 +1,11 @@
 import React, { FC, useState } from 'react';
 import styled from 'styled-components';
-import theme from '../../styles/theme';
 import useUser from '../../hooks/use-user';
 import AvatarContainer from './AvatarContainer';
 
 const NavMain = styled.div`
   background-color: ${ props => props.theme.colors.nav };
-  box-shadow: 0px 5px 5px 2px ${ theme.colors.shadowDefault };
+  box-shadow: 0px 5px 5px 2px ${ props => props.theme.colors.shadowDefault };
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -26,6 +25,7 @@ const NavLeft = styled.div`
 const Title = styled.div`
   > h1 {
     font-size: 2rem;
+    text-shadow: 0px 3px 3px ${ props => props.theme.colors.shadowDefault };
   }
   
   @media only screen and (max-width: 780px) {
@@ -46,6 +46,7 @@ const Username = styled.div`
   > h2 {
     font-size: 1.5rem;
     color: white;
+    text-shadow: 0px 3px 3px ${ props => props.theme.colors.shadowDefault };
   }
 `;
 
