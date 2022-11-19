@@ -6,7 +6,7 @@ const sliderThumb = css`
   height: 20px;
   width: 20px;
   border-radius: 50%;
-  background: #6b54fc;
+  background: ${ props => props.theme.colors.volumeSliderThumb };
   cursor: ew-resize;
   box-shadow: 0 0 2px 0 #555;
 `;
@@ -23,7 +23,7 @@ const PreviewInstructionsMain = styled.div`
     font-weight: bold;
     text-shadow: 2px 2px 3px ${ props => props.theme.colors.shadowDefault };
 
-    ${ props => props.theme.name === 'christmas' ? 'filter: brightness(1.4);' : '' }
+    ${ props => props.theme.name === 'christmas' ? 'filter: brightness(1.4) saturate(1.4);' : '' }
   }
 
   > input[type="range"] {
@@ -32,7 +32,7 @@ const PreviewInstructionsMain = styled.div`
     height: 7px;
     background: rgba(255, 255, 255, 0.6);
     border-radius: 5px;
-    background-image: linear-gradient(#816eff, #816eff);
+    background-image: linear-gradient( ${ props => props.theme.colors.volumeSliderFill }, ${ props => props.theme.colors.volumeSliderFill } );
     background-size: 25%;
     background-repeat: no-repeat;
   }

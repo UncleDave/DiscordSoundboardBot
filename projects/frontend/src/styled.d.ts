@@ -16,6 +16,8 @@ declare module 'styled-components' {
       buttonHighlighted: string;
       favStarSet: string;
       shadowDefault: string;
+      volumeSliderFill: string;
+      volumeSliderThumb: string;
     },
   }
 }

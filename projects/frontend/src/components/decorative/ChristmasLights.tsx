@@ -10,7 +10,7 @@ const Wire = styled.div`
   top: -95px;
   border-bottom: 3px solid #222;
   height: 100px;
-  z-index: 0;
+  z-index: 2;
 
   pointer-events: none;
 
@@ -68,11 +68,15 @@ const Wire = styled.div`
         box-shadow: 0px 2px 20px 4px rgba(248, 14, 14, 0.3);
     }
   }
+
+  @media only screen and (max-width: 780px) {
+    display: none;
+  }
 `;
 
 const ChristmasLights: FC = () => (
   <Wire>
-    { Array.from(Array(36).keys()).map(x => <li key={ x } />) }
+    { Array.from(Array(40).keys()).map(x => <li key={ x } />) }
   </Wire>
 );
 

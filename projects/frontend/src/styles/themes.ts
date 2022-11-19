@@ -15,6 +15,8 @@ export const defaultTheme: DefaultTheme = {
     buttonHighlighted: '#a098d2',
     favStarSet: '#fcc82a',
     shadowDefault: '#222324',
+    volumeSliderFill: '#816eff',
+    volumeSliderThumb: '#6b54fc',
   },
 };
 
@@ -33,5 +35,7 @@ export const christmasTheme = {
     buttonHighlighted: '#D66C6C',
     favStarSet: '#fcc82a',
     shadowDefault: '#382C26',
+    volumeSliderFill: '#D66C6C',
+    volumeSliderThumb: '#B23838',
   },
 };

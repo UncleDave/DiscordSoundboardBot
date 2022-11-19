@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import useUser from '../../hooks/use-user';
 import AvatarContainer from './AvatarContainer';
 import ChristmasLights from '../decorative/ChristmasLights';
+import ChristmasLeaves from '../decorative/ChristmasLeaves';
 
 const NavMain = styled.div`
   background-color: ${ props => props.theme.colors.nav };
@@ -30,9 +31,9 @@ const Title = styled.div`
   > h1 {
     font-size: 2rem;
     text-shadow: 0px 3px 3px ${ props => props.theme.colors.shadowDefault };
-    z-index: 1;
+    z-index: 50;
   
-    ${ props => props.theme.name === 'christmas' ? 'filter: brightness(1.3);' : '' }
+    ${ props => props.theme.name === 'christmas' ? 'filter: brightness(1.7) saturate(1.3);' : '' }
   }
   
   @media only screen and (max-width: 780px) {
@@ -55,13 +56,13 @@ const Username = styled.div`
     color: white;
     text-shadow: 0px 3px 3px ${ props => props.theme.colors.shadowDefault };
 
-    z-index: 1;
+    z-index: 50;
   }
 `;
 
 function getTitleFromDate(date: string) {
   if (date.includes('Oct')) return 'DiscordSpookboardBot';
-  if (date.includes('Nov')) return 'DiscordSoundboardClaus';
+  if (date.includes('Dec')) return 'DiscordSoundboardClaus';
   return 'DiscordSoundboardBot';
 }
 
@@ -75,7 +76,8 @@ const Nav: FC<NavProps> = ({ systemDate }) => {
 
   return (
     <NavMain>
-      { systemDate.includes('Nov') ? <ChristmasLights /> : null }
+      { systemDate.includes('Dec') ? [0, 1].map(x => <ChristmasLeaves key={ x } />) : null }
+      { systemDate.includes('Dec') ? <ChristmasLights /> : null }
       <NavLeft>
         <Title>
           <h1>{ getTitleFromDate(systemDate) }</h1>

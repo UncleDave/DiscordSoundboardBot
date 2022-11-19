@@ -17,6 +17,7 @@ const GlobalStyle = createGlobalStyle`
     display: flex;
     width: 100%;
     margin: 0;
+    overflow-x: hidden;
 
     ${ props => props.theme.name === 'christmas' ? xmasPlaidBG : '' }
 
