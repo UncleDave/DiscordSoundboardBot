@@ -6,6 +6,8 @@ const LogoutPointerMain = styled.img`
   top: -8px;
   left: 40px;
 
+  ${ props => props.theme.name === 'christmas' ? 'filter: hue-rotate(105deg) brightness(0.65) saturate(2);' : '' }
+
   @media only screen and (max-width: 780px) {
     width: 22px;
     top: -7px;

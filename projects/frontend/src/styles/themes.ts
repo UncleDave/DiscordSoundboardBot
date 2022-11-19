@@ -1,6 +1,7 @@
 import { DefaultTheme } from 'styled-components';
 
-export const defaultTtheme: DefaultTheme = {
+export const defaultTheme: DefaultTheme = {
+  name: 'default',
   colors: {
     bg: '#383b43',
     nav: '#2f3136',
@@ -18,9 +19,10 @@ export const defaultTtheme: DefaultTheme = {
 };
 
 export const christmasTheme = {
+  name: 'christmas',
   colors: {
     bg: '#543D2C',
-    nav: '#524033',
+    nav: '#86664F',
     innerA: '#548C51',
     innerB: '#3B2B1E',
     borderDefault: '#B23838',

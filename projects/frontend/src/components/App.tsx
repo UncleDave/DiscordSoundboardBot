@@ -6,9 +6,9 @@ import Features from './features/Features';
 import ButtonContainer from './ButtonContainer';
 import SortContainer from './SortContainer';
 import debounce from '../utils';
-import * as themes from '../styles/theme';
+import * as themes from '../styles/themes';
 import GlobalStyle from '../styles/global-style';
-import Snowflakes from './themes/Snowflakes';
+import Snowflakes from './decorative/Snowflakes';
 
 const AppMain = styled.div`
   display: flex;
@@ -17,14 +17,14 @@ const AppMain = styled.div`
   width: 100%;
 `;
 
-function getThemeFromDate() {
-  const now = new Date().toString();
-  if (now.includes('Dec')) return themes.christmasTheme;
-  return themes.defaultTtheme;
+function getThemeFromDate(date: string) {
+  if (date.includes('Nov')) return themes.christmasTheme;
+  return themes.defaultTheme;
 }
 
 const App: FC = () => {
   const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '' });
+  const [systemDate] = useState(new Date().toString());
 
   const toggleSmallButtons = useCallback(() => {
     setSortRules(oldState => ({ ...oldState, small: !oldState.small }));
@@ -83,10 +83,10 @@ const App: FC = () => {
   return (
     <AppMain>
       <SWRProvider>
-        <ThemeProvider theme={ getThemeFromDate }>
+        <ThemeProvider theme={ getThemeFromDate(systemDate) }>
           <GlobalStyle />
-          { new Date().toString().includes('Dec') ? <Snowflakes /> : null }
-          <Nav />
+          { systemDate.includes('Nov') ? <Snowflakes /> : null }
+          <Nav systemDate={ systemDate } />
           <Features
             favoritesToggled={ sortRules.favorites }
             previewToggled={ showPreview }

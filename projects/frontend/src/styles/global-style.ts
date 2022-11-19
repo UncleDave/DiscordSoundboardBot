@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import { xmasPlaidBG } from './mixins';
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -16,6 +17,8 @@ const GlobalStyle = createGlobalStyle`
     display: flex;
     width: 100%;
     margin: 0;
+
+    ${ props => props.theme.name === 'christmas' ? xmasPlaidBG : '' }
 
     #root {
       width: 100%;

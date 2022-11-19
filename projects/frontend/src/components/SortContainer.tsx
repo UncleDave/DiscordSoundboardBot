@@ -24,6 +24,9 @@ const ResizeSpan = styled.span`
   font-size: 2.5rem;
   margin-right: -10px;
   user-select: none;
+  text-shadow: 0px 2px 5px ${ props => props.theme.colors.shadowDefault };
+
+  ${ props => props.theme.name === 'christmas' ? 'filter: brightness(1.2);' : '' }
 
   &:first-child {
     font-size: 1.5rem;

@@ -20,6 +20,10 @@ const PreviewInstructionsMain = styled.div`
 
   > p {
     margin: 0;
+    font-weight: bold;
+    text-shadow: 2px 2px 3px ${ props => props.theme.colors.shadowDefault };
+
+    ${ props => props.theme.name === 'christmas' ? 'filter: brightness(1.4);' : '' }
   }
 
   > input[type="range"] {

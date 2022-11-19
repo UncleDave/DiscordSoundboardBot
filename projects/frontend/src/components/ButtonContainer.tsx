@@ -6,10 +6,10 @@ import Sound from '../models/sound';
 
 const ButtonContainerMain = styled.div`
   display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: 0px 20px;
-    padding: 10px 15px 0px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0px 20px;
+  padding: 10px 15px 0px;
 
   @media only screen and (max-width: 780px) {
     padding: 8px 0px;

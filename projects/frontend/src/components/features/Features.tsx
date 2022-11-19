@@ -4,10 +4,13 @@ import AddSoundDialog from './AddSoundDialog';
 import SearchContainer from './SearchContainer';
 import OptionsFiltersContainer from './OptionsFiltersContainer';
 import SkipContainer from './SkipContainer';
+import { candyCaneBG } from '../../styles/mixins';
 
 const FeaturesContainer = styled.div`
   padding: 0px 0px 14px;
   box-shadow: 0px 5px 5px 2px ${ props => props.theme.colors.shadowDefault };
+
+  ${ props => props.theme.name === 'christmas' ? candyCaneBG : '' };
 `;
 
 const FiltersContainer = styled.div`
@@ -18,7 +21,7 @@ const FiltersContainer = styled.div`
   padding: 6px 6px;
   border-radius: 5px;
   background-color: ${ props => props.theme.colors.innerA };
-  box-shadow: 0px 2px 5px 2px ${ props => props.theme.colors.shadowDefault };
+  box-shadow: 0px 1px 8px 1px ${ props => props.theme.colors.shadowDefault };
 
   @media only screen and (max-width: 780px) {
     margin: 0.5vh 3vw 0vh;

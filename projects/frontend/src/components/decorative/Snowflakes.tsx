@@ -142,7 +142,7 @@ const SnowFlakesMain = styled.div`
       -webkit-animation-delay: 4s, 2.5s;
       animation-delay: 4s, 2.5s;
   }
-  `;
+`;
 
 const Snowflakes: FC = () => (
   <SnowFlakesMain aria-hidden="true">

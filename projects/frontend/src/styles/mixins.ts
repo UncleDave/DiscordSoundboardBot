@@ -5,7 +5,7 @@ export const button = css`
 
   &:active {
     background-color: white;
-    color: #9686fc;
+    color: ${ props => props.theme.colors.borderDefault };
   }
 
   @media only screen and (min-width: 780px) {
@@ -66,4 +66,28 @@ export const buttonRed = css`
 
 export const buttonGreen = css`
   border-color: ${ props => props.theme.colors.borderGreen };
+`;
+
+export const candyCaneBG = css`
+  background-color: #e5e5f7;
+  background: repeating-linear-gradient( 45deg, #f74444, #f74444 10px, #e5e5f7 5px, #e5e5f7 25px );
+`;
+
+export const xmasPlaidBG = css`
+  background-color: rgba(9, 23, 9, 1);
+  background-image:
+    linear-gradient(
+      rgba(84, 140, 81, 0.4) 0%,
+      rgba(84, 140, 81, 0.4) 50%,
+      rgba(84, 140, 81, 0.7) 50%,
+      rgba(84, 140, 81, 0.7) 100%
+    ),
+  linear-gradient(
+    90deg,
+    rgba(84, 140, 81, 0.4) 0%,
+    rgba(84, 140, 81, 0.4) 50%,
+    rgba(84, 140, 81, 0.7) 50%,
+    rgba(84, 140, 81, 0.7) 100%
+  );
+  background-size: 100px 100px;
 `;
