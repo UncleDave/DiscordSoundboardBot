@@ -19,6 +19,7 @@ const ButtonContainerMain = styled.div`
 
 interface ButtonContainerProps {
   preview: boolean;
+  systemDate: string;
   soundRequest: (soundName: string, borderCallback: () => void) => void;
   previewRequest: (soundName: string) => void;
   sortRules: {
@@ -28,7 +29,7 @@ interface ButtonContainerProps {
   }
 }
 
-const ButtonContainer: FC<ButtonContainerProps> = ({ preview, soundRequest, previewRequest, sortRules: { favorites, small, searchTerm } }) => {
+const ButtonContainer: FC<ButtonContainerProps> = ({ preview, systemDate, soundRequest, previewRequest, sortRules: { favorites, small, searchTerm } }) => {
   const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
 
   const updateFavoritesRequest = useCallback(async (soundName: string) => {
@@ -53,7 +54,18 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ preview, soundRequest, prev
         { sounds.map(x => {
           if (favorites && !x.isFavorite) return null;
           if (searchTerm && !x.name.toUpperCase().includes(searchTerm)) return null;
-          return <SoundTile key={ x.id } preview={ preview } small={ small } sound={ x } soundRequest={ soundRequest } previewRequest={ previewRequest } updateFavRequest={ updateFavoritesRequest } />;
+          return (
+            <SoundTile
+              key={ x.id }
+              preview={ preview }
+              small={ small }
+              sound={ x }
+              systemDate={ systemDate }
+              soundRequest={ soundRequest }
+              previewRequest={ previewRequest }
+              updateFavRequest={ updateFavoritesRequest }
+            />
+          );
         })}
       </ButtonContainerMain>
     );

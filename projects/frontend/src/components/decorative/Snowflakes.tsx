@@ -4,6 +4,8 @@ import styled from 'styled-components';
 const SnowFlakesMain = styled.div`
   > div {
     color: #fff;
+    color: ${ props => props.theme.name === 'halloween' ? '#000' : '#fff' };
+    ${ props => props.theme.name === 'halloween' ? 'opacity: 0.5' : '' };
     font-size: 1em;
     font-family: Arial, sans-serif;
     text-shadow: 0 0 5px #000;
@@ -144,9 +146,13 @@ const SnowFlakesMain = styled.div`
   }
 `;
 
-const Snowflakes: FC = () => (
+interface SnowflakesProps {
+  systemDate: string;
+}
+
+const Snowflakes: FC<SnowflakesProps> = ({ systemDate }) => (
   <SnowFlakesMain aria-hidden="true">
-    { Array.from(Array(12).keys()).map(x => <div key={ x }>❅</div>) }
+    { Array.from(Array(12).keys()).map(x => <div key={ x }>{ systemDate.includes('Oct') ? '🕷' : '❅' }</div>) }
   </SnowFlakesMain>
 );
 

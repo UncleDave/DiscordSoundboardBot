@@ -7,6 +7,7 @@ const LogoutPointerMain = styled.img`
   left: 40px;
 
   ${ props => props.theme.name === 'christmas' ? 'filter: hue-rotate(105deg) brightness(0.65) saturate(2);' : '' }
+  ${ props => props.theme.name === 'halloween' ? 'filter: hue-rotate(130deg) saturate(2) brightness(0.8);' : '' }
 
   @media only screen and (max-width: 780px) {
     width: 22px;

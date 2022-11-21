@@ -69,7 +69,7 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     position: absolute;
     right: 12px;
     top: 12px;
-    opacity: 50%;
+    opacity: ${ props => props.theme.name === 'halloween' ? '20%' : '50%' };
     
     ${ props => props.small ? css`
     font-size: 12px;
@@ -79,11 +79,12 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
 
     ${ props => props.isFavorite ? css`
       color:#fcc82a;
-      opacity: 75%;
+      opacity: ${ props.theme.name === 'halloween' ? '85%' : '75%' };
     ` : '' }
 
     &:hover {
       opacity: 100%;
+      ${ props => props.theme.name === 'halloween' ? 'filter: brightness(1.4)' : '' }
     }
 
     @media only screen and (max-width: 780px) {
@@ -98,12 +99,13 @@ interface SoundTileProps {
   preview: boolean;
   small: boolean;
   sound: Sound;
+  systemDate: string;
   soundRequest: (soundName: string, borderCallback: () => void) => void;
   previewRequest: (soundName: string) => void;
   updateFavRequest: (soundId: string) => void;
 }
 
-const SoundTile: FC<SoundTileProps> = ({ preview, small, sound: { name, isFavorite }, soundRequest, previewRequest, updateFavRequest }) => {
+const SoundTile: FC<SoundTileProps> = ({ preview, small, sound: { name, isFavorite }, systemDate, soundRequest, previewRequest, updateFavRequest }) => {
   const [statusBorder, setStatusBorder] = useState('');
 
   const raiseStatusSet = useCallback(() => setStatusBorder('success'), []);
@@ -113,6 +115,9 @@ const SoundTile: FC<SoundTileProps> = ({ preview, small, sound: { name, isFavori
     soundRequest(name, raiseStatusSet);
     setTimeout(() => setStatusBorder(''), 1);
   }, []);
+
+  const isFavIcon = systemDate.includes('Oct') ? '💀' : 'star';
+  const isNotFavIcon = systemDate.includes('Oct') ? '💀' : 'star_outline';
 
   return (
     <SoundTileMain
@@ -126,14 +131,13 @@ const SoundTile: FC<SoundTileProps> = ({ preview, small, sound: { name, isFavori
         onClick={ preview ? () => previewRequest(name) : handleSoundClick }
       >
         { name }
-
       </button>
       <span
         className='material-icons'
         role="presentation"
         onClick={ () => updateFavRequest(name) }
       >
-        { isFavorite ? 'star' : 'star_outline' }
+        { isFavorite ? isFavIcon : isNotFavIcon }
       </span>
     </SoundTileMain>
   );

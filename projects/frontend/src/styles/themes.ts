@@ -39,3 +39,23 @@ export const christmasTheme = {
     volumeSliderThumb: '#B23838',
   },
 };
+
+export const halloweenTheme: DefaultTheme = {
+  name: 'halloween',
+  colors: {
+    bg: '#432c44',
+    nav: '#2f3136',
+    innerA: '#660192',
+    innerB: '#2b2c2e',
+    borderDefault: '#e8660e',
+    borderGold: '#FFE864',
+    borderRed: '#ff1100',
+    borderGreen: '#8cffa5',
+    buttonHover: '#8a50a3',
+    buttonHighlighted: '#ba6932',
+    favStarSet: '#fcc82a',
+    shadowDefault: '#222324',
+    volumeSliderFill: '#9200d6',
+    volumeSliderThumb: '#e8660e',
+  },
+};
