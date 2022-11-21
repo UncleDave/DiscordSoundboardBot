@@ -3,6 +3,7 @@ import useSWR from 'swr';
 import styled from 'styled-components';
 import SoundTile from './SoundTile';
 import Sound from '../models/sound';
+import FullMoon from './decorative/FullMoon';
 
 const ButtonContainerMain = styled.div`
   display: flex;
@@ -10,6 +11,7 @@ const ButtonContainerMain = styled.div`
   justify-content: center;
   margin: 0px 20px;
   padding: 10px 15px 0px;
+  position: relative;
 
   @media only screen and (max-width: 780px) {
     padding: 8px 0px;
@@ -51,6 +53,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ preview, systemDate, soundR
   if (sounds)
     return (
       <ButtonContainerMain>
+        { systemDate.includes('Oct') ? <FullMoon /> : '' }
         { sounds.map(x => {
           if (favorites && !x.isFavorite) return null;
           if (searchTerm && !x.name.toUpperCase().includes(searchTerm)) return null;

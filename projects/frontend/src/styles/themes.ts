@@ -43,8 +43,8 @@ export const christmasTheme = {
 export const halloweenTheme: DefaultTheme = {
   name: 'halloween',
   colors: {
-    bg: '#432c44',
-    nav: '#2f3136',
+    bg: '#080517',
+    nav: '#1d1024',
     innerA: '#660192',
     innerB: '#2b2c2e',
     borderDefault: '#e8660e',
@@ -54,7 +54,7 @@ export const halloweenTheme: DefaultTheme = {
     buttonHover: '#8a50a3',
     buttonHighlighted: '#ba6932',
     favStarSet: '#fcc82a',
-    shadowDefault: '#222324',
+    shadowDefault: 'black',
     volumeSliderFill: '#9200d6',
     volumeSliderThumb: '#e8660e',
   },
