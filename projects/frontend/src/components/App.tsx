@@ -18,6 +18,7 @@ const AppMain = styled.div`
 `;
 
 function getThemeFromDate(date: string) {
+  if (date.includes('July 4')) return themes.americaTheme;
   if (date.includes('Oct')) return themes.halloweenTheme;
   if (date.includes('Dec')) return themes.christmasTheme;
   return themes.defaultTheme;
@@ -25,7 +26,8 @@ function getThemeFromDate(date: string) {
 
 const App: FC = () => {
   const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '' });
-  const [systemDate] = useState(new Date().toString());
+  // const [systemDate] = useState(new Date().toString());
+  const [systemDate] = useState('July 4');
 
   const toggleSmallButtons = useCallback(() => {
     setSortRules(oldState => ({ ...oldState, small: !oldState.small }));

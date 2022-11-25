@@ -31,6 +31,7 @@ const Title = styled.div`
   > h1 {
     font-size: 2rem;
     text-shadow: 0px 3px 3px ${ props => props.theme.colors.shadowDefault };
+    position: relative;
     z-index: 50;
   
     ${ props => props.theme.name === 'christmas' ? 'filter: brightness(1.7) saturate(1.3);' : '' }
@@ -55,12 +56,13 @@ const Username = styled.div`
     font-size: 1.5rem;
     color: white;
     text-shadow: 0px 3px 3px ${ props => props.theme.colors.shadowDefault };
-
+    position: relative;
     z-index: 50;
   }
 `;
 
 function getTitleFromDate(date: string) {
+  if (date.includes('July 4')) return 'DiscordSoundboardBot, FUCK YEAH';
   if (date.includes('Oct')) return 'DiscordSpookboardBot';
   if (date.includes('Dec')) return 'DiscordSoundboardClaus';
   return 'DiscordSoundboardBot';

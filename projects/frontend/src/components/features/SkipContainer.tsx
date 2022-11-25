@@ -8,6 +8,8 @@ const SkipContainerMain = styled.div`
   justify-content: space-evenly;
   margin-top: 15px;
   width: 100%;
+  position: relative;
+  z-index: 10;
 
   > button {
     ${ button }

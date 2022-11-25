@@ -12,11 +12,20 @@ const ButtonContainerMain = styled.div`
   margin: 0px 20px;
   padding: 10px 15px 0px;
   position: relative;
+  z-index: 0;
 
   @media only screen and (max-width: 780px) {
     padding: 8px 0px;
     margin: 0px 8px;
   }
+`;
+
+const Obama = styled.img`
+  position: absolute;
+  top: -60px;
+  right: -130px;
+  height: 500px;
+  width: auto;
 `;
 
 interface ButtonContainerProps {
@@ -53,6 +62,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ preview, systemDate, soundR
   if (sounds)
     return (
       <ButtonContainerMain>
+        <Obama src="/obama.png" />
         { systemDate.includes('Oct') ? <FullMoon /> : '' }
         { sounds.map(x => {
           if (favorites && !x.isFavorite) return null;

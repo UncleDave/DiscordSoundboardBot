@@ -43,7 +43,6 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
   top: 100px;
   padding: 10px;
   box-shadow: 0px 5px 10px 3px ${ props => props.theme.colors.innerB };
-  z-index: 10;
 
   ${ props => {
     if (props.statusStyle === 'success') return AddSoundSuccess;

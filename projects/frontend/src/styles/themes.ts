@@ -59,3 +59,23 @@ export const halloweenTheme: DefaultTheme = {
     volumeSliderThumb: '#e8660e',
   },
 };
+
+export const americaTheme: DefaultTheme = {
+  name: 'america',
+  colors: {
+    bg: '#ff2e2e',
+    nav: '#2f3136',
+    innerA: '#2600cf',
+    innerB: '#2b2c2e',
+    borderDefault: '#eb4034',
+    borderGold: '#FFE864',
+    borderRed: '#ff7480',
+    borderGreen: '#8cffa5',
+    buttonHover: '#7c779e',
+    buttonHighlighted: '#a098d2',
+    favStarSet: '#fcc82a',
+    shadowDefault: '#222324',
+    volumeSliderFill: '#816eff',
+    volumeSliderThumb: '#6b54fc',
+  },
+};

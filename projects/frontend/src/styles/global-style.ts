@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
-import { xmasPlaidBG } from './mixins';
+import { xmasPlaidBG, flagStripesBg } from './mixins';
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -20,6 +20,7 @@ const GlobalStyle = createGlobalStyle`
     overflow-x: hidden;
 
     ${ props => props.theme.name === 'christmas' ? xmasPlaidBG : '' }
+    ${ props => props.theme.name === 'america' ? flagStripesBg : '' }
 
     #root {
       width: 100%;

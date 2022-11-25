@@ -91,3 +91,8 @@ export const xmasPlaidBG = css`
   );
   background-size: 100px 100px;
 `;
+
+export const flagStripesBg = css`
+  background-color: #e5e5f7;
+  background: repeating-linear-gradient(#f74444, #f74444 30px, #e5e5f7 30px, #e5e5f7 60px );
+`;
