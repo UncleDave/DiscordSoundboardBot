@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 import * as mixins from '../styles/mixins';
 import Sound from '../models/sound';
 
@@ -48,9 +48,9 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     background-color: ${ props => props.theme.colors.innerA };
     word-wrap: break-word;
   
-    ${ props => props.small ? soundTileSmall : '' }
+    ${ props => props.small && soundTileSmall }
 
-    ${ props => props.preview ? 'border-style: dashed;' : '' }
+    ${ props => props.preview && 'border-style: dashed;' }
     ${ props => selectSoundTileMainBorder(props) }
   
     @media only screen and (max-width: 780px) {
@@ -84,7 +84,7 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
 
     &:hover {
       opacity: 100%;
-      ${ props => props.theme.name === 'halloween' ? 'filter: brightness(1.4)' : '' }
+      ${ props => props.theme.name === 'halloween' && 'filter: brightness(1.4)' }
     }
 
     @media only screen and (max-width: 780px) {
@@ -99,14 +99,14 @@ interface SoundTileProps {
   preview: boolean;
   small: boolean;
   sound: Sound;
-  systemDate: string;
   soundRequest: (soundName: string, borderCallback: () => void) => void;
   previewRequest: (soundName: string) => void;
   updateFavRequest: (soundId: string) => void;
 }
 
-const SoundTile: FC<SoundTileProps> = ({ preview, small, sound: { name, isFavorite }, systemDate, soundRequest, previewRequest, updateFavRequest }) => {
+const SoundTile: FC<SoundTileProps> = ({ preview, small, sound: { name, isFavorite }, soundRequest, previewRequest, updateFavRequest }) => {
   const [statusBorder, setStatusBorder] = useState('');
+  const theme = useTheme();
 
   const raiseStatusSet = useCallback(() => setStatusBorder('success'), []);
 
@@ -116,8 +116,8 @@ const SoundTile: FC<SoundTileProps> = ({ preview, small, sound: { name, isFavori
     setTimeout(() => setStatusBorder(''), 1);
   }, []);
 
-  const isFavIcon = systemDate.includes('Oct') ? '💀' : 'star';
-  const isNotFavIcon = systemDate.includes('Oct') ? '💀' : 'star_outline';
+  const isFavIcon = theme.name === 'halloween' ? '💀' : 'star';
+  const isNotFavIcon = theme.name === 'halloween' ? '💀' : 'star_outline';
 
   return (
     <SoundTileMain

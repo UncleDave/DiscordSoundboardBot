@@ -19,8 +19,8 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     overflow-x: hidden;
 
-    ${ props => props.theme.name === 'christmas' ? xmasPlaidBG : '' }
-    ${ props => props.theme.name === 'america' ? flagStripesBg : '' }
+    ${ props => props.theme.name === 'christmas' && xmasPlaidBG }
+    ${ props => props.theme.name === 'america' && flagStripesBg }
 
     #root {
       width: 100%;

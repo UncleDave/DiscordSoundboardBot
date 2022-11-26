@@ -19,7 +19,7 @@ const ButtonToggle = styled.button<ButtonProps>`
   ${ mixins.button }
   ${ mixins.filterButton }
 
-  ${ props => props.toggled ? `background-color: ${ props.theme.colors.buttonHighlighted }` : '' }
+  ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
 `;
 
 const AddSoundButton = styled.button<ButtonProps>`

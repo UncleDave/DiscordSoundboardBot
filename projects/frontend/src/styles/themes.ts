@@ -20,7 +20,7 @@ export const defaultTheme: DefaultTheme = {
   },
 };
 
-export const christmasTheme = {
+export const christmasTheme: DefaultTheme = {
   name: 'christmas',
   colors: {
     bg: '#543D2C',

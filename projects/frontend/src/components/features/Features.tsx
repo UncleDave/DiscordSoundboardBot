@@ -11,7 +11,7 @@ const FeaturesContainer = styled.div`
   box-shadow: 0px 5px 5px 2px ${ props => props.theme.colors.shadowDefault };
   position: relative;
 
-  ${ props => props.theme.name === 'christmas' ? candyCaneBG : '' };
+  ${ props => props.theme.name === 'christmas' && candyCaneBG };
 `;
 
 const FiltersContainer = styled.div`

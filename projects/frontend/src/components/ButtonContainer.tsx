@@ -1,6 +1,6 @@
 import React, { FC, useCallback } from 'react';
 import useSWR from 'swr';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import SoundTile from './SoundTile';
 import Sound from '../models/sound';
 import FullMoon from './decorative/FullMoon';
@@ -22,7 +22,6 @@ const ButtonContainerMain = styled.div`
 
 interface ButtonContainerProps {
   preview: boolean;
-  systemDate: string;
   soundRequest: (soundName: string, borderCallback: () => void) => void;
   previewRequest: (soundName: string) => void;
   sortRules: {
@@ -32,8 +31,9 @@ interface ButtonContainerProps {
   }
 }
 
-const ButtonContainer: FC<ButtonContainerProps> = ({ preview, systemDate, soundRequest, previewRequest, sortRules: { favorites, small, searchTerm } }) => {
+const ButtonContainer: FC<ButtonContainerProps> = ({ preview, soundRequest, previewRequest, sortRules: { favorites, small, searchTerm } }) => {
   const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
+  const theme = useTheme();
 
   const updateFavoritesRequest = useCallback(async (soundName: string) => {
     if (sounds) {
@@ -54,7 +54,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ preview, systemDate, soundR
   if (sounds)
     return (
       <ButtonContainerMain>
-        { systemDate.includes('Oct') ? <FullMoon /> : '' }
+        { theme.name === 'halloween' && <FullMoon /> }
         { sounds.map(x => {
           if (favorites && !x.isFavorite) return null;
           if (searchTerm && !x.name.toUpperCase().includes(searchTerm)) return null;
@@ -64,7 +64,6 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ preview, systemDate, soundR
               preview={ preview }
               small={ small }
               sound={ x }
-              systemDate={ systemDate }
               soundRequest={ soundRequest }
               previewRequest={ previewRequest }
               updateFavRequest={ updateFavoritesRequest }

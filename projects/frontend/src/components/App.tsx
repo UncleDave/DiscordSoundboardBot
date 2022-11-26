@@ -25,9 +25,10 @@ function getThemeFromDate(date: string) {
   return themes.defaultTheme;
 }
 
+const theme = getThemeFromDate(new Date().toString());
+
 const App: FC = () => {
   const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '' });
-  const [systemDate] = useState(new Date().toString());
 
   const toggleSmallButtons = useCallback(() => {
     setSortRules(oldState => ({ ...oldState, small: !oldState.small }));
@@ -86,11 +87,11 @@ const App: FC = () => {
   return (
     <AppMain>
       <SWRProvider>
-        <ThemeProvider theme={ getThemeFromDate(systemDate) }>
+        <ThemeProvider theme={ theme }>
           <GlobalStyle />
-          { systemDate.includes('July 4') ? <Fireworks /> : null }
-          { systemDate.includes('Dec') || systemDate.includes('Oct') ? <Snowflakes systemDate={ systemDate } /> : null }
-          <Nav systemDate={ systemDate } />
+          { theme.name === 'america' && <Fireworks /> }
+          { (theme.name === 'christmas' || theme.name === 'halloween') && <Snowflakes /> }
+          <Nav />
           <Features
             favoritesToggled={ sortRules.favorites }
             previewToggled={ showPreview }
@@ -105,7 +106,6 @@ const App: FC = () => {
           />
           <ButtonContainer
             preview={ showPreview }
-            systemDate={ systemDate }
             soundRequest={ soundRequest }
             previewRequest={ previewRequest }
             sortRules={ { favorites: sortRules.favorites, small: sortRules.small, searchTerm: sortRules.searchTerm } }

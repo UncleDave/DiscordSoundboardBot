@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import useUser from '../../hooks/use-user';
 import AvatarContainer from './AvatarContainer';
 import ChristmasLights from '../decorative/ChristmasLights';
@@ -37,13 +37,13 @@ const NavLeft = styled.div`
 
 const Title = styled.div`
   > h1 {
-    ${ props => props.theme.name === 'america' ? 'color: white;' : '' }
+    ${ props => props.theme.name === 'america' && 'color: white;' }
     font-size: 2rem;
     text-shadow: 0px 3px 3px ${ props => props.theme.colors.shadowDefault };
     position: relative;
     z-index: 50;
   
-    ${ props => props.theme.name === 'christmas' ? 'filter: brightness(1.7) saturate(1.3);' : '' }
+    ${ props => props.theme.name === 'christmas' && 'filter: brightness(1.7) saturate(1.3);' }
   }
   
   @media only screen and (max-width: 780px) {
@@ -70,29 +70,26 @@ const Username = styled.div`
   }
 `;
 
-function getTitleFromDate(date: string) {
-  if (date.includes('July 4')) return 'DiscordSoundboardBot, FUCK YEAH';
-  if (date.includes('Oct')) return 'DiscordSpookboardBot';
-  if (date.includes('Dec')) return 'DiscordSoundboardClaus';
+function getTitleFromTheme(themeName: string) {
+  if (themeName === 'america') return 'DiscordSoundboardBot, FUCK YEAH';
+  if (themeName === 'halloween') return 'DiscordSpookboardBot';
+  if (themeName === 'christmas') return 'DiscordSoundboardClaus';
   return 'DiscordSoundboardBot';
 }
 
-interface NavProps {
-  systemDate: string;
-}
-
-const Nav: FC<NavProps> = ({ systemDate }) => {
+const Nav: FC = () => {
   const user = useUser();
   const [showLogoutMenu, setShowLogoutMenu] = useState(false);
+  const theme = useTheme();
 
   return (
     <NavMain>
-      { systemDate.includes('July 4') ? <UsaNavImg src='usanav.png' /> : null }
-      { systemDate.includes('Dec') ? [0, 1].map(x => <ChristmasLeaves key={ x } />) : null }
-      { systemDate.includes('Dec') ? <ChristmasLights /> : null }
+      { theme.name === 'america' ? <UsaNavImg src='usanav.png' /> : null }
+      { theme.name === 'christmas' ? [0, 1].map(x => <ChristmasLeaves key={ x } />) : null }
+      { theme.name === 'christmas' ? <ChristmasLights /> : null }
       <NavLeft>
         <Title>
-          <h1>{ getTitleFromDate(systemDate) }</h1>
+          <h1>{ getTitleFromTheme(theme.name) }</h1>
         </Title>
         <Username>
           <h2>
