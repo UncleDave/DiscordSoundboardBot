@@ -19,6 +19,7 @@ const PreviewInstructionsMain = styled.div`
   flex-grow: 2;
 
   > p {
+    ${ props => props.theme.name === 'america' ? `color:${ props.theme.colors.buttonHover };` : ' ' }
     margin: 0;
     font-weight: bold;
     text-shadow: 2px 2px 3px ${ props => props.theme.colors.shadowDefault };

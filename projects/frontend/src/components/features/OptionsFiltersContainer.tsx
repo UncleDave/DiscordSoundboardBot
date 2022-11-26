@@ -44,7 +44,15 @@ interface OptionsFiltersContainerProps {
   setShowAddSound: (set: boolean) => void;
 }
 
-const OptionsFiltersContainer: FC<OptionsFiltersContainerProps> = ({ favoritesToggled, toggleFavs, previewToggled, toggleShowPreview, disableAddSoundButton, showAddSound, setShowAddSound }) => (
+const OptionsFiltersContainer: FC<OptionsFiltersContainerProps> = ({
+  favoritesToggled,
+  toggleFavs,
+  previewToggled,
+  toggleShowPreview,
+  disableAddSoundButton,
+  showAddSound,
+  setShowAddSound,
+}) => (
   <OptionsFiltersContainerMain>
     <div>
       <ButtonToggle

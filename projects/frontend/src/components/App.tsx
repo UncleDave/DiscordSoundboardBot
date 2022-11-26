@@ -9,6 +9,7 @@ import debounce from '../utils';
 import * as themes from '../styles/themes';
 import GlobalStyle from '../styles/global-style';
 import Snowflakes from './decorative/Snowflakes';
+import Fireworks from './decorative/Fireworks';
 
 const AppMain = styled.div`
   display: flex;
@@ -26,8 +27,7 @@ function getThemeFromDate(date: string) {
 
 const App: FC = () => {
   const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '' });
-  // const [systemDate] = useState(new Date().toString());
-  const [systemDate] = useState('July 4');
+  const [systemDate] = useState(new Date().toString());
 
   const toggleSmallButtons = useCallback(() => {
     setSortRules(oldState => ({ ...oldState, small: !oldState.small }));
@@ -88,6 +88,7 @@ const App: FC = () => {
       <SWRProvider>
         <ThemeProvider theme={ getThemeFromDate(systemDate) }>
           <GlobalStyle />
+          { systemDate.includes('July 4') ? <Fireworks /> : null }
           { systemDate.includes('Dec') || systemDate.includes('Oct') ? <Snowflakes systemDate={ systemDate } /> : null }
           <Nav systemDate={ systemDate } />
           <Features

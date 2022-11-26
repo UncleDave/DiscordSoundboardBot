@@ -13,7 +13,15 @@ const NavMain = styled.div`
   position: relative;
   width: 100%;
 
-  z-index: 1;
+  z-index: 20;
+`;
+
+const UsaNavImg = styled.img`
+  position: absolute;
+  left: 670px;
+  bottom: 0;
+  height: 90px;
+  width: auto;
 `;
 
 const NavLeft = styled.div`
@@ -29,6 +37,7 @@ const NavLeft = styled.div`
 
 const Title = styled.div`
   > h1 {
+    ${ props => props.theme.name === 'america' ? 'color: white;' : '' }
     font-size: 2rem;
     text-shadow: 0px 3px 3px ${ props => props.theme.colors.shadowDefault };
     position: relative;
@@ -78,6 +87,7 @@ const Nav: FC<NavProps> = ({ systemDate }) => {
 
   return (
     <NavMain>
+      { systemDate.includes('July 4') ? <UsaNavImg src='usanav.png' /> : null }
       { systemDate.includes('Dec') ? [0, 1].map(x => <ChristmasLeaves key={ x } />) : null }
       { systemDate.includes('Dec') ? <ChristmasLights /> : null }
       <NavLeft>

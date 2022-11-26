@@ -9,9 +9,7 @@ import { candyCaneBG } from '../../styles/mixins';
 const FeaturesContainer = styled.div`
   padding: 0px 0px 14px;
   box-shadow: 0px 5px 5px 2px ${ props => props.theme.colors.shadowDefault };
-  overflow: hidden;
   position: relative;
-  z-index: 10;
 
   ${ props => props.theme.name === 'christmas' ? candyCaneBG : '' };
 `;
@@ -20,6 +18,7 @@ const FiltersContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  z-index: 10;
   margin: 10px 3.2vw;
   padding: 6px 6px;
   border-radius: 5px;

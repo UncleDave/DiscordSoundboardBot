@@ -20,14 +20,6 @@ const ButtonContainerMain = styled.div`
   }
 `;
 
-const Obama = styled.img`
-  position: absolute;
-  top: -60px;
-  right: -130px;
-  height: 500px;
-  width: auto;
-`;
-
 interface ButtonContainerProps {
   preview: boolean;
   systemDate: string;
@@ -62,7 +54,6 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ preview, systemDate, soundR
   if (sounds)
     return (
       <ButtonContainerMain>
-        <Obama src="/obama.png" />
         { systemDate.includes('Oct') ? <FullMoon /> : '' }
         { sounds.map(x => {
           if (favorites && !x.isFavorite) return null;
