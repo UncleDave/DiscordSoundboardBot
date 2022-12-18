@@ -32,13 +32,16 @@ const FiltersContainer = styled.div`
 
 interface FeaturesProps {
   favoritesToggled: boolean
+  showCustomTagPicker: boolean;
+  toggleShowCustomTagPicker: () => void;
+  disableEditTagsButton: boolean;
   previewToggled: boolean;
   toggleFavs: () => void;
   toggleShowPreview: () => void;
   setSearchTerm: (search: string) => void;
 }
 
-const Features: FC<FeaturesProps> = ({ favoritesToggled, previewToggled, toggleFavs, toggleShowPreview, setSearchTerm }) => {
+const Features: FC<FeaturesProps> = ({ favoritesToggled, showCustomTagPicker, toggleShowCustomTagPicker, disableEditTagsButton, previewToggled, toggleFavs, toggleShowPreview, setSearchTerm }) => {
   const [showAddSound, setShowAddSound] = useState(false);
   const [disableAddSoundButton, setDisableAddSoundButton] = useState(false);
 
@@ -50,6 +53,9 @@ const Features: FC<FeaturesProps> = ({ favoritesToggled, previewToggled, toggleF
         <OptionsFiltersContainer
           favoritesToggled={ favoritesToggled }
           toggleFavs={ toggleFavs }
+          showCustomTagPicker={ showCustomTagPicker }
+          toggleShowCustomTagPicker={ toggleShowCustomTagPicker }
+          disableEditTagsButton={ disableEditTagsButton }
           previewToggled={ previewToggled }
           toggleShowPreview={ toggleShowPreview }
           disableAddSoundButton={ disableAddSoundButton }

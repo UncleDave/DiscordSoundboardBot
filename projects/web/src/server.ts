@@ -5,7 +5,7 @@ import cors from 'cors';
 import axios, { AxiosRequestConfig } from 'axios';
 import multer from 'multer';
 import { SoundsService, AddSoundOptions, errors as soundErrors } from 'botman-sounds';
-import { FavoritesService } from 'botman-users';
+import { FavoritesService, TagsService } from 'botman-users';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import DiscordAuth from './discord-auth';
 import environment from './environment';
@@ -18,6 +18,7 @@ if (environment.environment === 'production') {
 
 const soundsService = new SoundsService(environment.dbConnectionString, environment.blobStorageConnectionString);
 const favoritesService = new FavoritesService(environment.dbConnectionString);
+const tagsService = new TagsService(environment.dbConnectionString);
 
 const app = express();
 const serveStatic = express.static('src/public', { extensions: ['html'] });
@@ -50,6 +51,41 @@ app.put('/api/favorites/:id', async (req, res) => {
 
 app.delete('/api/favorites/:id', async (req, res) => {
   await favoritesService.removeFromFavorites({ userId: String(req.cookies.userid), soundId: req.params.id });
+  res.sendStatus(204);
+  res.end();
+});
+
+app.get('/api/customtags', async (req, res) => {
+  const tags = await tagsService.getCustomTags(String(req.cookies.userid));
+  res.send(tags);
+});
+
+app.post('/api/customtags/create/:id/:name/:color', async (req, res) => {
+  await tagsService.addNewTag({ tagId: req.params.id, userId: String(req.cookies.userid), tagName: req.params.name, tagColor: req.params.color });
+  res.sendStatus(204);
+  res.end();
+});
+
+app.post('/api/customtags/edit/:id/:name/:color', async (req, res) => {
+  await tagsService.editTagProps({ tagId: req.params.id, userId: String(req.cookies.userid), tagName: req.params.name, tagColor: req.params.color });
+  res.sendStatus(204);
+  res.end();
+});
+
+app.delete('/api/customtags/delete/:id', async (req, res) => {
+  await tagsService.deleteTag({ tagId: req.params.id, userId: String(req.cookies.userid) });
+  res.sendStatus(204);
+  res.end();
+});
+
+app.get('/api/customtags/addSound', async (req, res) => {
+  await tagsService.addSoundToTag({ tagId: 'an guid', userId: '495340591475851284', soundId: 'jeffmcsound' });
+  res.sendStatus(204);
+  res.end();
+});
+
+app.get('/api/customtags/removeSound', async (req, res) => {
+  await tagsService.removeSoundFromTag({ tagId: 'an guid', userId: '495340591475851284', soundId: 'jeffmcsound' });
   res.sendStatus(204);
   res.end();
 });

@@ -2,6 +2,8 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 import { iconButton } from '../styles/mixins';
 import PreviewInstructions from './PreviewInstructions';
+import CustomTag from '../models/custom-tag';
+import TaggingInstructions from './TaggingInstructions';
 
 const SortToolbar = styled.div`
   display: flex;
@@ -41,10 +43,12 @@ interface SortContainerProps {
   showPreview: boolean;
   toggleSmallButtons: () => void;
   setPreviewVolume: (volume: string) => void;
+  currentlyTagging: CustomTag | null;
 }
 
-const SortContainer: FC<SortContainerProps> = ({ showPreview, toggleSmallButtons, setPreviewVolume }) => (
+const SortContainer: FC<SortContainerProps> = ({ showPreview, toggleSmallButtons, setPreviewVolume, currentlyTagging }) => (
   <SortToolbar>
+    { currentlyTagging ? <TaggingInstructions tagName={ currentlyTagging.name } tagColor={ currentlyTagging.color } /> : null }
     { showPreview && <PreviewInstructions setPreviewVolume={ setPreviewVolume } /> }
     <div>
       <ResizeIcon role="presentation" onClick={ toggleSmallButtons }>

@@ -1,15 +1,17 @@
 import React, { FC, useState, useCallback, useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import SWRProvider from '../providers/SWRProvider';
+import useSWR from 'swr';
 import Nav from './nav/Nav';
 import Features from './features/Features';
 import ButtonContainer from './ButtonContainer';
 import SortContainer from './SortContainer';
+import CustomTagPicker from './custom-tags/CustomTagPicker';
 import debounce from '../utils';
 import * as themes from '../styles/themes';
 import GlobalStyle from '../styles/global-style';
 import Snowflakes from './decorative/Snowflakes';
 import Fireworks from './decorative/Fireworks';
+import CustomTag from '../models/custom-tag';
 
 const AppMain = styled.div`
   display: flex;
@@ -25,10 +27,14 @@ function getThemeFromDate(date: string) {
   return themes.defaultTheme;
 }
 
-const theme = getThemeFromDate(new Date().toString());
+// CHANGE DATE BACK
+// CHANGE DATE BACK
+const theme = getThemeFromDate('Jun');
 
 const App: FC = () => {
   const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '' });
+
+  const { data: customTags, mutate: mutateTags } = useSWR<CustomTag[]>('/api/customTags');
 
   const toggleSmallButtons = useCallback(() => {
     setSortRules(oldState => ({ ...oldState, small: !oldState.small }));
@@ -37,6 +43,12 @@ const App: FC = () => {
   const toggleFavs = useCallback(() => {
     setSortRules(oldState => ({ ...oldState, favorites: !oldState.favorites }));
   }, [sortRules.favorites]);
+
+  const [showCustomTagPicker, setShowCustomTagPicker] = useState(false);
+  const toggleShowCustomTagPicker = useCallback(() => {
+    setShowCustomTagPicker(!showCustomTagPicker);
+  }, [showCustomTagPicker]);
+  const [disableEditTagsButton, setDisableEditTagsButton] = useState(false);
 
   const [showPreview, setShowPreview] = useState(false);
   const toggleShowPreview = useCallback(() => {
@@ -67,6 +79,19 @@ const App: FC = () => {
       .catch();
   }, 2000, true), []);
 
+  const [currentlyTagging, setCurrentlyTagging] = useState<CustomTag | null>(null);
+  const beginTagging = useCallback((tagId: string) => {
+    if (customTags) {
+      const tag = customTags.find(x => x.id === tagId);
+      if (tag) {
+        setShowCustomTagPicker(false);
+        setCurrentlyTagging(tag);
+        setShowPreview(false);
+        setDisableEditTagsButton(true);
+      }
+    }
+  }, [customTags]);
+
   const previewRequest = useCallback(async (soundName: string) => {
     const soundUrl = await fetch(`/api/preview?soundName=${ soundName }`, { headers: { 'Content-Type': 'text/plain' } });
     const audioRes = await fetch(await soundUrl.text());
@@ -86,32 +111,42 @@ const App: FC = () => {
 
   return (
     <AppMain>
-      <SWRProvider>
-        <ThemeProvider theme={ theme }>
-          <GlobalStyle />
-          { theme.name === 'america' && <Fireworks /> }
-          { (theme.name === 'christmas' || theme.name === 'halloween') && <Snowflakes /> }
-          <Nav />
-          <Features
-            favoritesToggled={ sortRules.favorites }
-            previewToggled={ showPreview }
-            toggleFavs={ toggleFavs }
-            toggleShowPreview={ toggleShowPreview }
-            setSearchTerm={ setSearchTerm }
+      <ThemeProvider theme={ theme }>
+        <GlobalStyle />
+        { theme.name === 'america' && <Fireworks /> }
+        { (theme.name === 'christmas' || theme.name === 'halloween') && <Snowflakes /> }
+        <Nav />
+        <Features
+          favoritesToggled={ sortRules.favorites }
+          showCustomTagPicker={ showCustomTagPicker }
+          toggleShowCustomTagPicker={ toggleShowCustomTagPicker }
+          disableEditTagsButton={ disableEditTagsButton }
+          previewToggled={ showPreview }
+          toggleFavs={ toggleFavs }
+          toggleShowPreview={ toggleShowPreview }
+          setSearchTerm={ setSearchTerm }
+        />
+        <SortContainer
+          showPreview={ showPreview }
+          toggleSmallButtons={ toggleSmallButtons }
+          setPreviewVolume={ setPreviewVolume }
+          currentlyTagging={ currentlyTagging }
+        />
+        { showCustomTagPicker ? (
+          <CustomTagPicker
+            customTags={ customTags ?? [] }
+            mutateTags={ mutateTags }
+            setDisableEditTagsButton={ setDisableEditTagsButton }
+            beginTagging={ beginTagging }
           />
-          <SortContainer
-            showPreview={ showPreview }
-            toggleSmallButtons={ toggleSmallButtons }
-            setPreviewVolume={ setPreviewVolume }
-          />
-          <ButtonContainer
-            preview={ showPreview }
-            soundRequest={ soundRequest }
-            previewRequest={ previewRequest }
-            sortRules={ { favorites: sortRules.favorites, small: sortRules.small, searchTerm: sortRules.searchTerm } }
-          />
-        </ThemeProvider>
-      </SWRProvider>
+        ) : null }
+        <ButtonContainer
+          preview={ showPreview }
+          soundRequest={ soundRequest }
+          previewRequest={ previewRequest }
+          sortRules={ { favorites: sortRules.favorites, small: sortRules.small, searchTerm: sortRules.searchTerm } }
+        />
+      </ThemeProvider>
     </AppMain>
   );
 };

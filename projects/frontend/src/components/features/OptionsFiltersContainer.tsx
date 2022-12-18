@@ -37,6 +37,9 @@ const AddSoundButton = styled.button<ButtonProps>`
 interface OptionsFiltersContainerProps {
   favoritesToggled: boolean;
   toggleFavs: () => void;
+  showCustomTagPicker: boolean;
+  toggleShowCustomTagPicker: () => void;
+  disableEditTagsButton: boolean;
   previewToggled: boolean;
   toggleShowPreview: () => void;
   disableAddSoundButton: boolean;
@@ -47,6 +50,9 @@ interface OptionsFiltersContainerProps {
 const OptionsFiltersContainer: FC<OptionsFiltersContainerProps> = ({
   favoritesToggled,
   toggleFavs,
+  showCustomTagPicker,
+  toggleShowCustomTagPicker,
+  disableEditTagsButton,
   previewToggled,
   toggleShowPreview,
   disableAddSoundButton,
@@ -63,6 +69,14 @@ const OptionsFiltersContainer: FC<OptionsFiltersContainerProps> = ({
       </ButtonToggle>
     </div>
     <div>
+      { disableEditTagsButton ? null : (
+        <ButtonToggle
+          toggled={ showCustomTagPicker }
+          onClick={ toggleShowCustomTagPicker }
+        >
+          Edit Custom Tags
+        </ButtonToggle>
+      ) }
       <ButtonToggle
         toggled={ previewToggled }
         onClick={ toggleShowPreview }
