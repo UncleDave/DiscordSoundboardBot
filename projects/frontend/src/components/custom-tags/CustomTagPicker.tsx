@@ -14,7 +14,7 @@ const CustomTagPickerMain = styled.div`
   border-radius: 5px;
   box-shadow: 0px 2px 5px 2px ${ props => props.theme.colors.shadowDefault };
 
-  height: 40vh;
+  height: max-content;
   margin: 0px 50px;
 `;
 

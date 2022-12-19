@@ -6,12 +6,12 @@ import Features from './features/Features';
 import ButtonContainer from './ButtonContainer';
 import SortContainer from './SortContainer';
 import CustomTagPicker from './custom-tags/CustomTagPicker';
-import debounce from '../utils';
 import * as themes from '../styles/themes';
 import GlobalStyle from '../styles/global-style';
 import Snowflakes from './decorative/Snowflakes';
 import Fireworks from './decorative/Fireworks';
 import CustomTag from '../models/custom-tag';
+import TagProps from '../models/tag-props';
 
 const AppMain = styled.div`
   display: flex;
@@ -66,24 +66,13 @@ const App: FC = () => {
       previewGain.gain.value = Number(previewVolume);
   }, [previewVolume, previewGain]);
 
-  const soundRequest = useCallback(debounce((soundName: string, borderCallback: () => void) => {
-    borderCallback();
-    fetch('/api/sound', {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: soundName,
-    })
-      .then(res => {
-        if (res.status === 401) window.location.reload();
-      })
-      .catch();
-  }, 2000, true), []);
-
-  const [currentlyTagging, setCurrentlyTagging] = useState<CustomTag | null>(null);
+  const [currentlyTagging, setCurrentlyTagging] = useState<TagProps | null>(null);
+  const [unsavedTagged, setUnsavedTagged] = useState<string[]>([]);
   const beginTagging = useCallback((tagId: string) => {
     if (customTags) {
       const tag = customTags.find(x => x.id === tagId);
       if (tag) {
+        setUnsavedTagged([...tag.sounds]);
         setShowCustomTagPicker(false);
         setCurrentlyTagging(tag);
         setShowPreview(false);
@@ -91,6 +80,42 @@ const App: FC = () => {
       }
     }
   }, [customTags]);
+
+  const toggleSoundOnTag = useCallback((soundId: string) => {
+    if (!currentlyTagging) return;
+    let newTaggedSounds = [...unsavedTagged];
+    if (newTaggedSounds.includes(soundId))
+      newTaggedSounds = unsavedTagged.filter(x => (x !== soundId));
+    else newTaggedSounds.push(soundId);
+    setUnsavedTagged(newTaggedSounds);
+  }, [currentlyTagging, unsavedTagged]);
+
+  const saveTagged = useCallback(async () => {
+    if (!customTags || !currentlyTagging) return;
+    const tagIndex = customTags.findIndex(x => x.id === currentlyTagging?.id);
+    if (customTags[tagIndex]) {
+      const oldSounds = [...customTags[tagIndex].sounds];
+      const newCustomTags = [...customTags];
+      newCustomTags[tagIndex].sounds = [...unsavedTagged];
+      const updateTagSounds = async () => {
+        const deleted = oldSounds.filter(x => !unsavedTagged.includes(x));
+        const added = unsavedTagged.filter(x => !oldSounds.includes(x));
+        const body = { id: currentlyTagging.id, added, deleted };
+        await fetch('/api/customtags/editsounds', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        return newCustomTags;
+      };
+      await mutateTags(updateTagSounds(), { optimisticData: newCustomTags, rollbackOnError: true });
+      setCurrentlyTagging(null);
+      setUnsavedTagged([]);
+      setDisableEditTagsButton(false);
+    }
+  }, [customTags, currentlyTagging, unsavedTagged]);
+
+  const discardTagged = useCallback(() => {
+    setCurrentlyTagging(null);
+    setUnsavedTagged([]);
+    setDisableEditTagsButton(false);
+  }, []);
 
   const previewRequest = useCallback(async (soundName: string) => {
     const soundUrl = await fetch(`/api/preview?soundName=${ soundName }`, { headers: { 'Content-Type': 'text/plain' } });
@@ -131,6 +156,8 @@ const App: FC = () => {
           toggleSmallButtons={ toggleSmallButtons }
           setPreviewVolume={ setPreviewVolume }
           currentlyTagging={ currentlyTagging }
+          saveTagged={ saveTagged }
+          discardTagged={ discardTagged }
         />
         { showCustomTagPicker ? (
           <CustomTagPicker
@@ -142,9 +169,12 @@ const App: FC = () => {
         ) : null }
         <ButtonContainer
           preview={ showPreview }
-          soundRequest={ soundRequest }
           previewRequest={ previewRequest }
           sortRules={ { favorites: sortRules.favorites, small: sortRules.small, searchTerm: sortRules.searchTerm } }
+          customTags={ customTags ?? [] }
+          currentlyTagging={ currentlyTagging }
+          unsavedTagged={ unsavedTagged }
+          toggleSoundOnTag={ toggleSoundOnTag }
         />
       </ThemeProvider>
     </AppMain>

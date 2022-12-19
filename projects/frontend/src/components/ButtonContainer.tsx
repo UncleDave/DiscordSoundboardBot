@@ -1,9 +1,12 @@
 import React, { FC, useCallback } from 'react';
 import useSWR from 'swr';
 import styled, { useTheme } from 'styled-components';
+import debounce from '../utils';
 import SoundTile from './SoundTile';
 import Sound from '../models/sound';
 import FullMoon from './decorative/FullMoon';
+import CustomTag from '../models/custom-tag';
+import TagProps from '../models/tag-props';
 
 const ButtonContainerMain = styled.div`
   display: flex;
@@ -22,18 +25,42 @@ const ButtonContainerMain = styled.div`
 
 interface ButtonContainerProps {
   preview: boolean;
-  soundRequest: (soundName: string, borderCallback: () => void) => void;
   previewRequest: (soundName: string) => void;
   sortRules: {
     favorites: boolean;
     small: boolean;
     searchTerm: string;
   }
+  customTags: CustomTag[];
+  currentlyTagging: TagProps | null;
+  unsavedTagged: string[];
+  toggleSoundOnTag: (soundId: string) => void;
 }
 
-const ButtonContainer: FC<ButtonContainerProps> = ({ preview, soundRequest, previewRequest, sortRules: { favorites, small, searchTerm } }) => {
+const ButtonContainer: FC<ButtonContainerProps> = ({
+  preview,
+  previewRequest,
+  sortRules: { favorites, small, searchTerm },
+  customTags,
+  currentlyTagging,
+  unsavedTagged,
+  toggleSoundOnTag,
+}) => {
   const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
   const theme = useTheme();
+
+  const soundRequest = useCallback(debounce((soundName: string, borderCallback: () => void) => {
+    borderCallback();
+    fetch('/api/sound', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: soundName,
+    })
+      .then(res => {
+        if (res.status === 401) window.location.reload();
+      })
+      .catch();
+  }, 2000, true), []);
 
   const updateFavoritesRequest = useCallback(async (soundName: string) => {
     if (sounds) {
@@ -56,17 +83,24 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ preview, soundRequest, prev
       <ButtonContainerMain>
         { theme.name === 'halloween' && <FullMoon /> }
         { sounds.map(x => {
+          const tagData = customTags.find(tag => tag.sounds.includes(x.id));
+          const currentlyTaggingData = unsavedTagged.includes(x.id) ? currentlyTagging : null;
           if (favorites && !x.isFavorite) return null;
           if (searchTerm && !x.name.toUpperCase().includes(searchTerm)) return null;
           return (
             <SoundTile
               key={ x.id }
+              id={ x.id }
               preview={ preview }
               small={ small }
               sound={ x }
               soundRequest={ soundRequest }
               previewRequest={ previewRequest }
+              tagColor={ currentlyTaggingData?.color ?? tagData?.color }
               updateFavRequest={ updateFavoritesRequest }
+              currentlyTagging={ !!currentlyTagging }
+              unsavedTagged={ unsavedTagged }
+              toggleSoundOnTag={ toggleSoundOnTag }
             />
           );
         })}

@@ -9,6 +9,12 @@ const OptionsFiltersContainerMain = styled.div`
   > div {
     display: flex;
   }
+
+  p {
+    font-size: 0.7rem;
+    font-weight: bold;
+    margin-right: 12px;
+  }
 `;
 
 interface ButtonProps {
@@ -69,7 +75,7 @@ const OptionsFiltersContainer: FC<OptionsFiltersContainerProps> = ({
       </ButtonToggle>
     </div>
     <div>
-      { disableEditTagsButton ? null : (
+      { disableEditTagsButton ? <p>Finish edit/tagging to toggle tag picker</p> : (
         <ButtonToggle
           toggled={ showCustomTagPicker }
           onClick={ toggleShowCustomTagPicker }

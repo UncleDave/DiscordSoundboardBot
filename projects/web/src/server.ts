@@ -26,6 +26,7 @@ const serveStatic = express.static('src/public', { extensions: ['html'] });
 app.use(cookieParser());
 app.use(cors({ origin: environment.webServerURL }));
 app.use(express.text());
+app.use(express.json());
 const upload = multer();
 
 app.post('/logout', (req, res) => {
@@ -78,14 +79,10 @@ app.delete('/api/customtags/delete/:id', async (req, res) => {
   res.end();
 });
 
-app.get('/api/customtags/addSound', async (req, res) => {
-  await tagsService.addSoundToTag({ tagId: 'an guid', userId: '495340591475851284', soundId: 'jeffmcsound' });
-  res.sendStatus(204);
-  res.end();
-});
-
-app.get('/api/customtags/removeSound', async (req, res) => {
-  await tagsService.removeSoundFromTag({ tagId: 'an guid', userId: '495340591475851284', soundId: 'jeffmcsound' });
+app.put('/api/customtags/editsounds', async (req, res) => {
+  console.log(req.body);
+  await req.body.added.forEach((x: string) => tagsService.addSoundToTag({ tagId: req.body.id, userId: String(req.cookies.userid), soundId: x }));
+  await req.body.deleted.forEach((x: string) => tagsService.removeSoundFromTag({ tagId: req.body.id, userId: String(req.cookies.userid), soundId: x }));
   res.sendStatus(204);
   res.end();
 });

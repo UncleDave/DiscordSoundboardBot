@@ -29,15 +29,20 @@ const TaggingInstructionsMain = styled.div<TaggingInstructionsMainProps>`
 interface TaggingInstructionsProps {
   tagName: string;
   tagColor: string;
+  saveTagged: () => void;
+  discardTagged: () => void;
 }
 
-const TaggingInstructions: FC<TaggingInstructionsProps> = ({ tagName, tagColor }) => (
+const TaggingInstructions: FC<TaggingInstructionsProps> = ({ tagName, tagColor, saveTagged, discardTagged }) => (
   <TaggingInstructionsMain color={ tagColor }>
     <p>
       { `Currently tagging sounds for: ${ tagName }` }
     </p>
-    <button type='button'>
+    <button type='button' onClick={ saveTagged }>
       Save
+    </button>
+    <button type='button' onClick={ discardTagged }>
+      Discard
     </button>
   </TaggingInstructionsMain>
 );

@@ -8,6 +8,7 @@ interface SoundTileMainProps {
   statusBorder: string;
   small: boolean;
   isFavorite: boolean;
+  tagColor: string | null;
 }
 
 const soundTileSmall = css`
@@ -45,7 +46,7 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     min-height: 150px;
     max-width: 150px;
     margin: 6px 6px;
-    background-color: ${ props => props.theme.colors.innerA };
+    background-color: ${ props => props.tagColor ? props.tagColor : props.theme.colors.innerA };
     word-wrap: break-word;
   
     ${ props => props.small && soundTileSmall }
@@ -96,25 +97,39 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
 `;
 
 interface SoundTileProps {
+  id: string;
   preview: boolean;
   small: boolean;
   sound: Sound;
+  tagColor: string | undefined;
   soundRequest: (soundName: string, borderCallback: () => void) => void;
   previewRequest: (soundName: string) => void;
   updateFavRequest: (soundId: string) => void;
+  currentlyTagging: boolean;
+  unsavedTagged: string[];
+  toggleSoundOnTag: (soundId: string) => void;
 }
 
-const SoundTile: FC<SoundTileProps> = ({ preview, small, sound: { name, isFavorite }, soundRequest, previewRequest, updateFavRequest }) => {
+const SoundTile: FC<SoundTileProps> = ({
+  id, preview,
+  small, sound: { name, isFavorite }, tagColor, soundRequest, previewRequest, updateFavRequest, currentlyTagging, unsavedTagged, toggleSoundOnTag,
+}) => {
   const [statusBorder, setStatusBorder] = useState('');
   const theme = useTheme();
 
   const raiseStatusSet = useCallback(() => setStatusBorder('success'), []);
 
-  const handleSoundClick = useCallback(() => {
+  const handleSoundPlayClick = useCallback(() => {
     setStatusBorder('error');
     soundRequest(name, raiseStatusSet);
     setTimeout(() => setStatusBorder(''), 1);
   }, []);
+
+  const handleButtonClick = useCallback(() => {
+    if (currentlyTagging) toggleSoundOnTag(id);
+    else if (preview) previewRequest(name);
+    else handleSoundPlayClick();
+  }, [currentlyTagging, unsavedTagged, preview]);
 
   const isFavIcon = theme.name === 'halloween' ? '💀' : 'star';
   const isNotFavIcon = theme.name === 'halloween' ? '💀' : 'star_outline';
@@ -125,10 +140,11 @@ const SoundTile: FC<SoundTileProps> = ({ preview, small, sound: { name, isFavori
       statusBorder={ statusBorder }
       small={ small }
       isFavorite={ isFavorite }
+      tagColor={ tagColor ?? null }
     >
       <button
         type="button"
-        onClick={ preview ? () => previewRequest(name) : handleSoundClick }
+        onClick={ handleButtonClick }
       >
         { name }
       </button>
