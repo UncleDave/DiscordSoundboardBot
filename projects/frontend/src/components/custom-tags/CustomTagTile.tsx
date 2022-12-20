@@ -10,10 +10,12 @@ const CustomTagTileMain = styled.div<CustomTagStyleProps>`
   position: relative;
   
   > button {
+    font-size: 1.1rem;
     color: white;
     background-color: ${ props => props.color };
     border: 4px solid ${ props => props.theme.colors.borderDefault };
     border-radius: 4px;
+    text-shadow: 1px 1px 3px ${ props => props.theme.colors.shadowDefault };
    
     margin: 3px;
     height: 110px;
@@ -28,6 +30,7 @@ const CustomTagTileMain = styled.div<CustomTagStyleProps>`
     right: 10px;
     cursor: pointer;
     opacity: 50%;
+    text-shadow: 1px 1px 3px ${ props => props.theme.colors.shadowDefault };
 
     &:hover {
       opacity: 100%;

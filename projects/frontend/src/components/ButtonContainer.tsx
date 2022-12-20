@@ -85,7 +85,8 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
         { sounds.map(x => {
           let tagColor;
           const savedTag = customTags.find(tag => tag.sounds.includes(x.id));
-          if (savedTag && savedTag?.id !== currentlyTagging?.id) tagColor = savedTag?.color;
+          if (savedTag && savedTag?.id !== currentlyTagging?.id && unsavedTagged.includes(x.id)) tagColor = currentlyTagging?.color;
+          else if (savedTag && savedTag?.id !== currentlyTagging?.id) tagColor = savedTag?.color;
           else if (savedTag?.id === currentlyTagging?.id && !unsavedTagged.includes(x.id)) tagColor = undefined;
           else if (unsavedTagged.includes(x.id)) tagColor = currentlyTagging?.color;
 

@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { KeyedMutator } from 'swr';
 import { button, filterButton, textInput } from '../../styles/mixins';
 import CustomTag from '../../models/custom-tag';
+import CustomTagColorPicker from './CustomTagColorPicker';
 
 const ToolbarMain = styled.div`
   display: flex;
@@ -54,6 +55,22 @@ const ConfirmDelete = styled(ToolbarButton)`
   border-color: ${ props => props.theme.colors.borderRed };
 `;
 
+interface ColorButtonProps {
+  color: string;
+}
+
+const ColorButton = styled.div<ColorButtonProps>`
+  ${ filterButton }
+
+  min-height: 30px;
+  width: 60px;
+  cursor: pointer;
+  position: relative;
+  margin-left: 10px;
+  background-color: ${ props => props.color };
+  z-index: 10;
+`;
+
 interface CustomTagToolbarProps {
   editMode: boolean;
   setEditMode: (editMode: boolean) => void;
@@ -65,11 +82,20 @@ interface CustomTagToolbarProps {
 
 const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, customTags, currentlyEditing, setCurrentlyEditing, mutateTags }) => {
   const [nameInput, setNameInput] = useState('');
+  const [tagColor, setTagColor] = useState('');
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const selectColor = useCallback((color: string) => {
+    setTagColor(color);
+    setShowColorPicker(false);
+  }, []);
 
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   useEffect(() => {
-    if (currentlyEditing) setNameInput(currentlyEditing.name);
+    if (currentlyEditing) {
+      setNameInput(currentlyEditing.name);
+      setTagColor(currentlyEditing.color);
+    }
   }, [currentlyEditing, editMode]);
 
   const resetToolbar = useCallback(() => {
@@ -82,16 +108,16 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
   const addTagRequest = useCallback(async () => {
     if (customTags) {
       const id = uuidv4();
-      const tag = { id, name: nameInput, color: '#fff', sounds: [] };
+      const tag = { id, name: nameInput, color: tagColor, sounds: [] };
       const newTags = [...customTags, tag];
       const addTag = async () => {
-        await fetch(`/api/customTags/create/${ id }/${ nameInput }/${ '%23871e04' }`, { method: 'POST' });
+        await fetch(`/api/customTags/create/${ id }/${ nameInput }/${ `%23${ tagColor.split('#')[1] }` }`, { method: 'POST' });
         return newTags;
       };
       await mutateTags(addTag(), { optimisticData: newTags, rollbackOnError: true });
       resetToolbar();
     }
-  }, [nameInput, customTags]);
+  }, [nameInput, customTags, tagColor]);
 
   const editTagRequest = useCallback(async () => {
     if (customTags && currentlyEditing) {
@@ -101,14 +127,14 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
         const tagIndex = newTags.findIndex(x => x.id === tag.id);
         newTags[tagIndex] = { ...(tag), name: nameInput };
         const editTag = async () => {
-          await fetch(`/api/customTags/edit/${ tag.id }/${ nameInput }/${ '%23871e04' }`, { method: 'POST' });
+          await fetch(`/api/customTags/edit/${ tag.id }/${ nameInput }/${ `%23${ tagColor.split('#')[1] }` }`, { method: 'POST' });
           return newTags;
         };
         await mutateTags(editTag(), { optimisticData: newTags, rollbackOnError: true });
         resetToolbar();
       }
     }
-  }, [nameInput, customTags, currentlyEditing]);
+  }, [nameInput, customTags, currentlyEditing, tagColor]);
 
   const deleteTagRequest = useCallback(async () => {
     if (customTags && currentlyEditing) {
@@ -133,6 +159,9 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
           <p>Name:</p>
           <input type='text' value={ nameInput } onChange={ event => setNameInput(event.currentTarget.value) } />
         </NameField>
+        <ColorButton color={ tagColor } onClick={ () => setShowColorPicker(!showColorPicker) }>
+          { showColorPicker ? <CustomTagColorPicker selectColor={ selectColor } /> : null }
+        </ColorButton>
         <ToolbarButton onClick={ () => currentlyEditing ? editTagRequest() : addTagRequest() }>
           Save
         </ToolbarButton>

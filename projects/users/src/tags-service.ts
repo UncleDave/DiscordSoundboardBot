@@ -8,10 +8,15 @@ interface TagPropsOptions {
   tagColor: string;
 }
 
-interface UpdateTagSoundsOptions {
+interface AddTagSoundsOptions {
   userId: string;
   tagId: string;
   sounds: string;
+}
+
+interface RemoveTagSoundsOptions {
+  userId: string;
+  deleted: string[];
 }
 
 interface RemoveTagOptions {
@@ -42,13 +47,13 @@ export class TagsService extends UsersService {
     await collection.updateOne({ userId: options.userId }, { $pull: { tags: { id: options.tagId } } });
   }
 
-  async addSoundsToTag(options: UpdateTagSoundsOptions): Promise<void> {
+  async addSoundsToTag(options: AddTagSoundsOptions): Promise<void> {
     const collection = await this.usersCollection;
     await collection.updateOne({ userId: options.userId, 'tags.id': options.tagId }, { $push: { 'tags.$.sounds': { $each: [...options.sounds] } } });
   }
 
-  async removeSoundsFromTag(options: UpdateTagSoundsOptions): Promise<void> {
+  async removeSoundsFromTags(options: RemoveTagSoundsOptions): Promise<void> {
     const collection = await this.usersCollection;
-    await collection.updateOne({ userId: options.userId, 'tags.id': options.tagId }, { $pull: { 'tags.$.sounds': { $in: [...options.sounds] } } });
+    await collection.updateOne({ userId: options.userId }, { $pull: { 'tags.$[].sounds': { $in: [...options.deleted] } } });
   }
 }

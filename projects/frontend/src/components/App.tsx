@@ -31,6 +31,9 @@ function getThemeFromDate(date: string) {
 // CHANGE DATE BACK
 // Consider tag prop swr hooks combine/optimize
 // Consider getting tag mutate in tag picker with getswrconfig
+// Get rid of instances of passing soundName for playback etc.
+// Custom Tags QOL shit
+
 const theme = getThemeFromDate('Jun');
 
 const App: FC = () => {
@@ -96,13 +99,29 @@ const App: FC = () => {
     if (!customTags || !currentlyTagging) return;
     const tagIndex = customTags.findIndex(x => x.id === currentlyTagging?.id);
     if (customTags[tagIndex]) {
-      const oldSounds = [...customTags[tagIndex].sounds];
+      const oldCurrentTagSounds = [...customTags[tagIndex].sounds];
       const newCustomTags = [...customTags];
+
+      const deleted: string[] = [];
+
+      unsavedTagged.forEach(newSound => {
+        const oldTagWithSound = newCustomTags.find(oldTag => oldTag.sounds.includes(newSound));
+        if (oldTagWithSound && oldTagWithSound.id !== currentlyTagging.id) {
+          deleted.push(newSound);
+          const soundOldIndex = oldTagWithSound.sounds.indexOf(newSound);
+          const oldTagIndex = newCustomTags.indexOf(oldTagWithSound);
+          newCustomTags[oldTagIndex].sounds.splice(soundOldIndex, 1);
+        }
+      });
+
       newCustomTags[tagIndex].sounds = [...unsavedTagged];
+
+      const currentDeleted = oldCurrentTagSounds.filter(x => !unsavedTagged.includes(x));
+      deleted.push(...currentDeleted);
+
       const updateTagSounds = async () => {
-        const deleted = oldSounds.filter(x => !unsavedTagged.includes(x));
-        const added = unsavedTagged.filter(x => !oldSounds.includes(x));
-        const body = { id: currentlyTagging.id, added, deleted };
+        const added = unsavedTagged.filter(x => !oldCurrentTagSounds.includes(x));
+        const body = { addedId: currentlyTagging.id, added, deleted };
         await fetch('/api/customtags/editsounds', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         return newCustomTags;
       };
