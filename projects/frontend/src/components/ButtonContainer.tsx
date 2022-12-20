@@ -83,10 +83,15 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
       <ButtonContainerMain>
         { theme.name === 'halloween' && <FullMoon /> }
         { sounds.map(x => {
-          const tagData = customTags.find(tag => tag.sounds.includes(x.id));
-          const currentlyTaggingData = unsavedTagged.includes(x.id) ? currentlyTagging : null;
+          let tagColor;
+          const savedTag = customTags.find(tag => tag.sounds.includes(x.id));
+          if (savedTag && savedTag?.id !== currentlyTagging?.id) tagColor = savedTag?.color;
+          else if (savedTag?.id === currentlyTagging?.id && !unsavedTagged.includes(x.id)) tagColor = undefined;
+          else if (unsavedTagged.includes(x.id)) tagColor = currentlyTagging?.color;
+
           if (favorites && !x.isFavorite) return null;
           if (searchTerm && !x.name.toUpperCase().includes(searchTerm)) return null;
+
           return (
             <SoundTile
               key={ x.id }
@@ -96,7 +101,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
               sound={ x }
               soundRequest={ soundRequest }
               previewRequest={ previewRequest }
-              tagColor={ currentlyTaggingData?.color ?? tagData?.color }
+              tagColor={ tagColor }
               updateFavRequest={ updateFavoritesRequest }
               currentlyTagging={ !!currentlyTagging }
               unsavedTagged={ unsavedTagged }

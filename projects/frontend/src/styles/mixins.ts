@@ -10,7 +10,7 @@ export const button = css`
 
   @media only screen and (min-width: 780px) {
     &:hover:not(:active) {
-      background-color: ${ props => props.theme.colors.buttonHover }
+      filter: brightness(1.1);
     }
 }
 `;

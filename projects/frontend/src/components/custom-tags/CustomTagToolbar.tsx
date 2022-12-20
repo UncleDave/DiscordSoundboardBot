@@ -85,7 +85,7 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
       const tag = { id, name: nameInput, color: '#fff', sounds: [] };
       const newTags = [...customTags, tag];
       const addTag = async () => {
-        await fetch(`/api/customTags/create/${ id }/${ nameInput }/${ '%2871e04' }`, { method: 'POST' });
+        await fetch(`/api/customTags/create/${ id }/${ nameInput }/${ '%23871e04' }`, { method: 'POST' });
         return newTags;
       };
       await mutateTags(addTag(), { optimisticData: newTags, rollbackOnError: true });

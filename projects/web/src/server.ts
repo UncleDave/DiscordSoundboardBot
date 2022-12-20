@@ -80,9 +80,8 @@ app.delete('/api/customtags/delete/:id', async (req, res) => {
 });
 
 app.put('/api/customtags/editsounds', async (req, res) => {
-  console.log(req.body);
-  await req.body.added.forEach((x: string) => tagsService.addSoundToTag({ tagId: req.body.id, userId: String(req.cookies.userid), soundId: x }));
-  await req.body.deleted.forEach((x: string) => tagsService.removeSoundFromTag({ tagId: req.body.id, userId: String(req.cookies.userid), soundId: x }));
+  if (req.body.added.length) await tagsService.addSoundsToTag({ tagId: req.body.id, userId: String(req.cookies.userid), sounds: req.body.added });
+  if (req.body.deleted.length) await tagsService.removeSoundsFromTag({ tagId: req.body.id, userId: String(req.cookies.userid), sounds: req.body.deleted });
   res.sendStatus(204);
   res.end();
 });

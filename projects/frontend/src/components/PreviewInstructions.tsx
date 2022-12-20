@@ -56,9 +56,10 @@ const PreviewInstructionsMain = styled.div`
 
 interface PreviewInstructionsProps {
   setPreviewVolume: (volume: string) => void;
+  taggingModeOn: boolean;
 }
 
-const PreviewInstructions: FC<PreviewInstructionsProps> = ({ setPreviewVolume }) => {
+const PreviewInstructions: FC<PreviewInstructionsProps> = ({ setPreviewVolume, taggingModeOn }) => {
   const animateVolumeInput = useCallback((event: React.FormEvent<HTMLInputElement>) => {
     const min = Number(event.currentTarget.min);
     const max = Number(event.currentTarget.max);
@@ -67,7 +68,7 @@ const PreviewInstructions: FC<PreviewInstructionsProps> = ({ setPreviewVolume })
 
   return (
     <PreviewInstructionsMain>
-      <p>Sounds will only play through your browser</p>
+      <p>{ taggingModeOn ? 'PREVIEW ACTIVE, disable to resume tagging' : 'Sounds will only play through your browser' }</p>
       <input
         type="range"
         min={ 0 }

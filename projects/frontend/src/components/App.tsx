@@ -29,6 +29,8 @@ function getThemeFromDate(date: string) {
 
 // CHANGE DATE BACK
 // CHANGE DATE BACK
+// Consider tag prop swr hooks combine/optimize
+// Consider getting tag mutate in tag picker with getswrconfig
 const theme = getThemeFromDate('Jun');
 
 const App: FC = () => {

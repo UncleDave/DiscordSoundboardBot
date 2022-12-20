@@ -126,7 +126,8 @@ const SoundTile: FC<SoundTileProps> = ({
   }, []);
 
   const handleButtonClick = useCallback(() => {
-    if (currentlyTagging) toggleSoundOnTag(id);
+    if (currentlyTagging && preview) previewRequest(name);
+    else if (currentlyTagging) toggleSoundOnTag(id);
     else if (preview) previewRequest(name);
     else handleSoundPlayClick();
   }, [currentlyTagging, unsavedTagged, preview]);

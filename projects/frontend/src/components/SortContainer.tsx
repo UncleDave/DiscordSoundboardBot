@@ -58,7 +58,7 @@ const SortContainer: FC<SortContainerProps> = ({ showPreview, toggleSmallButtons
         discardTagged={ discardTagged }
       />
     ) : null }
-    { showPreview && <PreviewInstructions setPreviewVolume={ setPreviewVolume } /> }
+    { showPreview && <PreviewInstructions setPreviewVolume={ setPreviewVolume } taggingModeOn={ !!currentlyTagging } /> }
     <div>
       <ResizeIcon role="presentation" onClick={ toggleSmallButtons }>
         { [0, 1].map(x => <ResizeSpan key={ x } className='material-icons'>crop_square</ResizeSpan>) }

@@ -11,7 +11,7 @@ const CustomTagTileMain = styled.div<CustomTagStyleProps>`
   
   > button {
     color: white;
-    background-color: ${ props => props.theme.colors.innerB };
+    background-color: ${ props => props.color };
     border: 4px solid ${ props => props.theme.colors.borderDefault };
     border-radius: 4px;
    

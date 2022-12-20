@@ -8,10 +8,10 @@ interface TagPropsOptions {
   tagColor: string;
 }
 
-interface UpdateTagSoundOptions {
+interface UpdateTagSoundsOptions {
   userId: string;
   tagId: string;
-  soundId: string;
+  sounds: string;
 }
 
 interface RemoveTagOptions {
@@ -42,13 +42,13 @@ export class TagsService extends UsersService {
     await collection.updateOne({ userId: options.userId }, { $pull: { tags: { id: options.tagId } } });
   }
 
-  async addSoundToTag(options: UpdateTagSoundOptions): Promise<void> {
+  async addSoundsToTag(options: UpdateTagSoundsOptions): Promise<void> {
     const collection = await this.usersCollection;
-    await collection.updateOne({ userId: options.userId, 'tags.id': options.tagId }, { $addToSet: { 'tags.$.sounds': options.soundId } });
+    await collection.updateOne({ userId: options.userId, 'tags.id': options.tagId }, { $push: { 'tags.$.sounds': { $each: [...options.sounds] } } });
   }
 
-  async removeSoundFromTag(options: UpdateTagSoundOptions): Promise<void> {
+  async removeSoundsFromTag(options: UpdateTagSoundsOptions): Promise<void> {
     const collection = await this.usersCollection;
-    await collection.updateOne({ userId: options.userId, 'tags.id': options.tagId }, { $pull: { 'tags.$.sounds': options.soundId } });
+    await collection.updateOne({ userId: options.userId, 'tags.id': options.tagId }, { $pull: { 'tags.$.sounds': { $in: [...options.sounds] } } });
   }
 }
