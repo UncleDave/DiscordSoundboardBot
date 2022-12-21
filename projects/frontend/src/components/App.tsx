@@ -37,7 +37,7 @@ function getThemeFromDate(date: string) {
 const theme = getThemeFromDate('Jun');
 
 const App: FC = () => {
-  const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '' });
+  const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '', groups: 0, tags: new Array<string>() });
 
   const { data: customTags, mutate: mutateTags } = useSWR<CustomTag[]>('/api/customTags');
 
@@ -63,6 +63,21 @@ const App: FC = () => {
   const setSearchTerm = useCallback((searchTerm: string) => {
     setSortRules(oldState => ({ ...oldState, searchTerm }));
   }, [sortRules.searchTerm]);
+
+  const toggleSoundGrouping = useCallback(() => {
+    let newMode = 0;
+    if (!sortRules.groups) newMode = 1;
+    if (sortRules.groups === 1) newMode = 2;
+    setSortRules(oldState => ({ ...oldState, groups: newMode }));
+  }, [sortRules.groups]);
+
+  const toggleTagFilter = useCallback((tagId: string) => {
+    const newTagRules = [...sortRules.tags];
+    const index = newTagRules.indexOf(tagId);
+    if (index >= 0) newTagRules.splice(index, 1);
+    else newTagRules.push(tagId);
+    setSortRules(oldState => ({ ...oldState, tags: newTagRules }));
+  }, [sortRules.tags]);
 
   const [previewVolume, setPreviewVolume] = useState('.5');
   const [previewGain, setPreviewGain] = useState<GainNode | null>(null);
@@ -164,12 +179,15 @@ const App: FC = () => {
         <Nav />
         <Features
           favoritesToggled={ sortRules.favorites }
+          toggleFavs={ toggleFavs }
+          previewToggled={ showPreview }
+          toggleShowPreview={ toggleShowPreview }
           showCustomTagPicker={ showCustomTagPicker }
           toggleShowCustomTagPicker={ toggleShowCustomTagPicker }
+          customTagProps={ customTags?.map(x => ({ id: x.id, name: x.name, color: x.color })) }
+          toggleSoundGrouping={ toggleSoundGrouping }
+          toggleTagFilter={ toggleTagFilter }
           disableEditTagsButton={ disableEditTagsButton }
-          previewToggled={ showPreview }
-          toggleFavs={ toggleFavs }
-          toggleShowPreview={ toggleShowPreview }
           setSearchTerm={ setSearchTerm }
         />
         <SortContainer
@@ -191,7 +209,7 @@ const App: FC = () => {
         <ButtonContainer
           preview={ showPreview }
           previewRequest={ previewRequest }
-          sortRules={ { favorites: sortRules.favorites, small: sortRules.small, searchTerm: sortRules.searchTerm } }
+          sortRules={ { favorites: sortRules.favorites, small: sortRules.small, searchTerm: sortRules.searchTerm, groups: sortRules.groups, tags: sortRules.tags } }
           customTags={ customTags ?? [] }
           currentlyTagging={ currentlyTagging }
           unsavedTagged={ unsavedTagged }

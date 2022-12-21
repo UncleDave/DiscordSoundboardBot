@@ -1,0 +1,40 @@
+import React, { FC, useCallback, useState } from 'react';
+import styled from 'styled-components';
+import { button, filterButton } from '../../styles/mixins';
+
+interface ButtonMainProps {
+  color: string;
+  toggled: boolean;
+}
+
+const ButtonMain = styled.button<ButtonMainProps>`
+  ${ button }
+  ${ filterButton }
+
+  text-shadow: 1px 1px 3px ${ props => props.theme.colors.shadowDefault };
+  background-color: ${ props => props.color };
+  ${ props => props.toggled ? `border-color: ${ props.theme.colors.borderGold }` : null };
+`;
+
+interface TagFilterButtonProps {
+  id: string;
+  name: string;
+  color: string;
+  toggleTagFilter: (tagId: string) => void
+}
+
+const TagFilterButton: FC<TagFilterButtonProps> = ({ id, name, color, toggleTagFilter }) => {
+  const [toggled, setToggled] = useState(false);
+
+  const handleClick = useCallback(() => {
+    setToggled(!toggled);
+  }, [toggled]);
+
+  return (
+    <ButtonMain color={ color } toggled={ toggled } onClick={ () => { toggleTagFilter(id); handleClick(); } }>
+      { name }
+    </ButtonMain>
+  );
+};
+
+export default TagFilterButton;

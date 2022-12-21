@@ -23,6 +23,33 @@ const ButtonContainerMain = styled.div`
   }
 `;
 
+function sortSoundGroups(sounds: Sound[], sortMode: number, customTags: CustomTag[]) {
+  const soundList = [...sounds];
+
+  if (!sortMode) return soundList;
+
+  const idsGroupedByTag = customTags.map(x => [...x.sounds]);
+
+  const allTaggedSoundsGrouped = idsGroupedByTag.reduce((groupedList, group) => {
+    const total = [...groupedList];
+    group.forEach(sound => {
+      const soundButton = soundList.find(x => x.id === sound);
+      if (soundButton) total.push(soundButton);
+    });
+    return total;
+  }, new Array<Sound>());
+
+  const allTagged = idsGroupedByTag.reduce((prev, curr) => {
+    prev.push(...curr);
+    return prev;
+  }, []);
+
+  const unTagged = soundList.filter(x => !allTagged.includes(x.id));
+
+  if (sortMode === 1) return [...allTaggedSoundsGrouped, ...unTagged];
+  return [...unTagged, ...allTaggedSoundsGrouped];
+}
+
 interface ButtonContainerProps {
   preview: boolean;
   previewRequest: (soundName: string) => void;
@@ -30,6 +57,8 @@ interface ButtonContainerProps {
     favorites: boolean;
     small: boolean;
     searchTerm: string;
+    groups: number;
+    tags: string[];
   }
   customTags: CustomTag[];
   currentlyTagging: TagProps | null;
@@ -40,7 +69,7 @@ interface ButtonContainerProps {
 const ButtonContainer: FC<ButtonContainerProps> = ({
   preview,
   previewRequest,
-  sortRules: { favorites, small, searchTerm },
+  sortRules: { favorites, small, searchTerm, groups, tags },
   customTags,
   currentlyTagging,
   unsavedTagged,
@@ -82,7 +111,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
     return (
       <ButtonContainerMain>
         { theme.name === 'halloween' && <FullMoon /> }
-        { sounds.map(x => {
+        { sortSoundGroups(sounds, groups, customTags).map(x => {
           let tagColor;
           const savedTag = customTags.find(tag => tag.sounds.includes(x.id));
           if (savedTag && savedTag?.id !== currentlyTagging?.id && unsavedTagged.includes(x.id)) tagColor = currentlyTagging?.color;
@@ -90,6 +119,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
           else if (savedTag?.id === currentlyTagging?.id && !unsavedTagged.includes(x.id)) tagColor = undefined;
           else if (unsavedTagged.includes(x.id)) tagColor = currentlyTagging?.color;
 
+          if (tags.length && (!savedTag || !tags.includes(savedTag.id))) return null;
           if (favorites && !x.isFavorite) return null;
           if (searchTerm && !x.name.toUpperCase().includes(searchTerm)) return null;
 

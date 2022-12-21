@@ -1,5 +1,8 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
+import TagProps from '../../models/tag-props';
+import GroupTagsButton from './GroupTagsButton';
+import TagFilterButton from './TagFilterButton';
 import * as mixins from '../../styles/mixins';
 
 const OptionsFiltersContainerMain = styled.div`
@@ -43,11 +46,14 @@ const AddSoundButton = styled.button<ButtonProps>`
 interface OptionsFiltersContainerProps {
   favoritesToggled: boolean;
   toggleFavs: () => void;
-  showCustomTagPicker: boolean;
-  toggleShowCustomTagPicker: () => void;
-  disableEditTagsButton: boolean;
   previewToggled: boolean;
   toggleShowPreview: () => void;
+  showCustomTagPicker: boolean;
+  toggleShowCustomTagPicker: () => void;
+  customTagProps: TagProps[] | undefined;
+  toggleSoundGrouping: () => void;
+  toggleTagFilter: (tagId: string) => void;
+  disableEditTagsButton: boolean;
   disableAddSoundButton: boolean;
   showAddSound: boolean;
   setShowAddSound: (set: boolean) => void;
@@ -58,6 +64,9 @@ const OptionsFiltersContainer: FC<OptionsFiltersContainerProps> = ({
   toggleFavs,
   showCustomTagPicker,
   toggleShowCustomTagPicker,
+  customTagProps,
+  toggleSoundGrouping,
+  toggleTagFilter,
   disableEditTagsButton,
   previewToggled,
   toggleShowPreview,
@@ -73,6 +82,8 @@ const OptionsFiltersContainer: FC<OptionsFiltersContainerProps> = ({
       >
         Favorites
       </ButtonToggle>
+      <GroupTagsButton toggleSoundGrouping={ toggleSoundGrouping } />
+      { customTagProps?.map(x => <TagFilterButton key={ x.id } id={ x.id } name={ x.name } color={ x.color } toggleTagFilter={ toggleTagFilter } />)}
     </div>
     <div>
       { disableEditTagsButton ? <p>Finish edit/tagging to toggle tag picker</p> : (

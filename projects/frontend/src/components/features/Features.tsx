@@ -4,6 +4,7 @@ import AddSoundDialog from './AddSoundDialog';
 import SearchContainer from './SearchContainer';
 import OptionsFiltersContainer from './OptionsFiltersContainer';
 import SkipContainer from './SkipContainer';
+import TagProps from '../../models/tag-props';
 import { candyCaneBG } from '../../styles/mixins';
 
 const FeaturesContainer = styled.div`
@@ -32,16 +33,31 @@ const FiltersContainer = styled.div`
 
 interface FeaturesProps {
   favoritesToggled: boolean
-  showCustomTagPicker: boolean;
-  toggleShowCustomTagPicker: () => void;
-  disableEditTagsButton: boolean;
-  previewToggled: boolean;
+  previewToggled: boolean
   toggleFavs: () => void;
   toggleShowPreview: () => void;
+  showCustomTagPicker: boolean;
+  toggleShowCustomTagPicker: () => void;
+  customTagProps: TagProps[] | undefined;
+  toggleSoundGrouping: () => void;
+  toggleTagFilter: (tagId: string) => void;
+  disableEditTagsButton: boolean;
   setSearchTerm: (search: string) => void;
 }
 
-const Features: FC<FeaturesProps> = ({ favoritesToggled, showCustomTagPicker, toggleShowCustomTagPicker, disableEditTagsButton, previewToggled, toggleFavs, toggleShowPreview, setSearchTerm }) => {
+const Features: FC<FeaturesProps> = ({
+  favoritesToggled,
+  previewToggled,
+  toggleFavs,
+  toggleShowPreview,
+  showCustomTagPicker,
+  toggleShowCustomTagPicker,
+  customTagProps,
+  toggleSoundGrouping,
+  toggleTagFilter,
+  disableEditTagsButton,
+  setSearchTerm,
+}) => {
   const [showAddSound, setShowAddSound] = useState(false);
   const [disableAddSoundButton, setDisableAddSoundButton] = useState(false);
 
@@ -55,6 +71,9 @@ const Features: FC<FeaturesProps> = ({ favoritesToggled, showCustomTagPicker, to
           toggleFavs={ toggleFavs }
           showCustomTagPicker={ showCustomTagPicker }
           toggleShowCustomTagPicker={ toggleShowCustomTagPicker }
+          customTagProps={ customTagProps }
+          toggleSoundGrouping={ toggleSoundGrouping }
+          toggleTagFilter={ toggleTagFilter }
           disableEditTagsButton={ disableEditTagsButton }
           previewToggled={ previewToggled }
           toggleShowPreview={ toggleShowPreview }
