@@ -3,17 +3,17 @@ import styled from 'styled-components';
 import { button, filterButton } from '../styles/mixins';
 
 interface TaggingInstructionsMainProps {
-  color: string;
+  tagColor: string;
 }
 
 const TaggingInstructionsMain = styled.div<TaggingInstructionsMainProps>`
   display: flex;
   align-items: center;
-  flex-grow: 2;
+  flex-grow: 0.5;
   justify-content: center;
   
   > p {
-    color: ${ props => props.color };
+    color: ${ props => props.tagColor };
     font-weight: bold;
     text-shadow: 2px 2px 3px ${ props => props.theme.colors.shadowDefault };
   }
@@ -34,7 +34,7 @@ interface TaggingInstructionsProps {
 }
 
 const TaggingInstructions: FC<TaggingInstructionsProps> = ({ tagName, tagColor, saveTagged, discardTagged }) => (
-  <TaggingInstructionsMain color={ tagColor }>
+  <TaggingInstructionsMain tagColor={ tagColor }>
     <p>
       { `Currently tagging sounds for: ${ tagName }` }
     </p>

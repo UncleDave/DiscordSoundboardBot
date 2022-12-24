@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import tagColors from './tag-colors';
+import tagColors from '../../tag-colors';
 import { button } from '../../styles/mixins';
 
 const ColorPickerMain = styled.div`
@@ -29,7 +29,7 @@ const ColorTile = styled.button<ColorTileProps>`
 `;
 
 interface CustomTagColorPickerProps {
-  selectColor: (color: string) => void;
+  selectColor: (colorId: string) => void;
 }
 
 const CustomTagColorPicker: FC<CustomTagColorPickerProps> = ({ selectColor }) => (

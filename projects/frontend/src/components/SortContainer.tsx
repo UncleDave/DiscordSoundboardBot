@@ -16,6 +16,18 @@ const SortToolbar = styled.div`
   }
 `;
 
+interface TagModeColorBarProps {
+  tagColor: string;
+}
+
+const TagModeColorBar = styled.span<TagModeColorBarProps>`
+  height: 25px;
+  flex-grow: 2;
+  border-radius: 3px;
+  margin: 0px 20px;
+  background-color: ${ props => props.tagColor };
+`;
+
 const ResizeIcon = styled.div`
   ${ iconButton }
 `;
@@ -50,6 +62,7 @@ interface SortContainerProps {
 
 const SortContainer: FC<SortContainerProps> = ({ showPreview, toggleSmallButtons, setPreviewVolume, currentlyTagging, saveTagged, discardTagged }) => (
   <SortToolbar>
+    { currentlyTagging && <TagModeColorBar tagColor={ currentlyTagging.color } /> }
     { currentlyTagging ? (
       <TaggingInstructions
         tagName={ currentlyTagging.name }
@@ -59,6 +72,7 @@ const SortContainer: FC<SortContainerProps> = ({ showPreview, toggleSmallButtons
       />
     ) : null }
     { showPreview && <PreviewInstructions setPreviewVolume={ setPreviewVolume } taggingModeOn={ !!currentlyTagging } /> }
+    { currentlyTagging && <TagModeColorBar tagColor={ currentlyTagging.color } /> }
     <div>
       <ResizeIcon role="presentation" onClick={ toggleSmallButtons }>
         { [0, 1].map(x => <ResizeSpan key={ x } className='material-icons'>crop_square</ResizeSpan>) }

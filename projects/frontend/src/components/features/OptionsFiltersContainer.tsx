@@ -31,6 +31,13 @@ const ButtonToggle = styled.button<ButtonProps>`
   ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
 `;
 
+const EditTagsButton = styled(ButtonToggle)`
+  text-shadow: 1px 1px 3px ${ props => props.theme.colors.shadowDefault };
+  
+  background: rgb(249,139,139);
+  background: linear-gradient(90deg, rgba(249,139,139,1) 0%, rgba(252,250,133,1) 20%, rgba(128,254,138,1) 40%, rgba(151,160,255,1) 60%, rgba(255,177,251,1) 80%, rgba(255,142,165,1) 100%);
+`;
+
 const AddSoundButton = styled.button<ButtonProps>`
   ${ mixins.filterButton }
   
@@ -87,12 +94,12 @@ const OptionsFiltersContainer: FC<OptionsFiltersContainerProps> = ({
     </div>
     <div>
       { disableEditTagsButton ? <p>Finish edit/tagging to toggle tag picker</p> : (
-        <ButtonToggle
+        <EditTagsButton
           toggled={ showCustomTagPicker }
           onClick={ toggleShowCustomTagPicker }
         >
           Edit Custom Tags
-        </ButtonToggle>
+        </EditTagsButton>
       ) }
       <ButtonToggle
         toggled={ previewToggled }

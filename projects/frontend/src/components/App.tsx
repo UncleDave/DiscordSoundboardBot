@@ -5,7 +5,7 @@ import Nav from './nav/Nav';
 import Features from './features/Features';
 import ButtonContainer from './ButtonContainer';
 import SortContainer from './SortContainer';
-import CustomTagPicker from './custom-tags/CustomTagPicker';
+import CustomTagPicker from './custom-tags/TagPicker';
 import * as themes from '../styles/themes';
 import GlobalStyle from '../styles/global-style';
 import Snowflakes from './decorative/Snowflakes';
@@ -29,9 +29,8 @@ function getThemeFromDate(date: string) {
 
 // CHANGE DATE BACK
 // CHANGE DATE BACK
-// Consider tag prop swr hooks combine/optimize
 // Consider getting tag mutate in tag picker with getswrconfig
-// Get rid of instances of passing soundName for playback etc.
+// Change DB tag color to IDs to allow for future color changes
 // Custom Tags QOL shit
 
 const theme = getThemeFromDate('Jun');

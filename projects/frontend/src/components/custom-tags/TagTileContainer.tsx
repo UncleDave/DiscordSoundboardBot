@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled, { css } from 'styled-components';
-import CustomTagTile from './CustomTagTile';
+import CustomTagTile from './TagTile';
 import CustomTag from '../../models/custom-tag';
 import { button } from '../../styles/mixins';
 

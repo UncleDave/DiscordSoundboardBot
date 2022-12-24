@@ -2,8 +2,8 @@ import React, { FC, useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { KeyedMutator } from 'swr';
 import CustomTag from '../../models/custom-tag';
-import CustomTagToolbar from './CustomTagToolbar';
-import CustomTagTileContainer from './CustomTagTileContainer';
+import CustomTagToolbar from './TagToolbar';
+import CustomTagTileContainer from './TagTileContainer';
 
 const CustomTagPickerMain = styled.div`
   display: flex;
@@ -26,12 +26,12 @@ const ColumnDiv = styled.div`
 
 interface CustomTagPickerProps {
   customTags: CustomTag[];
-  mutateTags: KeyedMutator<CustomTag[]>;
   setDisableEditTagsButton: (disable: boolean) => void;
   beginTagging: (tagId: string) => void;
+  mutateTags: KeyedMutator<CustomTag[]>
 }
 
-const CustomTagPicker: FC<CustomTagPickerProps> = ({ customTags, mutateTags, setDisableEditTagsButton, beginTagging }) => {
+const CustomTagPicker: FC<CustomTagPickerProps> = ({ customTags, setDisableEditTagsButton, beginTagging, mutateTags }) => {
   const [editMode, setEditMode] = useState(false);
   const [currentlyEditing, setCurrentlyEditing] = useState<CustomTag | null>(null);
   const handleEditTagClick = useCallback((id: string) => {

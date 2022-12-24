@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { KeyedMutator } from 'swr';
 import { button, filterButton, textInput } from '../../styles/mixins';
 import CustomTag from '../../models/custom-tag';
-import CustomTagColorPicker from './CustomTagColorPicker';
+import CustomTagColorPicker from './TagColorPicker';
 
 const ToolbarMain = styled.div`
   display: flex;
@@ -105,35 +105,26 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
     setShowConfirmDelete(false);
   }, []);
 
-  const addTagRequest = useCallback(async () => {
-    if (customTags) {
-      const id = uuidv4();
-      const tag = { id, name: nameInput, color: tagColor, sounds: [] };
-      const newTags = [...customTags, tag];
-      const addTag = async () => {
-        await fetch(`/api/customTags/create/${ id }/${ nameInput }/${ `%23${ tagColor.split('#')[1] }` }`, { method: 'POST' });
-        return newTags;
-      };
-      await mutateTags(addTag(), { optimisticData: newTags, rollbackOnError: true });
-      resetToolbar();
-    }
-  }, [nameInput, customTags, tagColor]);
-
-  const editTagRequest = useCallback(async () => {
+  const addOrEditTagRequest = useCallback(async () => {
+    let tag: CustomTag = { id: '', name: nameInput, color: tagColor, sounds: [] };
+    let route = 'create';
+    let newTags = [...customTags];
     if (customTags && currentlyEditing) {
-      const tag = customTags.find(x => x.id === currentlyEditing.id);
-      if (tag) {
-        const newTags = [...customTags];
-        const tagIndex = newTags.findIndex(x => x.id === tag.id);
-        newTags[tagIndex] = { ...(tag), name: nameInput };
-        const editTag = async () => {
-          await fetch(`/api/customTags/edit/${ tag.id }/${ nameInput }/${ `%23${ tagColor.split('#')[1] }` }`, { method: 'POST' });
-          return newTags;
-        };
-        await mutateTags(editTag(), { optimisticData: newTags, rollbackOnError: true });
-        resetToolbar();
-      }
+      const foundTag = customTags.find(x => x.id === currentlyEditing.id);
+      if (foundTag) tag = foundTag;
+      route = 'edit';
+      newTags[newTags.findIndex(x => x.id === tag.id)] = { ...(tag), name: nameInput, color: tagColor };
+    } else if (customTags) {
+      const id = uuidv4();
+      tag.id = id;
+      newTags = [...newTags, tag];
     }
+    const tagRequest = async () => {
+      await fetch(`/api/customTags/${ route }/${ tag.id }/${ nameInput }/${ `%23${ tagColor.split('#')[1] }` }`, { method: 'POST' });
+      return newTags;
+    };
+    await mutateTags(tagRequest(), { optimisticData: newTags, rollbackOnError: true });
+    resetToolbar();
   }, [nameInput, customTags, currentlyEditing, tagColor]);
 
   const deleteTagRequest = useCallback(async () => {
@@ -162,7 +153,7 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
         <ColorButton color={ tagColor } onClick={ () => setShowColorPicker(!showColorPicker) }>
           { showColorPicker ? <CustomTagColorPicker selectColor={ selectColor } /> : null }
         </ColorButton>
-        <ToolbarButton onClick={ () => currentlyEditing ? editTagRequest() : addTagRequest() }>
+        <ToolbarButton onClick={ addOrEditTagRequest }>
           Save
         </ToolbarButton>
         <ToolbarButton onClick={ resetToolbar }>
