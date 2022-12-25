@@ -81,7 +81,7 @@ const Features: FC<FeaturesProps> = ({
           showAddSound={ showAddSound }
           setShowAddSound={ setShowAddSound }
         />
-        { showAddSound ? <AddSoundDialog setShowAddsound={ setShowAddSound } setDisableAddSoundButton={ setDisableAddSoundButton } /> : null }
+        { showAddSound && <AddSoundDialog setShowAddsound={ setShowAddSound } setDisableAddSoundButton={ setDisableAddSoundButton } /> }
       </FiltersContainer>
     </FeaturesContainer>
   );

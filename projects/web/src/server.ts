@@ -37,6 +37,11 @@ app.post('/logout', (req, res) => {
 });
 
 app.use(DiscordAuth);
+app.use(async (req, res, next) => {
+  const groupRule = await tagsService.getGroupsPref(String(req.cookies.userid));
+  res.cookie('groupspref', groupRule);
+  next();
+});
 
 app.use('/api', soundsRouter(soundsService, favoritesService));
 app.use('/api/favorites', favoritesRouter(favoritesService));

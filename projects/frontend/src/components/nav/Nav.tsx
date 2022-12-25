@@ -84,9 +84,9 @@ const Nav: FC = () => {
 
   return (
     <NavMain>
-      { theme.name === 'america' ? <UsaNavImg src='usanav.png' /> : null }
+      { theme.name === 'america' && <UsaNavImg src='usanav.png' /> }
       { theme.name === 'christmas' ? [0, 1].map(x => <ChristmasLeaves key={ x } />) : null }
-      { theme.name === 'christmas' ? <ChristmasLights /> : null }
+      { theme.name === 'christmas' && <ChristmasLights /> }
       <NavLeft>
         <Title>
           <h1>{ getTitleFromTheme(theme.name) }</h1>

@@ -57,7 +57,7 @@ const CustomTagTileContainer: FC<CustomTagTileContainerProps> = ({ customTags, e
         beginTagging={ beginTagging }
       />
     )) }
-    { (editMode && !currentlyEditing) ? <EmptyNewTag disabled>??</EmptyNewTag> : null }
+    { (editMode && !currentlyEditing) && <EmptyNewTag disabled>??</EmptyNewTag> }
   </TagsContainer>
 );
 

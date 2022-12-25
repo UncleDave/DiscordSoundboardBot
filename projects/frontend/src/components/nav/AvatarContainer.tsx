@@ -50,7 +50,7 @@ const AvatarContainer: FC<AvatarContainerProps> = ({ showLogoutMenu, setShowLogo
         role="presentation"
         onClick={ () => setShowLogoutMenu(!showLogoutMenu) }
       />
-      { showLogoutMenu ? <LogoutMenu /> : null }
+      { showLogoutMenu && <LogoutMenu /> }
     </AvatarContainerMain>
   );
 };

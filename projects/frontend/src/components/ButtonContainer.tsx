@@ -23,10 +23,10 @@ const ButtonContainerMain = styled.div`
   }
 `;
 
-function sortSoundGroups(sounds: Sound[], sortMode: number, customTags: CustomTag[]) {
+function sortSoundGroups(sounds: Sound[], sortMode: string, customTags: CustomTag[]) {
   const soundList = [...sounds];
 
-  if (!sortMode) return soundList;
+  if (sortMode === 'none') return soundList;
 
   const idsGroupedByTag = customTags.map(x => [...x.sounds]);
 
@@ -46,7 +46,7 @@ function sortSoundGroups(sounds: Sound[], sortMode: number, customTags: CustomTa
 
   const unTagged = soundList.filter(x => !allTagged.includes(x.id));
 
-  if (sortMode === 1) return [...allTaggedSoundsGrouped, ...unTagged];
+  if (sortMode === 'start') return [...allTaggedSoundsGrouped, ...unTagged];
   return [...unTagged, ...allTaggedSoundsGrouped];
 }
 
@@ -57,7 +57,7 @@ interface ButtonContainerProps {
     favorites: boolean;
     small: boolean;
     searchTerm: string;
-    groups: number;
+    groups: string;
     tags: string[];
   }
   customTags: CustomTag[];
@@ -91,7 +91,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
       .catch();
   }, 2000, true), []);
 
-  const updateFavoritesRequest = useCallback(async (soundName: string) => {
+  const updateFavoritesRequest = useCallback((soundName: string) => {
     if (sounds) {
       const sound = sounds.find(x => x.name === soundName);
       if (sound) {
@@ -99,10 +99,10 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
         const soundIndex = newSounds.findIndex(x => x.id === sound?.id);
         newSounds[soundIndex] = { ...(sound), isFavorite: !sound?.isFavorite };
         const updateFav = async () => {
-          await fetch(`/api/favorites/${ sound?.id }`, { method: sound?.isFavorite ? 'DELETE' : 'PUT' });
+          fetch(`/api/favorites/${ sound?.id }`, { method: sound?.isFavorite ? 'DELETE' : 'PUT' });
           return newSounds;
         };
-        await mutateSounds(updateFav(), { optimisticData: newSounds, rollbackOnError: true });
+        mutateSounds(updateFav(), { optimisticData: newSounds, rollbackOnError: true });
       }
     }
   }, [sounds]);
@@ -116,7 +116,6 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
           const savedTag = customTags.find(tag => tag.sounds.includes(x.id));
           if (savedTag && savedTag?.id !== currentlyTagging?.id && unsavedTagged.includes(x.id)) tagColor = currentlyTagging?.color;
           else if (savedTag && savedTag?.id !== currentlyTagging?.id) tagColor = savedTag?.color;
-          else if (savedTag?.id === currentlyTagging?.id && !unsavedTagged.includes(x.id)) tagColor = undefined;
           else if (unsavedTagged.includes(x.id)) tagColor = currentlyTagging?.color;
 
           if (tags.length && (!savedTag || !tags.includes(savedTag.id))) return null;

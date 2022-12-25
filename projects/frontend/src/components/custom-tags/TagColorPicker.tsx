@@ -34,7 +34,7 @@ interface CustomTagColorPickerProps {
 
 const CustomTagColorPicker: FC<CustomTagColorPickerProps> = ({ selectColor }) => (
   <ColorPickerMain>
-    { tagColors.map(x => <ColorTile onClick={ () => selectColor(x.hex) } color={ x.hex } />) }
+    { tagColors.map(x => <ColorTile onClick={ () => selectColor(x) } color={ x } />) }
   </ColorPickerMain>
 );
 

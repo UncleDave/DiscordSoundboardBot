@@ -13,7 +13,7 @@ const ButtonMain = styled.button<ButtonMainProps>`
 
   text-shadow: 1px 1px 3px ${ props => props.theme.colors.shadowDefault };
   background-color: ${ props => props.color };
-  ${ props => props.toggled ? `border-color: ${ props.theme.colors.borderGold }` : null };
+  ${ props => props.toggled ? `border-color: ${ props.theme.colors.borderGreen }` : null };
 `;
 
 interface TagFilterButtonProps {

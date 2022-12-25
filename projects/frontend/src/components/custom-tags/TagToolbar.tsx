@@ -120,10 +120,10 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
       newTags = [...newTags, tag];
     }
     const tagRequest = async () => {
-      await fetch(`/api/customTags/${ route }/${ tag.id }/${ nameInput }/${ `%23${ tagColor.split('#')[1] }` }`, { method: 'POST' });
+      fetch(`/api/customTags/${ route }/${ tag.id }/${ nameInput }/${ `%23${ tagColor.split('#')[1] }` }`, { method: 'POST' });
       return newTags;
     };
-    await mutateTags(tagRequest(), { optimisticData: newTags, rollbackOnError: true });
+    mutateTags(tagRequest(), { optimisticData: newTags, rollbackOnError: true });
     resetToolbar();
   }, [nameInput, customTags, currentlyEditing, tagColor]);
 
@@ -131,10 +131,10 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
     if (customTags && currentlyEditing) {
       const newTags = customTags.filter(x => x.id !== currentlyEditing.id);
       const deleteTag = async () => {
-        await fetch(`/api/customTags/delete/${ currentlyEditing.id }`, { method: 'DELETE' });
+        fetch(`/api/customTags/delete/${ currentlyEditing.id }`, { method: 'DELETE' });
         return newTags;
       };
-      await mutateTags(deleteTag(), { optimisticData: newTags, rollbackOnError: true });
+      mutateTags(deleteTag(), { optimisticData: newTags, rollbackOnError: true });
       resetToolbar();
     }
   }, [customTags, currentlyEditing]);
@@ -151,7 +151,7 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
           <input type='text' value={ nameInput } onChange={ event => setNameInput(event.currentTarget.value) } />
         </NameField>
         <ColorButton color={ tagColor } onClick={ () => setShowColorPicker(!showColorPicker) }>
-          { showColorPicker ? <CustomTagColorPicker selectColor={ selectColor } /> : null }
+          { showColorPicker && <CustomTagColorPicker selectColor={ selectColor } /> }
         </ColorButton>
         <ToolbarButton onClick={ addOrEditTagRequest }>
           Save
@@ -159,16 +159,16 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
         <ToolbarButton onClick={ resetToolbar }>
           Discard Changes
         </ToolbarButton>
-        { currentlyEditing ? (
+        { currentlyEditing && (
           <ToolbarButton onClick={ () => setShowConfirmDelete(!showConfirmDelete) }>
             { showConfirmDelete ? 'Cancel Delete' : 'Delete' }
           </ToolbarButton>
-        ) : null }
-        { showConfirmDelete ? (
+        ) }
+        { showConfirmDelete && (
           <ConfirmDelete onClick={ () => deleteTagRequest() }>
             Confirm Delete
           </ConfirmDelete>
-        ) : null}
+        ) }
       </>
       ) }
     </ToolbarMain>

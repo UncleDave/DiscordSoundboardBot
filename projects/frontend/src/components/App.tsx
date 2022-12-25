@@ -12,6 +12,7 @@ import Snowflakes from './decorative/Snowflakes';
 import Fireworks from './decorative/Fireworks';
 import CustomTag from '../models/custom-tag';
 import TagProps from '../models/tag-props';
+import usePrefs from '../hooks/use-prefs';
 
 const AppMain = styled.div`
   display: flex;
@@ -29,16 +30,15 @@ function getThemeFromDate(date: string) {
 
 // CHANGE DATE BACK
 // CHANGE DATE BACK
-// Consider getting tag mutate in tag picker with getswrconfig
-// Change DB tag color to IDs to allow for future color changes
 // Custom Tags QOL shit
 
 const theme = getThemeFromDate('Jun');
 
 const App: FC = () => {
-  const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '', groups: 0, tags: new Array<string>() });
+  const prefs = usePrefs();
+  const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '', groups: prefs.groups, tags: new Array<string>() });
 
-  const { data: customTags, mutate: mutateTags } = useSWR<CustomTag[]>('/api/customTags');
+  const { data: customTags, mutate: mutateTags } = useSWR<CustomTag[]>('/api/customtags');
 
   const toggleSmallButtons = useCallback(() => {
     setSortRules(oldState => ({ ...oldState, small: !oldState.small }));
@@ -63,11 +63,12 @@ const App: FC = () => {
     setSortRules(oldState => ({ ...oldState, searchTerm }));
   }, [sortRules.searchTerm]);
 
-  const toggleSoundGrouping = useCallback(() => {
-    let newMode = 0;
-    if (!sortRules.groups) newMode = 1;
-    if (sortRules.groups === 1) newMode = 2;
+  const toggleSoundGrouping = useCallback(async () => {
+    let newMode = 'none';
+    if (sortRules.groups === 'none') newMode = 'start';
+    if (sortRules.groups === 'start') newMode = 'end';
     setSortRules(oldState => ({ ...oldState, groups: newMode }));
+    await fetch(`/api/customtags/setgroups/${ newMode }`, { method: 'PUT' });
   }, [sortRules.groups]);
 
   const toggleTagFilter = useCallback((tagId: string) => {
@@ -133,13 +134,13 @@ const App: FC = () => {
       const currentDeleted = oldCurrentTagSounds.filter(x => !unsavedTagged.includes(x));
       deleted.push(...currentDeleted);
 
-      const updateTagSounds = async () => {
+      const updateTagSounds = () => {
         const added = unsavedTagged.filter(x => !oldCurrentTagSounds.includes(x));
         const body = { addedId: currentlyTagging.id, added, deleted };
-        await fetch('/api/customtags/editsounds', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        fetch('/api/customtags/editsounds', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         return newCustomTags;
       };
-      await mutateTags(updateTagSounds(), { optimisticData: newCustomTags, rollbackOnError: true });
+      mutateTags(updateTagSounds(), { optimisticData: newCustomTags, rollbackOnError: true });
       setCurrentlyTagging(null);
       setUnsavedTagged([]);
       setDisableEditTagsButton(false);
@@ -197,14 +198,14 @@ const App: FC = () => {
           saveTagged={ saveTagged }
           discardTagged={ discardTagged }
         />
-        { showCustomTagPicker ? (
+        { showCustomTagPicker && (
           <CustomTagPicker
             customTags={ customTags ?? [] }
             mutateTags={ mutateTags }
             setDisableEditTagsButton={ setDisableEditTagsButton }
             beginTagging={ beginTagging }
           />
-        ) : null }
+        ) }
         <ButtonContainer
           preview={ showPreview }
           previewRequest={ previewRequest }

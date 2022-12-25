@@ -16,12 +16,15 @@ const TaggingInstructionsMain = styled.div<TaggingInstructionsMainProps>`
     color: ${ props => props.tagColor };
     font-weight: bold;
     text-shadow: 2px 2px 3px ${ props => props.theme.colors.shadowDefault };
+    margin: 0;
+    margin-right: 12px;
   }
 
   > button {
     ${ button }
     ${ filterButton }
 
+    margin: 0;
     margin-left: 12px;
   }
 `;

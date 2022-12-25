@@ -1,9 +1,10 @@
 import React, { FC, useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { button, filterButton } from '../../styles/mixins';
+import usePrefs from '../../hooks/use-prefs';
 
 interface ButtonMainProps {
-  toggled: number;
+  toggled: boolean;
 }
 
 const ButtonMain = styled.button<ButtonMainProps>`
@@ -20,23 +21,25 @@ interface GroupTagsButtonProps {
 }
 
 const GroupTagsButton: FC<GroupTagsButtonProps> = ({ toggleSoundGrouping }) => {
-  const [mode, setMode] = useState(0);
-  const [text, setText] = useState('Group Tags: Off');
+  const [mode, setMode] = useState(usePrefs().groups);
+  const [text, setText] = useState('Off');
   useEffect(() => {
-    if (!mode) setText('Group Tags: Off');
-    else if (mode === 1) setText('Group Tags: Start');
-    else setText('Group Tags: End');
+    let newText = 'Off';
+    if (mode === 'start') newText = 'Start';
+    else if (mode === 'end') newText = 'End';
+    setText(newText);
   }, [mode]);
 
   const handleClick = useCallback(() => {
-    if (!mode) setMode(1);
-    else if (mode === 1) setMode(2);
-    else setMode(0);
+    let newMode = 'none';
+    if (mode === 'none') newMode = 'start';
+    else if (mode === 'start') newMode = 'end';
+    setMode(newMode);
   }, [mode]);
 
   return (
-    <ButtonMain toggled={ mode } onClick={ () => { handleClick(); toggleSoundGrouping(); } }>
-      { text }
+    <ButtonMain toggled={ mode !== 'none' } onClick={ () => { handleClick(); toggleSoundGrouping(); } }>
+      { `Group Tags: ${ text }` }
     </ButtonMain>
   );
 };
