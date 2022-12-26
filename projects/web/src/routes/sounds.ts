@@ -13,7 +13,7 @@ function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesS
   router.get('/sounds', async (req, res) => {
     const sounds = await soundsService.getAllSounds();
     const favorites = await favoritesService.getFavorites(req.cookies.userid);
-    res.send(sounds.map(x => ({ id: x.id, name: x.name, isFavorite: favorites.indexOf(x.id) !== -1 })));
+    res.send(sounds.map(x => ({ id: x.id, name: x.name, date: x.createdAt, isFavorite: favorites.indexOf(x.id) !== -1 })));
   });
 
   router.post('/sound', (req, res) => {

@@ -5,6 +5,7 @@ export interface UserDocument {
   favorites: string[];
   tags: Tag[];
   sortPrefs: {
+    sortOrder: string;
     tagGroups: string;
   }
 }

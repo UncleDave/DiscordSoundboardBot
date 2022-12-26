@@ -7,7 +7,7 @@ const SkipContainerMain = styled.div`
   display: flex;
   justify-content: space-evenly;
   margin-top: 15px;
-  width: 100%;
+  width: 68%;
   position: relative;
   z-index: 10;
 
@@ -22,7 +22,7 @@ const SkipContainerMain = styled.div`
     border-width: 5px;
     border-radius: 3px;
     min-height: 70px;
-    min-width: 45vw;
+    width: 50%;
     margin: 6px 6px;
   }
 

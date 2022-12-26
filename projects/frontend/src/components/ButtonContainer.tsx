@@ -23,10 +23,22 @@ const ButtonContainerMain = styled.div`
   }
 `;
 
-function sortSoundGroups(sounds: Sound[], sortMode: string, customTags: CustomTag[]) {
+function sortByOrder(sounds: Sound[], sortOrder: string) {
+  const soundList = [...sounds];
+  if (sortOrder === 'A-Z') return soundList;
+
+  const compareFn = (a: Sound, b: Sound) => {
+    if (sortOrder === 'Date - New') return a.date > b.date ? -1 : 1;
+    return a.date < b.date ? -1 : 1;
+  };
+
+  return soundList.sort(compareFn);
+}
+
+function sortSoundGroups(sounds: Sound[], sortMode: string, groupMode: string, customTags: CustomTag[]) {
   const soundList = [...sounds];
 
-  if (sortMode === 'none') return soundList;
+  if (groupMode === 'none') return sortByOrder(soundList, sortMode);
 
   const idsGroupedByTag = customTags.map(x => [...x.sounds]);
 
@@ -36,7 +48,7 @@ function sortSoundGroups(sounds: Sound[], sortMode: string, customTags: CustomTa
       const soundButton = soundList.find(x => x.id === sound);
       if (soundButton) total.push(soundButton);
     });
-    return total;
+    return sortByOrder(total, sortMode);
   }, new Array<Sound>());
 
   const allTagged = idsGroupedByTag.reduce((prev, curr) => {
@@ -44,9 +56,9 @@ function sortSoundGroups(sounds: Sound[], sortMode: string, customTags: CustomTa
     return prev;
   }, []);
 
-  const unTagged = soundList.filter(x => !allTagged.includes(x.id));
+  const unTagged = sortByOrder(soundList.filter(x => !allTagged.includes(x.id)), sortMode);
 
-  if (sortMode === 'start') return [...allTaggedSoundsGrouped, ...unTagged];
+  if (groupMode === 'start') return [...allTaggedSoundsGrouped, ...unTagged];
   return [...unTagged, ...allTaggedSoundsGrouped];
 }
 
@@ -57,6 +69,7 @@ interface ButtonContainerProps {
     favorites: boolean;
     small: boolean;
     searchTerm: string;
+    sortOrder: string;
     groups: string;
     tags: string[];
   }
@@ -69,7 +82,7 @@ interface ButtonContainerProps {
 const ButtonContainer: FC<ButtonContainerProps> = ({
   preview,
   previewRequest,
-  sortRules: { favorites, small, searchTerm, groups, tags },
+  sortRules: { favorites, small, searchTerm, sortOrder, groups, tags },
   customTags,
   currentlyTagging,
   unsavedTagged,
@@ -111,7 +124,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
     return (
       <ButtonContainerMain>
         { theme.name === 'halloween' && <FullMoon /> }
-        { sortSoundGroups(sounds, groups, customTags).map(x => {
+        { sortSoundGroups(sounds, sortOrder, groups, customTags).map(x => {
           let tagColor;
           const savedTag = customTags.find(tag => tag.sounds.includes(x.id));
           if (savedTag && savedTag?.id !== currentlyTagging?.id && unsavedTagged.includes(x.id)) tagColor = currentlyTagging?.color;

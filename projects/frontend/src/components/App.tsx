@@ -36,7 +36,7 @@ const theme = getThemeFromDate('Jun');
 
 const App: FC = () => {
   const prefs = usePrefs();
-  const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '', groups: prefs.groups, tags: new Array<string>() });
+  const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '', sortOrder: prefs.sort, groups: prefs.groups, tags: new Array<string>() });
 
   const { data: customTags, mutate: mutateTags } = useSWR<CustomTag[]>('/api/customtags');
 
@@ -62,6 +62,14 @@ const App: FC = () => {
   const setSearchTerm = useCallback((searchTerm: string) => {
     setSortRules(oldState => ({ ...oldState, searchTerm }));
   }, [sortRules.searchTerm]);
+
+  const toggleSoundSortOrder = useCallback(async () => {
+    let newOrder = 'A-Z';
+    if (sortRules.sortOrder === 'A-Z') newOrder = 'Date - New';
+    else if (sortRules.sortOrder === 'Date - New') newOrder = 'Date - Old';
+    setSortRules(oldState => ({ ...oldState, sortOrder: newOrder }));
+    await fetch(`/api/setsortorder/${ newOrder }`, { method: 'PUT' });
+  }, [sortRules.sortOrder]);
 
   const toggleSoundGrouping = useCallback(async () => {
     let newMode = 'none';
@@ -189,6 +197,8 @@ const App: FC = () => {
           toggleTagFilter={ toggleTagFilter }
           disableEditTagsButton={ disableEditTagsButton }
           setSearchTerm={ setSearchTerm }
+          soundSortOrder={ sortRules.sortOrder }
+          toggleSoundSortOrder={ toggleSoundSortOrder }
         />
         <SortContainer
           showPreview={ showPreview }
@@ -209,7 +219,7 @@ const App: FC = () => {
         <ButtonContainer
           preview={ showPreview }
           previewRequest={ previewRequest }
-          sortRules={ { favorites: sortRules.favorites, small: sortRules.small, searchTerm: sortRules.searchTerm, groups: sortRules.groups, tags: sortRules.tags } }
+          sortRules={ { favorites: sortRules.favorites, small: sortRules.small, searchTerm: sortRules.searchTerm, sortOrder: sortRules.sortOrder, groups: sortRules.groups, tags: sortRules.tags } }
           customTags={ customTags ?? [] }
           currentlyTagging={ currentlyTagging }
           unsavedTagged={ unsavedTagged }

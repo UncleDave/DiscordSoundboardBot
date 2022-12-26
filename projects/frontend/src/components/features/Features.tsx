@@ -1,9 +1,9 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
-import AddSoundDialog from './AddSoundDialog';
 import SearchContainer from './SearchContainer';
 import OptionsFiltersContainer from './OptionsFiltersContainer';
 import SkipContainer from './SkipContainer';
+import OptionsContainer from './OptionsContainer';
 import TagProps from '../../models/tag-props';
 import { candyCaneBG } from '../../styles/mixins';
 
@@ -11,6 +11,14 @@ const FeaturesContainer = styled.div`
   padding: 0px 0px 14px;
   box-shadow: 0px 5px 5px 2px ${ props => props.theme.colors.shadowDefault };
   position: relative;
+
+  > div {
+    display: flex;
+
+    &:first-child {
+      padding: 0px 30px;
+    }
+  }
 
   ${ props => props.theme.name === 'christmas' && candyCaneBG };
 `;
@@ -43,6 +51,8 @@ interface FeaturesProps {
   toggleTagFilter: (tagId: string) => void;
   disableEditTagsButton: boolean;
   setSearchTerm: (search: string) => void;
+  soundSortOrder: string;
+  toggleSoundSortOrder: () => void;
 }
 
 const Features: FC<FeaturesProps> = ({
@@ -57,34 +67,33 @@ const Features: FC<FeaturesProps> = ({
   toggleTagFilter,
   disableEditTagsButton,
   setSearchTerm,
-}) => {
-  const [showAddSound, setShowAddSound] = useState(false);
-  const [disableAddSoundButton, setDisableAddSoundButton] = useState(false);
-
-  return (
-    <FeaturesContainer>
+  soundSortOrder,
+  toggleSoundSortOrder,
+}) => (
+  <FeaturesContainer>
+    <div>
       <SkipContainer />
-      <FiltersContainer>
-        <SearchContainer setSearchTerm={ setSearchTerm } />
-        <OptionsFiltersContainer
-          favoritesToggled={ favoritesToggled }
-          toggleFavs={ toggleFavs }
-          showCustomTagPicker={ showCustomTagPicker }
-          toggleShowCustomTagPicker={ toggleShowCustomTagPicker }
-          customTagProps={ customTagProps }
-          toggleSoundGrouping={ toggleSoundGrouping }
-          toggleTagFilter={ toggleTagFilter }
-          disableEditTagsButton={ disableEditTagsButton }
-          previewToggled={ previewToggled }
-          toggleShowPreview={ toggleShowPreview }
-          disableAddSoundButton={ disableAddSoundButton }
-          showAddSound={ showAddSound }
-          setShowAddSound={ setShowAddSound }
-        />
-        { showAddSound && <AddSoundDialog setShowAddsound={ setShowAddSound } setDisableAddSoundButton={ setDisableAddSoundButton } /> }
-      </FiltersContainer>
-    </FeaturesContainer>
-  );
-};
+      <OptionsContainer
+        disableEditTagsButton={ disableEditTagsButton }
+        showCustomTagPicker={ showCustomTagPicker }
+        toggleShowCustomTagPicker={ toggleShowCustomTagPicker }
+        previewToggled={ previewToggled }
+        toggleShowPreview={ toggleShowPreview }
+        toggleSoundGrouping={ toggleSoundGrouping }
+        soundSortOrder={ soundSortOrder }
+        toggleSoundSortOrder={ toggleSoundSortOrder }
+      />
+    </div>
+    <FiltersContainer>
+      <SearchContainer setSearchTerm={ setSearchTerm } />
+      <OptionsFiltersContainer
+        favoritesToggled={ favoritesToggled }
+        toggleFavs={ toggleFavs }
+        customTagProps={ customTagProps }
+        toggleTagFilter={ toggleTagFilter }
+      />
+    </FiltersContainer>
+  </FeaturesContainer>
+);
 
 export default Features;

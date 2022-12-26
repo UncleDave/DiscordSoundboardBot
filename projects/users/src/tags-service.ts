@@ -39,7 +39,7 @@ export class TagsService extends UsersService {
 
   async setGroupsPref(userId: string, groups: string): Promise<void> {
     const collection = await this.usersCollection;
-    await collection.updateOne({ userId }, { $set: { sortPrefs: { tagGroups: groups } } }, { upsert: true });
+    await collection.updateOne({ userId }, { $set: { 'sortPrefs.tagGroups': groups } }, { upsert: true });
   }
 
   async addNewTag(options: TagPropsOptions): Promise<void> {
