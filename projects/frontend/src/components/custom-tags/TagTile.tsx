@@ -22,6 +22,13 @@ const CustomTagTileMain = styled.div<CustomTagStyleProps>`
     width: 110px;
     
     ${ button }
+
+    @media only screen and (max-width: 780px) {
+      height: 70px;
+      width: 70px;
+      border: 3px solid ${ props => props.theme.colors.borderDefault };
+      border-radius: 3px;
+    }
   }
 
   > span {
@@ -34,6 +41,10 @@ const CustomTagTileMain = styled.div<CustomTagStyleProps>`
 
     &:hover {
       opacity: 100%;
+    }
+
+    @media only screen and (max-width: 780px) {
+      font-size: 1.3rem;
     }
   }
 `;

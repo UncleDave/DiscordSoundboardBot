@@ -2,7 +2,7 @@ import React, { FC, useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import { KeyedMutator } from 'swr';
-import { button, filterButton, textInput } from '../../styles/mixins';
+import * as mixins from '../../styles/mixins';
 import CustomTag from '../../models/custom-tag';
 import CustomTagColorPicker from './TagColorPicker';
 
@@ -16,37 +16,66 @@ const ToolbarMain = styled.div`
   border-radius: 4px;
   height: fit-content;
   padding-left: 20px;
+
+  @media only screen and (max-width: 780px) {
+    justify-content: center;
+    padding: 2px 6px
+  }
 `;
 
 const Dialog = styled.p`
   text-shadow: 2px 2px 3px ${ props => props.theme.colors.shadowDefault };
   font-weight: bold;
+
+  @media only screen and (max-width: 780px) {
+
+  }
+`;
+
+const ToolbarRight = styled.div`
+  display: flex;
+  align-items: center;
+  border-left: 4px solid ${ props => props.theme.colors.borderDefault };
+  margin: 0px 0px 4px 12px;
+
+  @media only screen and (max-width: 780px) {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 `;
 
 const NameField = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
-  margin-left: 16px;
-  border-left: 4px solid ${ props => props.theme.colors.borderDefault };
+  margin-left: 12px;
   
   > p {
-    margin-left: 10px;
     font-weight: bold;
     text-shadow: 2px 2px 3px ${ props => props.theme.colors.shadowDefault };
   }
 
   > input {
-    ${ textInput }
+    ${ mixins.textInput }
+    ${ mixins.textInputMobile }
 
     margin-left: 10px;
     margin-bottom: 0px;
+
+    @media only screen and (max-width: 780px) {
+      margin-left: 10px;
+    }
+  }
+
+  @media only screen and (max-width: 780px) {
+    margin-left: 8px;
   }
 `;
 
 const ToolbarButton = styled.button`
-  ${ button }
-  ${ filterButton }
+  ${ mixins.button }
+  ${ mixins.filterButton }
+  ${ mixins.filterButtonMobile }
 
   margin-left: 10px;
 `;
@@ -60,7 +89,8 @@ interface ColorButtonProps {
 }
 
 const ColorButton = styled.div<ColorButtonProps>`
-  ${ filterButton }
+  ${ mixins.filterButton }
+  ${ mixins.filterButtonMobile }
 
   min-height: 30px;
   width: 60px;
@@ -69,6 +99,10 @@ const ColorButton = styled.div<ColorButtonProps>`
   margin-left: 10px;
   background-color: ${ props => props.color };
   z-index: 10;
+
+  @media only screen and (max-width: 780px) {
+    max-height: 26px;
+  }
 `;
 
 interface CustomTagToolbarProps {
@@ -145,7 +179,7 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
         { editMode ? 'Edit tag properties' : 'Select a tag to begin tagging or create/edit a tag. ' }
       </Dialog>
       { editMode && (
-      <>
+      <ToolbarRight>
         <NameField>
           <p>Name:</p>
           <input type='text' value={ nameInput } onChange={ event => setNameInput(event.currentTarget.value) } />
@@ -169,7 +203,7 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
             Confirm Delete
           </ConfirmDelete>
         ) }
-      </>
+      </ToolbarRight>
       ) }
     </ToolbarMain>
   );

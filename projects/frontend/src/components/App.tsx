@@ -28,11 +28,7 @@ function getThemeFromDate(date: string) {
   return themes.defaultTheme;
 }
 
-// CHANGE DATE BACK
-// CHANGE DATE BACK
-// Custom Tags QOL shit
-
-const theme = getThemeFromDate('Jun');
+const theme = getThemeFromDate(new Date().toString());
 
 const App: FC = () => {
   const prefs = usePrefs();
@@ -68,7 +64,7 @@ const App: FC = () => {
     if (sortRules.sortOrder === 'A-Z') newOrder = 'Date - New';
     else if (sortRules.sortOrder === 'Date - New') newOrder = 'Date - Old';
     setSortRules(oldState => ({ ...oldState, sortOrder: newOrder }));
-    await fetch(`/api/setsortorder/${ newOrder }`, { method: 'PUT' });
+    await fetch(`/api/prefs/setsortorder/${ newOrder }`, { method: 'PUT' });
   }, [sortRules.sortOrder]);
 
   const toggleSoundGrouping = useCallback(async () => {
@@ -76,7 +72,7 @@ const App: FC = () => {
     if (sortRules.groups === 'none') newMode = 'start';
     if (sortRules.groups === 'start') newMode = 'end';
     setSortRules(oldState => ({ ...oldState, groups: newMode }));
-    await fetch(`/api/customtags/setgroups/${ newMode }`, { method: 'PUT' });
+    await fetch(`/api/prefs/setgroups/${ newMode }`, { method: 'PUT' });
   }, [sortRules.groups]);
 
   const toggleTagFilter = useCallback((tagId: string) => {
@@ -103,7 +99,6 @@ const App: FC = () => {
         setUnsavedTagged([...tag.sounds]);
         setShowCustomTagPicker(false);
         setCurrentlyTagging(tag);
-        setShowPreview(false);
         setDisableEditTagsButton(true);
       }
     }

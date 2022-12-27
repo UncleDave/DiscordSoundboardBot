@@ -7,7 +7,7 @@ const SkipContainerMain = styled.div`
   display: flex;
   justify-content: space-evenly;
   margin-top: 15px;
-  width: 68%;
+  flex-grow: 1;
   position: relative;
   z-index: 10;
 
@@ -28,6 +28,8 @@ const SkipContainerMain = styled.div`
 
   @media only screen and (max-width: 780px) {
     min-height: 15vw;
+    width: 100%;
+    margin: 8px 8px 0px;
 
     > button {
       border-width: 4px;

@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { button, filterButton } from '../../styles/mixins';
+import { button, filterButton, filterButtonMobile } from '../../styles/mixins';
 
 interface ButtonMainProps {
   color: string;
@@ -10,6 +10,7 @@ interface ButtonMainProps {
 const ButtonMain = styled.button<ButtonMainProps>`
   ${ button }
   ${ filterButton }
+  ${ filterButtonMobile }
 
   text-shadow: 1px 1px 3px ${ props => props.theme.colors.shadowDefault };
   background-color: ${ props => props.color };

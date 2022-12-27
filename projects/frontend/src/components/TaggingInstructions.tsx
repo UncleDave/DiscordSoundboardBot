@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { button, filterButton } from '../styles/mixins';
+import { button, filterButton, filterButtonMobile } from '../styles/mixins';
 
 interface TaggingInstructionsMainProps {
   tagColor: string;
@@ -23,6 +23,7 @@ const TaggingInstructionsMain = styled.div<TaggingInstructionsMainProps>`
   > button {
     ${ button }
     ${ filterButton }
+    ${ filterButtonMobile }
 
     margin: 0;
     margin-left: 12px;

@@ -21,6 +21,16 @@ const soundTileSmall = css`
   margin: 4px 4px;
 `;
 
+const soundTileSmallMobile = css`
+    font-size: 0.8rem;
+    border: 3px solid ${ props => props.theme.colors.borderDefault };
+    border-width: 3px;
+    border-radius: 2px;
+    min-width: 15vw;
+    min-height: 15vw;
+    max-width: 15vw;
+`;
+
 const selectSoundTileMainBorder = (props: any) => {
   if (props.statusBorder === 'success') return mixins.buttonGreen;
   if (props.statusBorder === 'error') return mixins.buttonRed;
@@ -62,6 +72,8 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
       min-width: 20vw;
       min-height: 20vw;
       max-width: 20vw;
+
+      ${ props => props.small && soundTileSmallMobile }
     }
   }
 
@@ -73,16 +85,16 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     top: 12px;
     opacity: ${ props => props.theme.name === 'halloween' ? '20%' : '50%' };
     
-    ${ props => props.small ? css`
-    font-size: 12px;
-    right: 8px;
-    top: 8px;
-    ` : '' }
+    ${ props => props.small && css`
+      font-size: 12px;
+      right: 8px;
+      top: 8px;
+    ` }
 
-    ${ props => props.isFavorite ? css`
+    ${ props => props.isFavorite && css`
       color:#fcc82a;
       opacity: ${ props.theme.name === 'halloween' ? '85%' : '75%' };
-    ` : '' }
+    ` }
 
     &:hover {
       opacity: 100%;
@@ -93,6 +105,12 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
       font-size: 1.4rem;
       right: 11px;
       top: 11px; 
+    
+      ${ props => props.small && css`
+        font-size: 12px;
+        right: 7px;
+        top: 7px;
+    ` }
     }
   }
 `;

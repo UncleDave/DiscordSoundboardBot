@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 import SearchContainer from './SearchContainer';
-import OptionsFiltersContainer from './OptionsFiltersContainer';
+import FiltersBar from './FiltersBar';
 import SkipContainer from './SkipContainer';
 import OptionsContainer from './OptionsContainer';
 import TagProps from '../../models/tag-props';
@@ -17,6 +17,15 @@ const FeaturesContainer = styled.div`
 
     &:first-child {
       padding: 0px 30px;
+    }
+
+    @media only screen and (max-width: 780px) {
+      flex-direction: column;
+
+      &:first-child {
+        align-items: center;
+        padding: 0px 6px;
+      }
     }
   }
 
@@ -86,7 +95,7 @@ const Features: FC<FeaturesProps> = ({
     </div>
     <FiltersContainer>
       <SearchContainer setSearchTerm={ setSearchTerm } />
-      <OptionsFiltersContainer
+      <FiltersBar
         favoritesToggled={ favoritesToggled }
         toggleFavs={ toggleFavs }
         customTagProps={ customTagProps }

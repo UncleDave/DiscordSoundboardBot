@@ -19,6 +19,11 @@ const tagButtonTemplate = css`
   margin: 3px;
   height: 110px;
   width: 110px;
+
+  @media only screen and (max-width: 780px) {
+    height: 70px;
+    width: 70px;
+  }
 `;
 
 const NewTagButton = styled.button`
