@@ -1,6 +1,5 @@
 import React, { FC, useState, useCallback, useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import useSWR from 'swr';
 import Nav from './nav/Nav';
 import Features from './features/Features';
 import ButtonContainer from './ButtonContainer';
@@ -10,9 +9,8 @@ import * as themes from '../styles/themes';
 import GlobalStyle from '../styles/global-style';
 import Snowflakes from './decorative/Snowflakes';
 import Fireworks from './decorative/Fireworks';
-import CustomTag from '../models/custom-tag';
-import TagProps from '../models/tag-props';
-import usePrefs from '../hooks/use-prefs';
+import useSortRules from '../hooks/use-sort-rules';
+import useCustomTags from '../hooks/use-custom-tags';
 
 const AppMain = styled.div`
   display: flex;
@@ -31,57 +29,35 @@ function getThemeFromDate(date: string) {
 const theme = getThemeFromDate(new Date().toString());
 
 const App: FC = () => {
-  const prefs = usePrefs();
-  const [sortRules, setSortRules] = useState({ favorites: false, small: false, searchTerm: '', sortOrder: prefs.sort, groups: prefs.groups, tags: new Array<string>() });
+  const {
+    sortRules,
+    toggleSmallButtons,
+    toggleFavs,
+    setSearchTerm,
+    toggleSoundSortOrder,
+    toggleSoundGrouping,
+    toggleTagFilter,
+  } = useSortRules();
 
-  const { data: customTags, mutate: mutateTags } = useSWR<CustomTag[]>('/api/customtags');
-
-  const toggleSmallButtons = useCallback(() => {
-    setSortRules(oldState => ({ ...oldState, small: !oldState.small }));
-  }, [sortRules.small]);
-
-  const toggleFavs = useCallback(() => {
-    setSortRules(oldState => ({ ...oldState, favorites: !oldState.favorites }));
-  }, [sortRules.favorites]);
-
-  const [showCustomTagPicker, setShowCustomTagPicker] = useState(false);
-  const toggleShowCustomTagPicker = useCallback(() => {
-    setShowCustomTagPicker(!showCustomTagPicker);
-  }, [showCustomTagPicker]);
-  const [disableEditTagsButton, setDisableEditTagsButton] = useState(false);
+  const {
+    customTags,
+    mutateTags,
+    showCustomTagPicker,
+    toggleShowCustomTagPicker,
+    disableEditTagsButton,
+    setDisableEditTagsButton,
+    unsavedTagged,
+    currentlyTagging,
+    beginTagging,
+    toggleSoundOnTag,
+    saveTagged,
+    discardTagged,
+  } = useCustomTags();
 
   const [showPreview, setShowPreview] = useState(false);
   const toggleShowPreview = useCallback(() => {
     setShowPreview(!showPreview);
   }, [showPreview]);
-
-  const setSearchTerm = useCallback((searchTerm: string) => {
-    setSortRules(oldState => ({ ...oldState, searchTerm }));
-  }, [sortRules.searchTerm]);
-
-  const toggleSoundSortOrder = useCallback(async () => {
-    let newOrder = 'A-Z';
-    if (sortRules.sortOrder === 'A-Z') newOrder = 'Date - New';
-    else if (sortRules.sortOrder === 'Date - New') newOrder = 'Date - Old';
-    setSortRules(oldState => ({ ...oldState, sortOrder: newOrder }));
-    await fetch(`/api/prefs/setsortorder/${ newOrder }`, { method: 'PUT' });
-  }, [sortRules.sortOrder]);
-
-  const toggleSoundGrouping = useCallback(async () => {
-    let newMode = 'none';
-    if (sortRules.groups === 'none') newMode = 'start';
-    if (sortRules.groups === 'start') newMode = 'end';
-    setSortRules(oldState => ({ ...oldState, groups: newMode }));
-    await fetch(`/api/prefs/setgroups/${ newMode }`, { method: 'PUT' });
-  }, [sortRules.groups]);
-
-  const toggleTagFilter = useCallback((tagId: string) => {
-    const newTagRules = [...sortRules.tags];
-    const index = newTagRules.indexOf(tagId);
-    if (index >= 0) newTagRules.splice(index, 1);
-    else newTagRules.push(tagId);
-    setSortRules(oldState => ({ ...oldState, tags: newTagRules }));
-  }, [sortRules.tags]);
 
   const [previewVolume, setPreviewVolume] = useState('.5');
   const [previewGain, setPreviewGain] = useState<GainNode | null>(null);
@@ -89,72 +65,6 @@ const App: FC = () => {
     if (previewGain)
       previewGain.gain.value = Number(previewVolume);
   }, [previewVolume, previewGain]);
-
-  const [currentlyTagging, setCurrentlyTagging] = useState<TagProps | null>(null);
-  const [unsavedTagged, setUnsavedTagged] = useState<string[]>([]);
-  const beginTagging = useCallback((tagId: string) => {
-    if (customTags) {
-      const tag = customTags.find(x => x.id === tagId);
-      if (tag) {
-        setUnsavedTagged([...tag.sounds]);
-        setShowCustomTagPicker(false);
-        setCurrentlyTagging(tag);
-        setDisableEditTagsButton(true);
-      }
-    }
-  }, [customTags]);
-
-  const toggleSoundOnTag = useCallback((soundId: string) => {
-    if (!currentlyTagging) return;
-    let newTaggedSounds = [...unsavedTagged];
-    if (newTaggedSounds.includes(soundId))
-      newTaggedSounds = unsavedTagged.filter(x => (x !== soundId));
-    else newTaggedSounds.push(soundId);
-    setUnsavedTagged(newTaggedSounds);
-  }, [currentlyTagging, unsavedTagged]);
-
-  const saveTagged = useCallback(async () => {
-    if (!customTags || !currentlyTagging) return;
-    const tagIndex = customTags.findIndex(x => x.id === currentlyTagging?.id);
-    if (customTags[tagIndex]) {
-      const oldCurrentTagSounds = [...customTags[tagIndex].sounds];
-      const newCustomTags = [...customTags];
-
-      const deleted: string[] = [];
-
-      unsavedTagged.forEach(newSound => {
-        const oldTagWithSound = newCustomTags.find(oldTag => oldTag.sounds.includes(newSound));
-        if (oldTagWithSound && oldTagWithSound.id !== currentlyTagging.id) {
-          deleted.push(newSound);
-          const soundOldIndex = oldTagWithSound.sounds.indexOf(newSound);
-          const oldTagIndex = newCustomTags.indexOf(oldTagWithSound);
-          newCustomTags[oldTagIndex].sounds.splice(soundOldIndex, 1);
-        }
-      });
-
-      newCustomTags[tagIndex].sounds = [...unsavedTagged];
-
-      const currentDeleted = oldCurrentTagSounds.filter(x => !unsavedTagged.includes(x));
-      deleted.push(...currentDeleted);
-
-      const updateTagSounds = () => {
-        const added = unsavedTagged.filter(x => !oldCurrentTagSounds.includes(x));
-        const body = { addedId: currentlyTagging.id, added, deleted };
-        fetch('/api/customtags/editsounds', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-        return newCustomTags;
-      };
-      mutateTags(updateTagSounds(), { optimisticData: newCustomTags, rollbackOnError: true });
-      setCurrentlyTagging(null);
-      setUnsavedTagged([]);
-      setDisableEditTagsButton(false);
-    }
-  }, [customTags, currentlyTagging, unsavedTagged]);
-
-  const discardTagged = useCallback(() => {
-    setCurrentlyTagging(null);
-    setUnsavedTagged([]);
-    setDisableEditTagsButton(false);
-  }, []);
 
   const previewRequest = useCallback(async (soundName: string) => {
     const soundUrl = await fetch(`/api/preview?soundName=${ soundName }`, { headers: { 'Content-Type': 'text/plain' } });
@@ -214,7 +124,7 @@ const App: FC = () => {
         <ButtonContainer
           preview={ showPreview }
           previewRequest={ previewRequest }
-          sortRules={ { favorites: sortRules.favorites, small: sortRules.small, searchTerm: sortRules.searchTerm, sortOrder: sortRules.sortOrder, groups: sortRules.groups, tags: sortRules.tags } }
+          sortRules={ sortRules }
           customTags={ customTags ?? [] }
           currentlyTagging={ currentlyTagging }
           unsavedTagged={ unsavedTagged }

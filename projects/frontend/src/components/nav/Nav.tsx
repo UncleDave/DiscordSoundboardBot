@@ -13,7 +13,7 @@ const NavMain = styled.div`
   position: relative;
   width: 100%;
 
-  z-index: 20;
+  z-index: 21;
 `;
 
 const UsaNavImg = styled.img`

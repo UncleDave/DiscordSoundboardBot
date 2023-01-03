@@ -7,6 +7,7 @@ import Sound from '../models/sound';
 import FullMoon from './decorative/FullMoon';
 import CustomTag from '../models/custom-tag';
 import TagProps from '../models/tag-props';
+import SortRules from '../models/sort-rules';
 
 const ButtonContainerMain = styled.div`
   display: flex;
@@ -65,14 +66,7 @@ function sortSoundGroups(sounds: Sound[], sortMode: string, groupMode: string, c
 interface ButtonContainerProps {
   preview: boolean;
   previewRequest: (soundName: string) => void;
-  sortRules: {
-    favorites: boolean;
-    small: boolean;
-    searchTerm: string;
-    sortOrder: string;
-    groups: string;
-    tags: string[];
-  }
+  sortRules: SortRules;
   customTags: CustomTag[];
   currentlyTagging: TagProps | null;
   unsavedTagged: string[];
