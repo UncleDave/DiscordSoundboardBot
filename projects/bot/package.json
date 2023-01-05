@@ -10,18 +10,18 @@
   },
   "dependencies": {
     "@discordjs/opus": "^0.9.0",
-    "@discordjs/voice": "^0.13.0",
+    "@discordjs/voice": "^0.14.0",
     "applicationinsights": "^2.3.6",
-    "axios": "^1.2.0",
+    "axios": "^1.2.2",
     "body-parser": "^1.20.1",
     "botman-sounds": "*",
-    "discord.js": "^13.12.0",
+    "discord.js": "^14.7.1",
     "express": "^4.18.2",
     "express-winston": "^4.2.0",
     "ffmpeg-static": "^5.1.0",
     "ts-node": "^10.8.2",
     "tweetnacl": "^1.0.3",
-    "typescript": "^4.9.3",
+    "typescript": "^4.9.4",
     "winston": "^3.8.2"
   },
   "optionalDependencies": {
@@ -31,9 +31,9 @@
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
-    "@types/express": "^4.17.14",
+    "@types/express": "^4.17.15",
     "@types/node": "^17.0.45",
-    "@types/ws": "^8.5.3",
+    "@types/ws": "^8.5.4",
     "ts-node-dev": "^2.0.0"
   }
 }
