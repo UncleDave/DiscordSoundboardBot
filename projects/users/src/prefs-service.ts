@@ -4,7 +4,7 @@ export class PrefsService extends UsersService {
   async getSortOrderPref(userId: string): Promise<string> {
     const collection = await this.usersCollection;
     const user = await collection.findOne({ userId }, { projection: { sortPrefs: 1 } });
-    return user?.sortPrefs.sortOrder ?? 'A-Z';
+    return user?.sortPrefs?.sortOrder ?? 'A-Z';
   }
 
   async setSortOrderPref(userId: string, sortOrder: string): Promise<void> {
@@ -15,7 +15,7 @@ export class PrefsService extends UsersService {
   async getGroupsPref(userId: string): Promise<string> {
     const collection = await this.usersCollection;
     const user = await collection.findOne({ userId }, { projection: { sortPrefs: 1 } });
-    return user?.sortPrefs.tagGroups ?? 'none';
+    return user?.sortPrefs?.tagGroups ?? 'none';
   }
 
   async setGroupsPref(userId: string, groups: string): Promise<void> {
