@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { button, filterButton, filterButtonMobile } from '../../styles/mixins';
+import { button, filterButton, filterButtonMobile, textShadowVisibility } from '../../styles/mixins';
 import usePrefs from '../../hooks/use-prefs';
 
 interface ButtonMainProps {
@@ -11,9 +11,10 @@ const ButtonMain = styled.button<ButtonMainProps>`
   ${ button }
   ${ filterButton }
   ${ filterButtonMobile }
+  ${ textShadowVisibility }
+
 
   min-width: 170px;
-  text-shadow: 1px 1px 3px ${ props => props.theme.colors.shadowDefault };
   ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
 
   @media only screen and (max-width: 780px) {

@@ -59,10 +59,10 @@ export default function useCustomTags() {
       const currentDeleted = oldCurrentTagSounds.filter(x => !unsavedTagged.includes(x));
       deleted.push(...currentDeleted);
 
-      const updateTagSounds = () => {
+      const updateTagSounds = async () => {
         const added = unsavedTagged.filter(x => !oldCurrentTagSounds.includes(x));
         const body = { addedId: currentlyTagging.id, added, deleted };
-        fetch('/api/customtags/editsounds', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        await fetch('/api/customtags/editsounds', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         return newCustomTags;
       };
       mutateTags(updateTagSounds(), { optimisticData: newCustomTags, rollbackOnError: true });

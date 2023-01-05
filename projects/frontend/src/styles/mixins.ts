@@ -103,3 +103,7 @@ export const flagStripesBg = css`
   background-color: #e5e5f7;
   background: repeating-linear-gradient(#f74444, #f74444 30px, #e5e5f7 30px, #e5e5f7 60px );
 `;
+
+export const textShadowVisibility = css`
+  text-shadow: 1px 1px 4px ${ props => props.theme.colors.shadowDefault };
+`;

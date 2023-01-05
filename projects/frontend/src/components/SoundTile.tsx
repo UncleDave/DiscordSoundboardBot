@@ -58,7 +58,7 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     margin: 6px 6px;
     background-color: ${ props => props.tagColor ? props.tagColor : props.theme.colors.innerA };
     word-wrap: break-word;
-    text-shadow: 1px 1px 3px ${ props => props.theme.colors.shadowDefault };
+    ${ mixins.textShadowVisibility }
   
     ${ props => props.small && soundTileSmall }
 
@@ -79,6 +79,7 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
 
   > span {
     ${ mixins.iconButton }
+    ${ mixins.textShadowVisibility }
     
     position: absolute;
     right: 12px;

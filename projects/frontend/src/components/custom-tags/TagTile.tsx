@@ -2,11 +2,11 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 import { button } from '../../styles/mixins';
 
-interface CustomTagStyleProps {
+interface TagStyleProps {
   color: string;
 }
 
-const CustomTagTileMain = styled.div<CustomTagStyleProps>`
+const TagTileMain = styled.div<TagStyleProps>`
   position: relative;
   
   > button {
@@ -49,7 +49,7 @@ const CustomTagTileMain = styled.div<CustomTagStyleProps>`
   }
 `;
 
-interface CustomTagTileProps {
+interface TagTileProps {
   id: string;
   name: string;
   color: string;
@@ -58,13 +58,13 @@ interface CustomTagTileProps {
   beginTagging: (tagId: string) => void;
 }
 
-const CustomTagTile: FC<CustomTagTileProps> = ({ id, name, color, editMode, handleEditTagClick, beginTagging }) => (
-  <CustomTagTileMain color={ color }>
+const TagTile: FC<TagTileProps> = ({ id, name, color, editMode, handleEditTagClick, beginTagging }) => (
+  <TagTileMain color={ color }>
     <button type='button' onClick={ () => editMode ? null : beginTagging(id) }>
       { name }
     </button>
     <span className='material-icons' role='presentation' onClick={ () => handleEditTagClick(id) }>edit</span>
-  </CustomTagTileMain>
+  </TagTileMain>
 );
 
-export default CustomTagTile;
+export default TagTile;

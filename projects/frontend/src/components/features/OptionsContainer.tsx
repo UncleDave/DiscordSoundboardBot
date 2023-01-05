@@ -55,6 +55,7 @@ const ButtonToggle = styled.button<ButtonProps>`
   ${ mixins.button }
   ${ mixins.filterButton }
   ${ mixins.filterButtonMobile }
+  ${ mixins.textShadowVisibility }
 
   @media only screen and (max-width: 780px) {
     margin-top: 2px;
@@ -64,10 +65,16 @@ const ButtonToggle = styled.button<ButtonProps>`
 `;
 
 const EditTagsButton = styled(ButtonToggle)`
-  text-shadow: 1px 1px 3px ${ props => props.theme.colors.shadowDefault };
+  ${ mixins.textShadowVisibility }
   
   background: rgb(249,139,139);
   background: linear-gradient(90deg, rgba(249,139,139,1) 0%, rgba(252,250,133,1) 20%, rgba(128,254,138,1) 40%, rgba(151,160,255,1) 60%, rgba(255,177,251,1) 80%, rgba(255,142,165,1) 100%);
+`;
+
+const DisableEditButton = styled.button`
+  ${ mixins.filterButton }
+  background: linear-gradient(90deg, rgba(249,139,139,1) 0%, rgba(252,250,133,1) 20%, rgba(128,254,138,1) 40%, rgba(151,160,255,1) 60%, rgba(255,177,251,1) 80%, rgba(255,142,165,1) 100%);
+  opacity: 0.6;
 `;
 
 const AddSoundButton = styled.button<ButtonProps>`
@@ -110,7 +117,7 @@ const OptionsContainer: FC<OptionsContainerProps> = ({
   return (
     <OptionsContainerMain>
       <ButtonRow>
-        { disableEditTagsButton ? <p>(Finish Editing)</p> : (
+        { disableEditTagsButton ? <DisableEditButton>Edit Custom Tags</DisableEditButton> : (
           <EditTagsButton
             toggled={ showCustomTagPicker }
             onClick={ toggleShowCustomTagPicker }

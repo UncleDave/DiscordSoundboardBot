@@ -106,7 +106,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
         const soundIndex = newSounds.findIndex(x => x.id === sound?.id);
         newSounds[soundIndex] = { ...(sound), isFavorite: !sound?.isFavorite };
         const updateFav = async () => {
-          fetch(`/api/favorites/${ sound?.id }`, { method: sound?.isFavorite ? 'DELETE' : 'PUT' });
+          await fetch(`/api/favorites/${ sound?.id }`, { method: sound?.isFavorite ? 'DELETE' : 'PUT' });
           return newSounds;
         };
         mutateSounds(updateFav(), { optimisticData: newSounds, rollbackOnError: true });

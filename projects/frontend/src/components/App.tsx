@@ -4,7 +4,7 @@ import Nav from './nav/Nav';
 import Features from './features/Features';
 import ButtonContainer from './ButtonContainer';
 import SortContainer from './SortContainer';
-import CustomTagPicker from './custom-tags/TagPicker';
+import TagPicker from './custom-tags/TagPicker';
 import * as themes from '../styles/themes';
 import GlobalStyle from '../styles/global-style';
 import Snowflakes from './decorative/Snowflakes';
@@ -114,7 +114,7 @@ const App: FC = () => {
           discardTagged={ discardTagged }
         />
         { showCustomTagPicker && (
-          <CustomTagPicker
+          <TagPicker
             customTags={ customTags ?? [] }
             mutateTags={ mutateTags }
             setDisableEditTagsButton={ setDisableEditTagsButton }

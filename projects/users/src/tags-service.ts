@@ -11,7 +11,7 @@ interface TagPropsOptions {
 interface AddTagSoundsOptions {
   userId: string;
   tagId: string;
-  sounds: string;
+  added: string;
 }
 
 interface RemoveTagSoundsOptions {
@@ -49,7 +49,7 @@ export class TagsService extends UsersService {
 
   async addSoundsToTag(options: AddTagSoundsOptions): Promise<void> {
     const collection = await this.usersCollection;
-    await collection.updateOne({ userId: options.userId, 'tags.id': options.tagId }, { $push: { 'tags.$.sounds': { $each: [...options.sounds] } } });
+    await collection.updateOne({ userId: options.userId, 'tags.id': options.tagId }, { $push: { 'tags.$.sounds': { $each: [...options.added] } } });
   }
 
   async removeSoundsFromTags(options: RemoveTagSoundsOptions): Promise<void> {

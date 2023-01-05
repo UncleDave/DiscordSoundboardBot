@@ -28,14 +28,14 @@ const ColorTile = styled.button<ColorTileProps>`
   width: 40px;
 `;
 
-interface CustomTagColorPickerProps {
+interface TagColorPickerProps {
   selectColor: (colorId: string) => void;
 }
 
-const CustomTagColorPicker: FC<CustomTagColorPickerProps> = ({ selectColor }) => (
+const TagColorPicker: FC<TagColorPickerProps> = ({ selectColor }) => (
   <ColorPickerMain>
-    { tagColors.map(x => <ColorTile onClick={ () => selectColor(x) } color={ x } />) }
+    { tagColors.map(x => <ColorTile key={ x } onClick={ () => selectColor(x) } color={ x } />) }
   </ColorPickerMain>
 );
 
-export default CustomTagColorPicker;
+export default TagColorPicker;

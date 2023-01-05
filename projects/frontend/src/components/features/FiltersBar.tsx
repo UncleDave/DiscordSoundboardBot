@@ -17,6 +17,7 @@ const ButtonToggle = styled.button<ButtonProps>`
   ${ mixins.button }
   ${ mixins.filterButton }
   ${ mixins.filterButtonMobile }
+  ${ mixins.textShadowVisibility }
 
   ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
 `;

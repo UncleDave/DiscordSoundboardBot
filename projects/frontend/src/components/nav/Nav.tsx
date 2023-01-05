@@ -16,6 +16,13 @@ const NavMain = styled.div`
   z-index: 21;
 `;
 
+const LeavesContainer = styled.div`
+  width: 100vw;
+  height: 100px;
+  position: absolute;
+  overflow: hidden;
+`;
+
 const UsaNavImg = styled.img`
   position: absolute;
   left: 670px;
@@ -85,7 +92,11 @@ const Nav: FC = () => {
   return (
     <NavMain>
       { theme.name === 'america' && <UsaNavImg src='usanav.png' /> }
-      { theme.name === 'christmas' ? [0, 1].map(x => <ChristmasLeaves key={ x } />) : null }
+      { theme.name === 'christmas' ? (
+        <LeavesContainer>
+          { [0, 1].map(x => <ChristmasLeaves key={ x } />) }
+        </LeavesContainer>
+      ) : null }
       { theme.name === 'christmas' && <ChristmasLights /> }
       <NavLeft>
         <Title>

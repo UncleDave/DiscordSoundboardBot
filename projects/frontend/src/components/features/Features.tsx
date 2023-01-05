@@ -49,8 +49,8 @@ const FiltersContainer = styled.div`
 `;
 
 interface FeaturesProps {
-  favoritesToggled: boolean
-  previewToggled: boolean
+  favoritesToggled: boolean;
+  previewToggled: boolean;
   toggleFavs: () => void;
   toggleShowPreview: () => void;
   showCustomTagPicker: boolean;

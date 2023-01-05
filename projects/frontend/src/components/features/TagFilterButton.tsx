@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { button, filterButton, filterButtonMobile } from '../../styles/mixins';
+import { button, filterButton, filterButtonMobile, textShadowVisibility } from '../../styles/mixins';
 
 interface ButtonMainProps {
   color: string;
@@ -11,8 +11,8 @@ const ButtonMain = styled.button<ButtonMainProps>`
   ${ button }
   ${ filterButton }
   ${ filterButtonMobile }
+  ${ textShadowVisibility }
 
-  text-shadow: 1px 1px 3px ${ props => props.theme.colors.shadowDefault };
   background-color: ${ props => props.color };
   ${ props => props.toggled ? `border-color: ${ props.theme.colors.borderGreen }` : null };
 `;

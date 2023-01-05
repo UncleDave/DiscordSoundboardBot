@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { KeyedMutator } from 'swr';
 import * as mixins from '../../styles/mixins';
 import CustomTag from '../../models/custom-tag';
-import CustomTagColorPicker from './TagColorPicker';
+import TagColorPicker from './TagColorPicker';
 
 const ToolbarMain = styled.div`
   display: flex;
@@ -80,6 +80,13 @@ const ToolbarButton = styled.button`
   margin-left: 10px;
 `;
 
+const DisabledButton = styled.button`
+  ${ mixins.filterButton }
+
+  margin-left: 10px;
+  opacity: 0.5;
+`;
+
 const ConfirmDelete = styled(ToolbarButton)`
   border-color: ${ props => props.theme.colors.borderRed };
 `;
@@ -105,18 +112,20 @@ const ColorButton = styled.div<ColorButtonProps>`
   }
 `;
 
-interface CustomTagToolbarProps {
+interface TagToolbarProps {
   editMode: boolean;
   setEditMode: (editMode: boolean) => void;
   customTags: CustomTag[];
   currentlyEditing: CustomTag | null;
   setCurrentlyEditing: (tag: CustomTag | null) => void;
+  setNewTagProps: (props: { name: string; color: string }) => void;
   mutateTags: KeyedMutator<CustomTag[]>
 }
 
-const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, customTags, currentlyEditing, setCurrentlyEditing, mutateTags }) => {
+const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, currentlyEditing, setCurrentlyEditing, setNewTagProps, mutateTags }) => {
   const [nameInput, setNameInput] = useState('');
   const [tagColor, setTagColor] = useState('');
+  const [disableSaveButton, setDisableSaveButton] = useState(true);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const selectColor = useCallback((color: string) => {
     setTagColor(color);
@@ -129,11 +138,20 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
     if (currentlyEditing) {
       setNameInput(currentlyEditing.name);
       setTagColor(currentlyEditing.color);
+      setDisableSaveButton(false);
     }
   }, [currentlyEditing, editMode]);
 
+  useEffect(() => {
+    setDisableSaveButton(!nameInput || !tagColor);
+    setNewTagProps({ name: nameInput, color: tagColor });
+  }, [nameInput, tagColor]);
+
   const resetToolbar = useCallback(() => {
     setNameInput('');
+    setTagColor('');
+    setDisableSaveButton(true);
+    setShowColorPicker(false);
     setEditMode(false);
     setCurrentlyEditing(null);
     setShowConfirmDelete(false);
@@ -154,7 +172,7 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
       newTags = [...newTags, tag];
     }
     const tagRequest = async () => {
-      fetch(`/api/customTags/${ route }/${ tag.id }/${ nameInput }/${ `%23${ tagColor.split('#')[1] }` }`, { method: 'POST' });
+      await fetch(`/api/customTags/${ route }/${ tag.id }/${ nameInput }/${ `%23${ tagColor.split('#')[1] }` }`, { method: 'POST' });
       return newTags;
     };
     mutateTags(tagRequest(), { optimisticData: newTags, rollbackOnError: true });
@@ -165,7 +183,7 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
     if (customTags && currentlyEditing) {
       const newTags = customTags.filter(x => x.id !== currentlyEditing.id);
       const deleteTag = async () => {
-        fetch(`/api/customTags/delete/${ currentlyEditing.id }`, { method: 'DELETE' });
+        await fetch(`/api/customTags/delete/${ currentlyEditing.id }`, { method: 'DELETE' });
         return newTags;
       };
       mutateTags(deleteTag(), { optimisticData: newTags, rollbackOnError: true });
@@ -185,11 +203,13 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
           <input type='text' value={ nameInput } onChange={ event => setNameInput(event.currentTarget.value) } />
         </NameField>
         <ColorButton color={ tagColor } onClick={ () => setShowColorPicker(!showColorPicker) }>
-          { showColorPicker && <CustomTagColorPicker selectColor={ selectColor } /> }
+          { showColorPicker && <TagColorPicker selectColor={ selectColor } /> }
         </ColorButton>
-        <ToolbarButton onClick={ addOrEditTagRequest }>
-          Save
-        </ToolbarButton>
+        { disableSaveButton ? <DisabledButton>Save</DisabledButton> : (
+          <ToolbarButton onClick={ addOrEditTagRequest }>
+            Save
+          </ToolbarButton>
+        ) }
         <ToolbarButton onClick={ resetToolbar }>
           Discard Changes
         </ToolbarButton>
@@ -209,4 +229,4 @@ const CustomTagToolbar: FC<CustomTagToolbarProps> = ({ editMode, setEditMode, cu
   );
 };
 
-export default CustomTagToolbar;
+export default TagToolbar;
