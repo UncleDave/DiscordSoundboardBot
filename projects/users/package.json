@@ -8,10 +8,10 @@
   },
   "dependencies": {
     "botman-mongo": "*",
-    "mongodb": "^4.12.1"
+    "mongodb": "^4.13.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.44",
-    "typescript": "^4.9.3"
+    "typescript": "^4.9.4"
   }
 }
