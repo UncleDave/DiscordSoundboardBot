@@ -1,6 +1,5 @@
 import React, { FC, useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
-import { v4 as uuidv4 } from 'uuid';
 import { KeyedMutator } from 'swr';
 import * as mixins from '../../styles/mixins';
 import CustomTag from '../../models/custom-tag';
@@ -167,12 +166,11 @@ const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, cu
       route = 'edit';
       newTags[newTags.findIndex(x => x.id === tag.id)] = { ...(tag), name: nameInput, color: tagColor };
     } else if (customTags) {
-      const id = uuidv4();
-      tag.id = id;
+      tag.id = 'arealtag';
       newTags = [...newTags, tag];
     }
     const tagRequest = async () => {
-      await fetch(`/api/customTags/${ route }/${ tag.id }/${ nameInput }/${ `%23${ tagColor.split('#')[1] }` }`, { method: 'POST' });
+      await fetch(`/api/customTags/${ route }/${ route === 'edit' ? `${ tag.id }/` : '' }${ nameInput }/${ `%23${ tagColor.split('#')[1] }` }`, { method: 'POST' });
       return newTags;
     };
     mutateTags(tagRequest(), { optimisticData: newTags, rollbackOnError: true });

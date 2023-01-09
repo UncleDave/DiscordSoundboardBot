@@ -9,8 +9,8 @@ function customTagsRouter(tagsService: TagsService) {
     res.send(tags);
   });
 
-  router.post('/create/:id/:name/:color', async (req, res) => {
-    await tagsService.addNewTag({ tagId: req.params.id, userId: String(req.cookies.userid), tagName: req.params.name, tagColor: req.params.color });
+  router.post('/create/:name/:color', async (req, res) => {
+    await tagsService.addNewTag({ userId: String(req.cookies.userid), tagName: req.params.name, tagColor: req.params.color });
     res.sendStatus(204);
     res.end();
   });

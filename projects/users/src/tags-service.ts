@@ -1,9 +1,10 @@
+import { v4 as uuid } from 'uuid';
 import { UsersService } from './users-service';
 import { Tag } from './tag';
 
 interface TagPropsOptions {
   userId: string;
-  tagId: string;
+  tagId?: string;
   tagName: string;
   tagColor: string;
 }
@@ -33,7 +34,7 @@ export class TagsService extends UsersService {
 
   async addNewTag(options: TagPropsOptions): Promise<void> {
     const collection = await this.usersCollection;
-    const tag = { id: options.tagId, name: options.tagName, color: options.tagColor, sounds: new Array<string>() };
+    const tag = { id: uuid(), name: options.tagName, color: options.tagColor, sounds: new Array<string>() };
     await collection.updateOne({ userId: options.userId }, { $addToSet: { tags: tag } }, { upsert: true });
   }
 
