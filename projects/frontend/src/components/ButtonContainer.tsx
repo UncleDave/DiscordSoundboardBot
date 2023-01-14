@@ -52,10 +52,7 @@ function sortSoundGroups(sounds: Sound[], sortMode: string, groupMode: string, c
     return sortByOrder(total, sortMode);
   }, new Array<Sound>());
 
-  const allTagged = idsGroupedByTag.reduce((prev, curr) => {
-    prev.push(...curr);
-    return prev;
-  }, []);
+  const allTagged = idsGroupedByTag.flat();
 
   const unTagged = sortByOrder(soundList.filter(x => !allTagged.includes(x.id)), sortMode);
 
