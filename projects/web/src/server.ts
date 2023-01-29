@@ -10,6 +10,7 @@ import soundsRouter from './routes/sounds';
 import favoritesRouter from './routes/favorites';
 import customTagsRouter from './routes/custom-tags';
 import prefsRouter from './routes/prefs';
+import adminRouter from './routes/admin';
 import environment from './environment';
 
 if (environment.environment === 'production') {
@@ -38,7 +39,7 @@ app.post('/logout', (req, res) => {
   res.end();
 });
 
-app.use(DiscordAuth);
+app.use(DiscordAuth(prefsService));
 app.use(async (req, res, next) => {
   const sortRule = await prefsService.getSortOrderPref(String(req.cookies.userid));
   const groupRule = await prefsService.getGroupsPref(String(req.cookies.userid));
@@ -51,6 +52,7 @@ app.use('/api', soundsRouter(soundsService, favoritesService));
 app.use('/api/prefs', prefsRouter(prefsService));
 app.use('/api/favorites', favoritesRouter(favoritesService));
 app.use('/api/customtags', customTagsRouter(tagsService));
+app.use('/api/admin', adminRouter);
 
 if (environment.environment === 'production') app.use(serveStatic);
 else app.use('/', createProxyMiddleware({ target: 'http://frontend:3000', changeOrigin: true }));

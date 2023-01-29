@@ -1,5 +1,5 @@
 import React, { FC, useCallback } from 'react';
-import useSWR from 'swr';
+import { SWRResponse } from 'swr';
 import styled, { useTheme } from 'styled-components';
 import debounce from '../utils';
 import SoundTile from './SoundTile';
@@ -13,7 +13,7 @@ const ButtonContainerMain = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin: 0px 20px;
+  margin: 0;
   padding: 10px 15px 0px;
   position: relative;
   z-index: 0;
@@ -61,6 +61,7 @@ function sortSoundGroups(sounds: Sound[], sortMode: string, groupMode: string, c
 }
 
 interface ButtonContainerProps {
+  sounds: SWRResponse<Sound[], any, any>
   preview: boolean;
   previewRequest: (soundName: string) => void;
   sortRules: SortRules;
@@ -71,6 +72,7 @@ interface ButtonContainerProps {
 }
 
 const ButtonContainer: FC<ButtonContainerProps> = ({
+  sounds: { data: sounds, error, mutate: mutateSounds },
   preview,
   previewRequest,
   sortRules: { favorites, small, searchTerm, sortOrder, groups, tags },
@@ -79,7 +81,6 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
   unsavedTagged,
   toggleSoundOnTag,
 }) => {
-  const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
   const theme = useTheme();
 
   const soundRequest = useCallback(debounce((soundName: string, borderCallback: () => void) => {

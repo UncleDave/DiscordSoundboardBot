@@ -1,6 +1,9 @@
 import React, { FC, useState, useCallback, useEffect } from 'react';
+import useSWR from 'swr';
 import styled, { ThemeProvider } from 'styled-components';
+import Sound from '../models/sound';
 import Nav from './nav/Nav';
+import AdminPanel from './admin-panel/AdminPanel';
 import Features from './features/Features';
 import ButtonContainer from './ButtonContainer';
 import SortContainer from './SortContainer';
@@ -17,6 +20,25 @@ const AppMain = styled.div`
   flex-direction: column;
   position: relative;
   width: 100%;
+  overflow-y: hidden;
+`;
+
+const Soundboard = styled.div`
+  overflow-y: scroll;
+  flex: 1;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 100vh;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: ${ props => props.theme.colors.innerB }
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${ props => props.theme.colors.innerA };
+  }
 `;
 
 function getThemeFromDate(date: string) {
@@ -39,6 +61,8 @@ const App: FC = () => {
     toggleTagFilter,
   } = useSortRules();
 
+  const sounds = useSWR<Sound[]>('/api/sounds');
+
   const {
     customTags,
     mutateTags,
@@ -53,6 +77,8 @@ const App: FC = () => {
     saveTagged,
     discardTagged,
   } = useCustomTags();
+
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
 
   const [showPreview, setShowPreview] = useState(false);
   const toggleShowPreview = useCallback(() => {
@@ -89,47 +115,52 @@ const App: FC = () => {
         <GlobalStyle />
         { theme.name === 'america' && <Fireworks /> }
         { (theme.name === 'christmas' || theme.name === 'halloween') && <Snowflakes /> }
-        <Nav />
-        <Features
-          favoritesToggled={ sortRules.favorites }
-          toggleFavs={ toggleFavs }
-          previewToggled={ showPreview }
-          toggleShowPreview={ toggleShowPreview }
-          showCustomTagPicker={ showCustomTagPicker }
-          toggleShowCustomTagPicker={ toggleShowCustomTagPicker }
-          customTagProps={ customTags?.map(x => ({ id: x.id, name: x.name, color: x.color })) }
-          toggleSoundGrouping={ toggleSoundGrouping }
-          toggleTagFilter={ toggleTagFilter }
-          disableEditTagsButton={ disableEditTagsButton }
-          setSearchTerm={ setSearchTerm }
-          soundSortOrder={ sortRules.sortOrder }
-          toggleSoundSortOrder={ toggleSoundSortOrder }
-        />
-        <SortContainer
-          showPreview={ showPreview }
-          toggleSmallButtons={ toggleSmallButtons }
-          setPreviewVolume={ setPreviewVolume }
-          currentlyTagging={ currentlyTagging }
-          saveTagged={ saveTagged }
-          discardTagged={ discardTagged }
-        />
-        { showCustomTagPicker && (
-          <TagPicker
-            customTags={ customTags ?? [] }
-            mutateTags={ mutateTags }
-            setDisableEditTagsButton={ setDisableEditTagsButton }
-            beginTagging={ beginTagging }
-          />
-        ) }
-        <ButtonContainer
-          preview={ showPreview }
-          previewRequest={ previewRequest }
-          sortRules={ sortRules }
-          customTags={ customTags ?? [] }
-          currentlyTagging={ currentlyTagging }
-          unsavedTagged={ unsavedTagged }
-          toggleSoundOnTag={ toggleSoundOnTag }
-        />
+        <Nav showAdminPanel={ showAdminPanel } setShowAdminPanel={ setShowAdminPanel } />
+        { showAdminPanel ? <AdminPanel sounds={ sounds } /> : (
+          <Soundboard>
+            <Features
+              favoritesToggled={ sortRules.favorites }
+              toggleFavs={ toggleFavs }
+              previewToggled={ showPreview }
+              toggleShowPreview={ toggleShowPreview }
+              showCustomTagPicker={ showCustomTagPicker }
+              toggleShowCustomTagPicker={ toggleShowCustomTagPicker }
+              customTagProps={ customTags?.map(x => ({ id: x.id, name: x.name, color: x.color })) }
+              toggleSoundGrouping={ toggleSoundGrouping }
+              toggleTagFilter={ toggleTagFilter }
+              disableEditTagsButton={ disableEditTagsButton }
+              setSearchTerm={ setSearchTerm }
+              soundSortOrder={ sortRules.sortOrder }
+              toggleSoundSortOrder={ toggleSoundSortOrder }
+            />
+            <SortContainer
+              showPreview={ showPreview }
+              toggleSmallButtons={ toggleSmallButtons }
+              setPreviewVolume={ setPreviewVolume }
+              currentlyTagging={ currentlyTagging }
+              saveTagged={ saveTagged }
+              discardTagged={ discardTagged }
+            />
+            { showCustomTagPicker && (
+            <TagPicker
+              customTags={ customTags ?? [] }
+              mutateTags={ mutateTags }
+              setDisableEditTagsButton={ setDisableEditTagsButton }
+              beginTagging={ beginTagging }
+            />
+            ) }
+            <ButtonContainer
+              sounds={ sounds }
+              preview={ showPreview }
+              previewRequest={ previewRequest }
+              sortRules={ sortRules }
+              customTags={ customTags ?? [] }
+              currentlyTagging={ currentlyTagging }
+              unsavedTagged={ unsavedTagged }
+              toggleSoundOnTag={ toggleSoundOnTag }
+            />
+          </Soundboard>
+        )}
       </ThemeProvider>
     </AppMain>
   );
