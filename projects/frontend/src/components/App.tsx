@@ -78,7 +78,13 @@ const App: FC = () => {
     discardTagged,
   } = useCustomTags();
 
+  const [showSoundBoard, setShowSoundBoard] = useState(true);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
+
+  const toggleAdminPanel = useCallback(() => {
+    setShowAdminPanel(!showAdminPanel);
+    setShowSoundBoard(!showSoundBoard);
+  }, [showAdminPanel, showSoundBoard]);
 
   const [showPreview, setShowPreview] = useState(false);
   const toggleShowPreview = useCallback(() => {
@@ -115,8 +121,9 @@ const App: FC = () => {
         <GlobalStyle />
         { theme.name === 'america' && <Fireworks /> }
         { (theme.name === 'christmas' || theme.name === 'halloween') && <Snowflakes /> }
-        <Nav showAdminPanel={ showAdminPanel } setShowAdminPanel={ setShowAdminPanel } />
-        { showAdminPanel ? <AdminPanel sounds={ sounds } /> : (
+        <Nav showAdminPanel={ showAdminPanel } toggleAdminPanel={ toggleAdminPanel } />
+        { showAdminPanel && <AdminPanel sounds={ sounds } previewRequest={ previewRequest } />}
+        { showSoundBoard && (
           <Soundboard>
             <Features
               favoritesToggled={ sortRules.favorites }

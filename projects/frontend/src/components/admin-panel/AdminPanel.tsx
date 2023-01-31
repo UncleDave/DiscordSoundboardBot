@@ -4,11 +4,16 @@ import styled from 'styled-components';
 import Sound from '../../models/sound';
 import SearchContainer from '../features/SearchContainer';
 import PanelSound from './PanelSound';
+import PanelInfoContainer from './PanelInfoContainer';
+import { textShadowVisibility } from '../../styles/mixins';
 
 const AdminPanelMain = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: column;
+  flex-grow: 1;
   overflow-y: hidden;
+  background-color: ${ props => props.theme.colors.bg };
 `;
 
 const AdminFeatures = styled.div`
@@ -23,10 +28,7 @@ const AdminFeatures = styled.div`
 const LowerContainer = styled.div`
   display: flex;
   overflow-y: hidden;
-
-  > div {
-    width: 50%;
-  }
+  flex-grow: 1;
 `;
 
 const SoundsContainer = styled.div`
@@ -35,6 +37,13 @@ const SoundsContainer = styled.div`
   overflow-y: scroll;
   padding: 20px 30px;
   border-right: 5px solid ${ props => props.theme.colors.borderDefault };
+
+  > h2 {
+    color: ${ props => props.theme.colors.borderDefault };
+    margin: 5px 0px;
+    
+    ${ textShadowVisibility }
+  }
 
   &::-webkit-scrollbar {
     width: 10px;
@@ -46,15 +55,14 @@ const SoundsContainer = styled.div`
   }
 `;
 
-const ActionsContainer = styled.div`
-`;
-
 interface AdminPanelProps {
   sounds: SWRResponse<Sound[], any, any>;
+  previewRequest: (soundName: string) => Promise<void>
 }
 
-const AdminPanel: FC<AdminPanelProps> = ({ sounds: { data: sounds, error } }) => {
+const AdminPanel: FC<AdminPanelProps> = ({ sounds: { data: sounds, error }, previewRequest }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedSound, setSelectedSound] = useState<Sound | null>(null);
 
   if (sounds)
     return (
@@ -65,12 +73,13 @@ const AdminPanel: FC<AdminPanelProps> = ({ sounds: { data: sounds, error } }) =>
         </AdminFeatures>
         <LowerContainer>
           <SoundsContainer>
+            <h2>Select a sound for info/delete/rename</h2>
             { sounds.map(x => {
               if (searchTerm && !x.name.toUpperCase().includes(searchTerm)) return null;
-              return (<PanelSound key={ x.id } sound={ x } />);
+              return (<PanelSound key={ x.id } sound={ x } selectedSoundId={ selectedSound?.id } setSelectedSound={ setSelectedSound } previewRequest={ previewRequest } />);
             })}
           </SoundsContainer>
-          <ActionsContainer>Hi</ActionsContainer>
+          <PanelInfoContainer selectedSound={ selectedSound } setSelectedSound={ setSelectedSound } previewRequest={ previewRequest } />
         </LowerContainer>
       </AdminPanelMain>
     );

@@ -52,7 +52,7 @@ app.use('/api', soundsRouter(soundsService, favoritesService));
 app.use('/api/prefs', prefsRouter(prefsService));
 app.use('/api/favorites', favoritesRouter(favoritesService));
 app.use('/api/customtags', customTagsRouter(tagsService));
-app.use('/api/admin', adminRouter);
+app.use('/api/admin', adminRouter(soundsService));
 
 if (environment.environment === 'production') app.use(serveStatic);
 else app.use('/', createProxyMiddleware({ target: 'http://frontend:3000', changeOrigin: true }));

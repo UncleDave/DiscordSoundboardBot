@@ -100,10 +100,10 @@ function getTitleFromTheme(themeName: string) {
 
 interface NavProps {
   showAdminPanel: boolean;
-  setShowAdminPanel: (show: boolean) => void;
+  toggleAdminPanel: () => void;
 }
 
-const Nav: FC<NavProps> = ({ showAdminPanel, setShowAdminPanel }) => {
+const Nav: FC<NavProps> = ({ showAdminPanel, toggleAdminPanel }) => {
   const user = useUser();
   const [showLogoutMenu, setShowLogoutMenu] = useState(false);
   const theme = useTheme();
@@ -122,7 +122,7 @@ const Nav: FC<NavProps> = ({ showAdminPanel, setShowAdminPanel }) => {
           <h1>{ getTitleFromTheme(theme.name) }</h1>
         </Title>
         <Username>
-          { user.role === 'admin' && <AdminButton toggled={ showAdminPanel } onClick={ () => setShowAdminPanel(!showAdminPanel) }>Admin Panel</AdminButton> }
+          { user.role === 'admin' && <AdminButton toggled={ showAdminPanel } onClick={ toggleAdminPanel }>Admin Panel</AdminButton> }
           <h2>
             { user.name }
           </h2>

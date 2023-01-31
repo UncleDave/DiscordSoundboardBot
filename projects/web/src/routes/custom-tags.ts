@@ -1,8 +1,8 @@
-import express from 'express';
+import { Router } from 'express';
 import { TagsService } from 'botman-users';
 
 function customTagsRouter(tagsService: TagsService) {
-  const router = express.Router();
+  const router = Router();
 
   router.get('/', async (req, res) => {
     const tags = await tagsService.getCustomTags(String(req.cookies.userid));
