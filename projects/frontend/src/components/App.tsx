@@ -1,6 +1,7 @@
 import React, { FC, useState, useCallback, useEffect } from 'react';
 import useSWR from 'swr';
 import styled, { ThemeProvider } from 'styled-components';
+import { CSSTransition, TransitionStatus } from 'react-transition-group';
 import Sound from '../models/sound';
 import Nav from './nav/Nav';
 import AdminPanel from './admin-panel/AdminPanel';
@@ -23,13 +24,20 @@ const AppMain = styled.div`
   overflow-y: hidden;
 `;
 
-const Soundboard = styled.div`
+interface SoundboardStyleProps {
+  state: TransitionStatus;
+}
+
+const Soundboard = styled.div<SoundboardStyleProps>`
   overflow-y: scroll;
   flex: 1;
 
+  transition: opacity 0.4s ease-out;
+  opacity: ${ props => props.state === 'entered' || props.state === 'entering' ? '1' : '0' };
+
   &::-webkit-scrollbar {
-    width: 10px;
-    height: 100vh;
+    width: 15px;
+    height: 100%;
   }
 
   &::-webkit-scrollbar-track {
@@ -78,13 +86,7 @@ const App: FC = () => {
     discardTagged,
   } = useCustomTags();
 
-  const [showSoundBoard, setShowSoundBoard] = useState(true);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
-
-  const toggleAdminPanel = useCallback(() => {
-    setShowAdminPanel(!showAdminPanel);
-    setShowSoundBoard(!showSoundBoard);
-  }, [showAdminPanel, showSoundBoard]);
 
   const [showPreview, setShowPreview] = useState(false);
   const toggleShowPreview = useCallback(() => {
@@ -121,53 +123,56 @@ const App: FC = () => {
         <GlobalStyle />
         { theme.name === 'america' && <Fireworks /> }
         { (theme.name === 'christmas' || theme.name === 'halloween') && <Snowflakes /> }
-        <Nav showAdminPanel={ showAdminPanel } toggleAdminPanel={ toggleAdminPanel } />
-        { showAdminPanel && <AdminPanel sounds={ sounds } previewRequest={ previewRequest } />}
-        { showSoundBoard && (
-          <Soundboard>
-            <Features
-              favoritesToggled={ sortRules.favorites }
-              toggleFavs={ toggleFavs }
-              previewToggled={ showPreview }
-              toggleShowPreview={ toggleShowPreview }
-              showCustomTagPicker={ showCustomTagPicker }
-              toggleShowCustomTagPicker={ toggleShowCustomTagPicker }
-              customTagProps={ customTags?.map(x => ({ id: x.id, name: x.name, color: x.color })) }
-              toggleSoundGrouping={ toggleSoundGrouping }
-              toggleTagFilter={ toggleTagFilter }
-              disableEditTagsButton={ disableEditTagsButton }
-              setSearchTerm={ setSearchTerm }
-              soundSortOrder={ sortRules.sortOrder }
-              toggleSoundSortOrder={ toggleSoundSortOrder }
-            />
-            <SortContainer
-              showPreview={ showPreview }
-              toggleSmallButtons={ toggleSmallButtons }
-              setPreviewVolume={ setPreviewVolume }
-              currentlyTagging={ currentlyTagging }
-              saveTagged={ saveTagged }
-              discardTagged={ discardTagged }
-            />
-            { showCustomTagPicker && (
-            <TagPicker
-              customTags={ customTags ?? [] }
-              mutateTags={ mutateTags }
-              setDisableEditTagsButton={ setDisableEditTagsButton }
-              beginTagging={ beginTagging }
-            />
-            ) }
-            <ButtonContainer
-              sounds={ sounds }
-              preview={ showPreview }
-              previewRequest={ previewRequest }
-              sortRules={ sortRules }
-              customTags={ customTags ?? [] }
-              currentlyTagging={ currentlyTagging }
-              unsavedTagged={ unsavedTagged }
-              toggleSoundOnTag={ toggleSoundOnTag }
-            />
-          </Soundboard>
-        )}
+        <Nav showAdminPanel={ showAdminPanel } setShowAdminPanel={ setShowAdminPanel } />
+        <AdminPanel showAdminPanel={ showAdminPanel } setShowAdminPanel={ setShowAdminPanel } sounds={ sounds } previewRequest={ previewRequest } />
+        <CSSTransition in={ !showAdminPanel } timeout={ 410 }>
+          { state => (
+            <Soundboard state={ state }>
+              <Features
+                favoritesToggled={ sortRules.favorites }
+                toggleFavs={ toggleFavs }
+                previewToggled={ showPreview }
+                toggleShowPreview={ toggleShowPreview }
+                showCustomTagPicker={ showCustomTagPicker }
+                toggleShowCustomTagPicker={ toggleShowCustomTagPicker }
+                customTagProps={ customTags?.map(x => ({ id: x.id, name: x.name, color: x.color })) }
+                toggleSoundGrouping={ toggleSoundGrouping }
+                toggleTagFilter={ toggleTagFilter }
+                disableEditTagsButton={ disableEditTagsButton }
+                setSearchTerm={ setSearchTerm }
+                soundSortOrder={ sortRules.sortOrder }
+                toggleSoundSortOrder={ toggleSoundSortOrder }
+              />
+              <SortContainer
+                showPreview={ showPreview }
+                toggleSmallButtons={ toggleSmallButtons }
+                setPreviewVolume={ setPreviewVolume }
+                currentlyTagging={ currentlyTagging }
+                saveTagged={ saveTagged }
+                discardTagged={ discardTagged }
+              />
+              { showCustomTagPicker && (
+              <TagPicker
+                customTags={ customTags ?? [] }
+                mutateTags={ mutateTags }
+                setDisableEditTagsButton={ setDisableEditTagsButton }
+                beginTagging={ beginTagging }
+              />
+              ) }
+              <ButtonContainer
+                sounds={ sounds }
+                preview={ showPreview }
+                previewRequest={ previewRequest }
+                sortRules={ sortRules }
+                customTags={ customTags ?? [] }
+                currentlyTagging={ currentlyTagging }
+                unsavedTagged={ unsavedTagged }
+                toggleSoundOnTag={ toggleSoundOnTag }
+              />
+            </Soundboard>
+          ) }
+
+        </CSSTransition>
       </ThemeProvider>
     </AppMain>
   );

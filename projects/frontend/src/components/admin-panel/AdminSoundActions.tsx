@@ -1,21 +1,20 @@
-import React, { FC, useCallback, useState, useEffect } from 'react';
+import React, { FC, useCallback, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useSWRConfig } from 'swr';
 import Sound from '../../models/sound';
-import { textInput } from '../../styles/mixins';
+import { textInput, adminPanelDivider } from '../../styles/mixins';
+import { defaultTheme } from '../../styles/themes';
 
-const Divider = styled.div`
-  background: ${ props => props.theme.colors.borderDefault };
-  border-radius: 3px;
-  height: 10px;
-  width: 470px;
+const Divider = styled.hr`
+  ${ adminPanelDivider }
 `;
 
-const ActionChoiceContainer = styled.div`
+const ActionContainer = styled.div`
   display: flex;
   justify-content: left;
+  
   > span {
-    margin: 0px 7px 0px 0px;
+    margin: 5px 7px 0px 0px;
 
     &:nth-child(2) {
       color: ${ props => props.theme.colors.borderRed };
@@ -26,13 +25,13 @@ const ActionChoiceContainer = styled.div`
       margin-right: 0;
     }
   }
-`;
 
-const RenameInput = styled.input`
-  ${ textInput }
+  > input {
+    ${ textInput }
 
-  margin-bottom: 0;
-  margin-right: 7px;
+    margin-bottom: 0;
+    margin-right: 7px;
+  }
 `;
 
 interface AdminSoundActionsProps {
@@ -43,6 +42,7 @@ interface AdminSoundActionsProps {
   showRenameInput: boolean;
   setShowRenameInput: (show: boolean) => void;
   previewRequest: (soundName: string) => Promise<void>
+  setNotification: (text: string, color: string) => void;
 }
 
 const AdminSoundActions: FC<AdminSoundActionsProps> = ({
@@ -53,32 +53,45 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
   showRenameInput,
   setShowRenameInput,
   previewRequest,
+  setNotification,
 }) => {
   const [renameInput, setRenameInput] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
   const { mutate } = useSWRConfig();
 
   const renameRequest = useCallback(async () => {
     if (!renameInput) return;
-    await fetch(`/api/admin/renamesound/${ selectedSound.name }/${ renameInput }`, { method: 'PUT' });
-    setSelectedSound({ ...selectedSound, name: renameInput });
-    setRenameInput('');
-    setShowRenameInput(false);
-    await mutate('/api/sounds');
+    const res = await fetch(`/api/admin/renamesound/${ selectedSound.name }/${ renameInput }`, { method: 'PUT' });
+    if (res.status === 200) {
+      setNotification(`Renamed sound "${ selectedSound.name }" to "${ renameInput }"`, '');
+      setSelectedSound({ ...selectedSound, name: renameInput });
+      setRenameInput('');
+      setShowRenameInput(false);
+      await mutate('/api/sounds');
+    } else {
+      setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
+    }
   }, [renameInput, selectedSound]);
 
   const soundDeleteRequest = useCallback(async () => {
     const res = await fetch(`/api/admin/deletesound/${ selectedSound?.name }`, { method: 'DELETE' });
     if (res.status === 200) {
+      setNotification(`Deleted sound "${ selectedSound.name }" o7`, '');
       setShowConfirmDelete(false);
       setRenameInput('');
       setSelectedSound({ name: 'ded', id: 'nope', date: 'Dedcember 31st, 1969', isFavorite: false });
       await mutate('/api/sounds');
+    } else {
+      setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
     }
   }, [selectedSound?.name]);
 
-  // TODO?? search term update after requests
-
   useEffect(() => setRenameInput(selectedSound.name), [selectedSound.name]);
+
+  useEffect(() => {
+    if (showRenameInput)
+      inputRef.current?.focus();
+  }, [showRenameInput]);
 
   return (
     <>
@@ -88,26 +101,26 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
       </div>
       <Divider />
       { showConfirmDelete ? (
-        <ActionChoiceContainer>
+        <ActionContainer>
           <h3>Delete for real?</h3>
           <span className='material-icons' role='presentation' onClick={ () => setShowConfirmDelete(false) }>cancel</span>
           <h3>CHOOSE</h3>
           <span className='material-icons' role='presentation' onClick={ soundDeleteRequest }>check</span>
-        </ActionChoiceContainer>
+        </ActionContainer>
       ) : (
         <div>
           <h3>Delete</h3>
-          <span className='material-icons' role='presentation' onClick={ () => { setShowConfirmDelete(true); setShowRenameInput(false); setRenameInput(''); } }>delete</span>
+          <span className='material-icons' role='presentation' onClick={ () => { setShowConfirmDelete(true); setShowRenameInput(false); } }>delete</span>
         </div>
       )}
       { showRenameInput
         ? (
-          <ActionChoiceContainer>
-            <h3>Name:</h3>
+          <ActionContainer>
+            <h3>Rename</h3>
             <span className='material-icons' role='presentation' onClick={ () => { setShowRenameInput(false); setRenameInput(selectedSound.name); } }>cancel</span>
-            <RenameInput type='text' value={ renameInput } onChange={ event => setRenameInput(event.currentTarget.value) } />
+            <input type='text' value={ renameInput } ref={ inputRef } onChange={ event => setRenameInput(event.currentTarget.value) } />
             <span className='material-icons' role='presentation' onClick={ renameRequest }>check</span>
-          </ActionChoiceContainer>
+          </ActionContainer>
         ) : (
           <div>
             <h3>Rename</h3>

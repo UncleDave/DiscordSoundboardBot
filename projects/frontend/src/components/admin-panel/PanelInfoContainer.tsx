@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Sound from '../../models/sound';
-import { textShadowVisibility } from '../../styles/mixins';
+import { textShadowVisibility, adminPanelDivider } from '../../styles/mixins';
 import AdminSoundActions from './AdminSoundActions';
 
 const InfoContainer = styled.div`
@@ -10,8 +10,8 @@ const InfoContainer = styled.div`
 
   > div {
     display: flex;
-    margin-bottom: 5px;
     align-items: center;
+    min-height: 40px;
   
     > h2 {
       margin: 0px 7px 0px 0px;
@@ -38,20 +38,18 @@ const InfoContainer = styled.div`
   }
 `;
 
-const Divider = styled.div`
-  background: ${ props => props.theme.colors.borderDefault };
-  border-radius: 3px;
-  height: 10px;
-  width: 470px;
+const Divider = styled.hr`
+  ${ adminPanelDivider }
 `;
 
 interface PanelInfoContainerProps {
   selectedSound: Sound | null;
   setSelectedSound: (sound: Sound | null) => void;
   previewRequest: (soundName: string) => Promise<void>
+  setNotification: (text: string, color: string) => void;
 }
 
-const PanelInfoContainer:FC<PanelInfoContainerProps> = ({ selectedSound, setSelectedSound, previewRequest }) => {
+const PanelInfoContainer:FC<PanelInfoContainerProps> = ({ selectedSound, setSelectedSound, previewRequest, setNotification }) => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showRenameInput, setShowRenameInput] = useState(false);
 
@@ -85,6 +83,7 @@ const PanelInfoContainer:FC<PanelInfoContainerProps> = ({ selectedSound, setSele
         showRenameInput={ showRenameInput }
         setShowRenameInput={ setShowRenameInput }
         previewRequest={ previewRequest }
+        setNotification={ setNotification }
       />
       )}
     </InfoContainer>

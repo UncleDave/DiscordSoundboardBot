@@ -89,6 +89,13 @@ const AdminButton = styled.button<AdminButtonStyleProps>`
   border-width: 2px;
   margin: 5px 20px 0px 0px;
   font-size: 0.7rem;
+
+  @media only screen and (max-width: 780px) {
+    min-height: 20px;
+    font-size: 0.8rem;
+    margin-left: 10px;
+    order: 1;
+  }
 `;
 
 function getTitleFromTheme(themeName: string) {
@@ -100,10 +107,10 @@ function getTitleFromTheme(themeName: string) {
 
 interface NavProps {
   showAdminPanel: boolean;
-  toggleAdminPanel: () => void;
+  setShowAdminPanel: (show: boolean) => void;
 }
 
-const Nav: FC<NavProps> = ({ showAdminPanel, toggleAdminPanel }) => {
+const Nav: FC<NavProps> = ({ showAdminPanel, setShowAdminPanel }) => {
   const user = useUser();
   const [showLogoutMenu, setShowLogoutMenu] = useState(false);
   const theme = useTheme();
@@ -122,7 +129,7 @@ const Nav: FC<NavProps> = ({ showAdminPanel, toggleAdminPanel }) => {
           <h1>{ getTitleFromTheme(theme.name) }</h1>
         </Title>
         <Username>
-          { user.role === 'admin' && <AdminButton toggled={ showAdminPanel } onClick={ toggleAdminPanel }>Admin Panel</AdminButton> }
+          { user.role === 'admin' && <AdminButton toggled={ showAdminPanel } onClick={ () => setShowAdminPanel(!showAdminPanel) }>Admin Panel</AdminButton> }
           <h2>
             { user.name }
           </h2>
