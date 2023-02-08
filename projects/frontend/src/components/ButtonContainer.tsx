@@ -1,5 +1,5 @@
 import React, { FC, useCallback } from 'react';
-import { SWRResponse } from 'swr';
+import useSWR from 'swr';
 import styled, { useTheme } from 'styled-components';
 import debounce from '../utils';
 import SoundTile from './SoundTile';
@@ -61,7 +61,6 @@ function sortSoundGroups(sounds: Sound[], sortMode: string, groupMode: string, c
 }
 
 interface ButtonContainerProps {
-  sounds: SWRResponse<Sound[], any, any>
   preview: boolean;
   previewRequest: (soundName: string) => void;
   sortRules: SortRules;
@@ -72,7 +71,6 @@ interface ButtonContainerProps {
 }
 
 const ButtonContainer: FC<ButtonContainerProps> = ({
-  sounds: { data: sounds, error, mutate: mutateSounds },
   preview,
   previewRequest,
   sortRules: { favorites, small, searchTerm, sortOrder, groups, tags },
@@ -81,19 +79,14 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
   unsavedTagged,
   toggleSoundOnTag,
 }) => {
+  const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
   const theme = useTheme();
 
-  const soundRequest = useCallback(debounce((soundName: string, borderCallback: () => void) => {
+  const soundRequest = useCallback(debounce(async (soundId: string, borderCallback: () => void) => {
     borderCallback();
-    fetch('/api/sound', {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: soundName,
-    })
-      .then(res => {
-        if (res.status === 401) window.location.reload();
-      })
-      .catch();
+    const res = await fetch(`/api/sounds/${ soundId }`);
+    if (res.status === 401)
+      window.location.reload();
   }, 2000, true), []);
 
   const updateFavoritesRequest = useCallback((soundName: string) => {
@@ -130,7 +123,6 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
           return (
             <SoundTile
               key={ x.id }
-              id={ x.id }
               preview={ preview }
               small={ small }
               sound={ x }

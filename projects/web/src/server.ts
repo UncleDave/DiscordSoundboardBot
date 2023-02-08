@@ -2,6 +2,7 @@ import * as applicationInsights from 'applicationinsights';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import axios, { RawAxiosRequestConfig } from 'axios';
 import { SoundsService } from 'botman-sounds';
 import { PrefsService, FavoritesService, TagsService } from 'botman-users';
 import { createProxyMiddleware } from 'http-proxy-middleware';
@@ -10,7 +11,6 @@ import soundsRouter from './routes/sounds';
 import favoritesRouter from './routes/favorites';
 import customTagsRouter from './routes/custom-tags';
 import prefsRouter from './routes/prefs';
-import adminRouter from './routes/admin';
 import environment from './environment';
 
 if (environment.environment === 'production') {
@@ -29,7 +29,6 @@ const serveStatic = express.static('src/public', { extensions: ['html'] });
 
 app.use(cookieParser());
 app.use(cors({ origin: environment.webServerURL }));
-app.use(express.text());
 app.use(express.json());
 
 app.post('/logout', (req, res) => {
@@ -48,11 +47,32 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.use('/api', soundsRouter(soundsService, favoritesService));
+app.use('/api/sounds', soundsRouter(soundsService, favoritesService));
 app.use('/api/prefs', prefsRouter(prefsService));
 app.use('/api/favorites', favoritesRouter(favoritesService));
 app.use('/api/customtags', customTagsRouter(tagsService));
-app.use('/api/admin', adminRouter(soundsService));
+
+const botConfig: RawAxiosRequestConfig = { headers: { Authorization: environment.botApiKey } };
+app.get('/api/skip/:all', async (req, res) => {
+  console.log(`Skip request. All: ${ req.params.all }`);
+  const skipAll = !!req.params.all;
+
+  await axios.post(`${ environment.botURL }/skip/${ skipAll }/${ req.cookies.userid }`, null, botConfig);
+
+  res.sendStatus(204);
+  res.end();
+});
+
+app.get('/api/preview/:id', async (req, res) => {
+  const sound = await soundsService.getSound(req.params.id);
+
+  if (!sound) {
+    res.sendStatus(404).end();
+    return;
+  }
+
+  res.send(`${ environment.soundsBaseUrl }/${ sound.file.fullName }`);
+});
 
 if (environment.environment === 'production') app.use(serveStatic);
 else app.use('/', createProxyMiddleware({ target: 'http://frontend:3000', changeOrigin: true }));

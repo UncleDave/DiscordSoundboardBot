@@ -1,5 +1,5 @@
-import React, { FC, useCallback, useState, useEffect } from 'react';
-import { SWRResponse } from 'swr';
+import React, { FC, useCallback, useState, useEffect, useMemo } from 'react';
+import useSWR from 'swr';
 import styled from 'styled-components';
 import { CSSTransition, TransitionStatus } from 'react-transition-group';
 import Sound from '../../models/sound';
@@ -109,17 +109,23 @@ const SoundsContainer = styled.div`
 `;
 
 interface AdminPanelProps {
-  showAdminPanel: boolean;
-  setShowAdminPanel: (show: boolean) => void;
-  sounds: SWRResponse<Sound[], any, any>;
+  show: boolean;
+  adminPanelClosed: () => void;
   previewRequest: (soundName: string) => Promise<void>
 }
 
-const AdminPanel: FC<AdminPanelProps> = ({ showAdminPanel, setShowAdminPanel, sounds: { data: sounds, error }, previewRequest }) => {
+const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed, previewRequest }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSound, setSelectedSound] = useState<Sound | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationProps, setNotificationProps] = useState({ text: '', color: '' });
+
+  const { data: sounds, error } = useSWR<Sound[]>('/api/sounds');
+
+  const visibleSounds = useMemo(
+    () => sounds?.filter(x => x.name.toUpperCase().includes(searchTerm)),
+    [sounds, searchTerm],
+  );
 
   const setNotification = useCallback((text: string, color: string) => {
     setNotificationProps({ text, color });
@@ -129,23 +135,23 @@ const AdminPanel: FC<AdminPanelProps> = ({ showAdminPanel, setShowAdminPanel, so
 
   const panelShortcutClose = useCallback((event: KeyboardEvent) => {
     if (event.key === 'Escape')
-      setShowAdminPanel(false);
+      adminPanelClosed();
   }, []);
 
   useEffect(() => {
-    document.addEventListener('keydown', event => panelShortcutClose(event));
-    return document.removeEventListener('keydown', event => panelShortcutClose(event));
-  }, []);
+    document.addEventListener('keydown', panelShortcutClose, { passive: true });
+    return () => document.removeEventListener('keydown', panelShortcutClose);
+  }, [panelShortcutClose]);
 
-  useEffect(() => setSearchTerm(''), [showAdminPanel]);
+  useEffect(() => setSearchTerm(''), [show]);
 
-  if (sounds)
+  if (visibleSounds)
     return (
-      <CSSTransition in={ showAdminPanel } timeout={ 410 } unmountOnExit>
+      <CSSTransition in={ show } timeout={ 410 } unmountOnExit>
         { state => (
           <AdminPanelMain state={ state }>
             <AdminFeatures>
-              <CloseBar onClick={ () => setShowAdminPanel(false) }>
+              <CloseBar onClick={ () => adminPanelClosed() }>
                 <p>Close (Esc)</p>
               </CloseBar>
               <FeaturesHeader>
@@ -157,10 +163,7 @@ const AdminPanel: FC<AdminPanelProps> = ({ showAdminPanel, setShowAdminPanel, so
             <LowerContainer>
               <SoundsContainer>
                 <h2>Select a sound for info/delete/rename</h2>
-                { sounds.map(x => {
-                  if (searchTerm && !x.name.toUpperCase().includes(searchTerm)) return null;
-                  return (<PanelSound key={ x.id } sound={ x } selectedSoundId={ selectedSound?.id } setSelectedSound={ setSelectedSound } previewRequest={ previewRequest } />);
-                })}
+                { visibleSounds.map(x => (<PanelSound key={ x.id } sound={ x } selectedSoundId={ selectedSound?.id } setSelectedSound={ setSelectedSound } previewRequest={ previewRequest } />))}
               </SoundsContainer>
               <PanelInfoContainer selectedSound={ selectedSound } setSelectedSound={ setSelectedSound } previewRequest={ previewRequest } setNotification={ setNotification } />
             </LowerContainer>

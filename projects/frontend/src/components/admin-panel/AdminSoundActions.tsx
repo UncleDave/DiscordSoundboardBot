@@ -61,7 +61,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
 
   const renameRequest = useCallback(async () => {
     if (!renameInput) return;
-    const res = await fetch(`/api/admin/renamesound/${ selectedSound.name }/${ renameInput }`, { method: 'PUT' });
+    const res = await fetch(`/api/sounds/${ selectedSound.name }/${ renameInput }`, { method: 'PUT' });
     if (res.status === 200) {
       setNotification(`Renamed sound "${ selectedSound.name }" to "${ renameInput }"`, '');
       setSelectedSound({ ...selectedSound, name: renameInput });
@@ -74,7 +74,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
   }, [renameInput, selectedSound]);
 
   const soundDeleteRequest = useCallback(async () => {
-    const res = await fetch(`/api/admin/deletesound/${ selectedSound?.name }`, { method: 'DELETE' });
+    const res = await fetch(`/api/sounds/${ selectedSound?.name }`, { method: 'DELETE' });
     if (res.status === 200) {
       setNotification(`Deleted sound "${ selectedSound.name }" o7`, '');
       setShowConfirmDelete(false);

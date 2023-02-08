@@ -1,8 +1,6 @@
 import React, { FC, useState, useCallback, useEffect } from 'react';
-import useSWR from 'swr';
 import styled, { ThemeProvider } from 'styled-components';
 import { CSSTransition, TransitionStatus } from 'react-transition-group';
-import Sound from '../models/sound';
 import Nav from './nav/Nav';
 import AdminPanel from './admin-panel/AdminPanel';
 import Features from './features/Features';
@@ -69,8 +67,6 @@ const App: FC = () => {
     toggleTagFilter,
   } = useSortRules();
 
-  const sounds = useSWR<Sound[]>('/api/sounds');
-
   const {
     customTags,
     mutateTags,
@@ -100,8 +96,12 @@ const App: FC = () => {
       previewGain.gain.value = Number(previewVolume);
   }, [previewVolume, previewGain]);
 
-  const previewRequest = useCallback(async (soundName: string) => {
-    const soundUrl = await fetch(`/api/preview?soundName=${ soundName }`, { headers: { 'Content-Type': 'text/plain' } });
+  const previewRequest = useCallback(async (soundId: string) => {
+    const soundUrl = await fetch(`/api/preview/${ soundId }`, { headers: { 'Content-Type': 'text/plain' } });
+    if (soundUrl.status === 401) {
+      window.location.reload();
+      return;
+    }
     const audioRes = await fetch(await soundUrl.text());
     const resBuffer = await audioRes.arrayBuffer();
     const context = new AudioContext();
@@ -124,7 +124,7 @@ const App: FC = () => {
         { theme.name === 'america' && <Fireworks /> }
         { (theme.name === 'christmas' || theme.name === 'halloween') && <Snowflakes /> }
         <Nav showAdminPanel={ showAdminPanel } setShowAdminPanel={ setShowAdminPanel } />
-        <AdminPanel showAdminPanel={ showAdminPanel } setShowAdminPanel={ setShowAdminPanel } sounds={ sounds } previewRequest={ previewRequest } />
+        <AdminPanel show={ showAdminPanel } adminPanelClosed={ () => setShowAdminPanel(false) } previewRequest={ previewRequest } />
         <CSSTransition in={ !showAdminPanel } timeout={ 410 }>
           { state => (
             <Soundboard state={ state }>
@@ -160,7 +160,6 @@ const App: FC = () => {
               />
               ) }
               <ButtonContainer
-                sounds={ sounds }
                 preview={ showPreview }
                 previewRequest={ previewRequest }
                 sortRules={ sortRules }
