@@ -1,10 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useContext, createContext } from 'react';
 import useSWR from 'swr';
 import CustomTag from '../models/custom-tag';
 import TagProps from '../models/tag-props';
 
-export default function useCustomTags() {
-  const { data: customTags, mutate: mutateTags } = useSWR<CustomTag[]>('/api/customtags');
+export function useCustomTags() {
+  const { data: customTags, mutate } = useSWR<CustomTag[]>('/api/customtags');
 
   const [unsavedTagged, setUnsavedTagged] = useState<string[]>([]);
   const [currentlyTagging, setCurrentlyTagging] = useState<TagProps | null>(null);
@@ -65,7 +65,7 @@ export default function useCustomTags() {
         await fetch('/api/customtags/editsounds', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         return newCustomTags;
       };
-      mutateTags(updateTagSounds(), { optimisticData: newCustomTags, rollbackOnError: true });
+      mutate(updateTagSounds(), { optimisticData: newCustomTags, rollbackOnError: true });
       setCurrentlyTagging(null);
       setUnsavedTagged([]);
       setDisableEditTagsButton(false);
@@ -79,8 +79,6 @@ export default function useCustomTags() {
   }, []);
 
   return {
-    customTags,
-    mutateTags,
     showCustomTagPicker,
     toggleShowCustomTagPicker,
     disableEditTagsButton,
@@ -93,3 +91,31 @@ export default function useCustomTags() {
     discardTagged,
   };
 }
+
+interface CustomTagsContextProps {
+  showCustomTagPicker: boolean;
+  toggleShowCustomTagPicker: () => void;
+  disableEditTagsButton: boolean;
+  setDisableEditTagsButton: (disable: boolean) => void;
+  unsavedTagged: string[];
+  currentlyTagging: TagProps | null;
+  beginTagging: (tagId: string) => void;
+  toggleSoundOnTag: (soundId: string) => void;
+  saveTagged: () => Promise<void>;
+  discardTagged: () => void;
+}
+
+const CustomTagsContext = createContext<CustomTagsContextProps | null>(null);
+
+export const CustomTagsProvider = CustomTagsContext.Provider;
+
+export const useCustomTagsContext = () => {
+  const customTagsContext = useContext(CustomTagsContext);
+
+  if (!customTagsContext)
+    throw new Error(
+      'useSortRules has to be used within <SortRulesContext.Provider>',
+    );
+
+  return customTagsContext;
+};

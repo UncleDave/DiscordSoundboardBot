@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import * as mixins from '../../styles/mixins';
 import AddSoundDialog from './AddSoundDialog';
 import GroupTagsButton from './GroupTagsButton';
+import { useSortRulesContext } from '../../hooks/use-sort-rules';
+import { useCustomTagsContext } from '../../hooks/use-custom-tags';
 
 const OptionsContainerMain = styled.div`
   display: flex;
@@ -91,28 +93,18 @@ const AddSoundButton = styled.button<ButtonProps>`
 `;
 
 interface OptionsContainerProps {
-  disableEditTagsButton: boolean;
-  showCustomTagPicker: boolean;
-  toggleShowCustomTagPicker: () => void;
   previewToggled: boolean;
   toggleShowPreview: () => void;
-  toggleSoundGrouping: () => void;
-  soundSortOrder: string;
-  toggleSoundSortOrder: () => void;
 }
 
 const OptionsContainer: FC<OptionsContainerProps> = ({
-  disableEditTagsButton,
-  showCustomTagPicker,
-  toggleShowCustomTagPicker,
   previewToggled,
   toggleShowPreview,
-  toggleSoundGrouping,
-  soundSortOrder,
-  toggleSoundSortOrder,
 }) => {
   const [showAddSound, setShowAddSound] = useState(false);
   const [disableAddSoundButton, setDisableAddSoundButton] = useState(false);
+  const { toggleSoundSortOrder, sortRules } = useSortRulesContext();
+  const { showCustomTagPicker, disableEditTagsButton, toggleShowCustomTagPicker } = useCustomTagsContext();
 
   return (
     <OptionsContainerMain>
@@ -141,9 +133,9 @@ const OptionsContainer: FC<OptionsContainerProps> = ({
       </ButtonRow>
       <ButtonRow>
         <ButtonToggle toggled={ false } onClick={ toggleSoundSortOrder }>
-          { `Sort: ${ soundSortOrder }` }
+          { `Sort: ${ sortRules.sortOrder }` }
         </ButtonToggle>
-        <GroupTagsButton toggleSoundGrouping={ toggleSoundGrouping } />
+        <GroupTagsButton />
       </ButtonRow>
       { showAddSound && <AddSoundDialog setShowAddsound={ setShowAddSound } setDisableAddSoundButton={ setDisableAddSoundButton } /> }
     </OptionsContainerMain>

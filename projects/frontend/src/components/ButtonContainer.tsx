@@ -6,8 +6,8 @@ import SoundTile from './SoundTile';
 import Sound from '../models/sound';
 import FullMoon from './decorative/FullMoon';
 import CustomTag from '../models/custom-tag';
-import TagProps from '../models/tag-props';
-import SortRules from '../models/sort-rules';
+import { useSortRulesContext } from '../hooks/use-sort-rules';
+import { useCustomTagsContext } from '../hooks/use-custom-tags';
 
 const ButtonContainerMain = styled.div`
   display: flex;
@@ -63,24 +63,17 @@ function sortSoundGroups(sounds: Sound[], sortMode: string, groupMode: string, c
 interface ButtonContainerProps {
   preview: boolean;
   previewRequest: (soundName: string) => void;
-  sortRules: SortRules;
-  customTags: CustomTag[];
-  currentlyTagging: TagProps | null;
-  unsavedTagged: string[];
-  toggleSoundOnTag: (soundId: string) => void;
 }
 
 const ButtonContainer: FC<ButtonContainerProps> = ({
   preview,
   previewRequest,
-  sortRules: { favorites, small, searchTerm, sortOrder, groups, tags },
-  customTags,
-  currentlyTagging,
-  unsavedTagged,
-  toggleSoundOnTag,
 }) => {
   const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
+  const { data: customTags } = useSWR<CustomTag[]>('/api/customtags');
   const theme = useTheme();
+  const { sortRules: { favorites, small, searchTerm, sortOrder, groups, tags } } = useSortRulesContext();
+  const { currentlyTagging, unsavedTagged } = useCustomTagsContext();
 
   const soundRequest = useCallback(debounce(async (soundId: string, borderCallback: () => void) => {
     borderCallback();
@@ -105,7 +98,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
     }
   }, [sounds]);
 
-  if (sounds)
+  if (sounds && customTags)
     return (
       <ButtonContainerMain>
         { theme.name === 'halloween' && <FullMoon /> }
@@ -132,7 +125,6 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
               updateFavRequest={ updateFavoritesRequest }
               currentlyTagging={ !!currentlyTagging }
               unsavedTagged={ unsavedTagged }
-              toggleSoundOnTag={ toggleSoundOnTag }
             />
           );
         })}

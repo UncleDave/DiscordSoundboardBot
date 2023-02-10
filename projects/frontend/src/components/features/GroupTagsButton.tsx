@@ -2,6 +2,7 @@ import React, { FC, useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { button, filterButton, filterButtonMobile, textShadowVisibility } from '../../styles/mixins';
 import usePrefs from '../../hooks/use-prefs';
+import { useSortRulesContext } from '../../hooks/use-sort-rules';
 
 interface ButtonMainProps {
   toggled: boolean;
@@ -22,13 +23,11 @@ const ButtonMain = styled.button<ButtonMainProps>`
   }
 `;
 
-interface GroupTagsButtonProps {
-  toggleSoundGrouping: () => void;
-}
-
-const GroupTagsButton: FC<GroupTagsButtonProps> = ({ toggleSoundGrouping }) => {
+const GroupTagsButton: FC = () => {
   const [mode, setMode] = useState(usePrefs().groups);
   const [text, setText] = useState('Off');
+  const { toggleSoundGrouping } = useSortRulesContext();
+
   useEffect(() => {
     let newText = 'Off';
     if (mode === 'start') newText = 'Start';

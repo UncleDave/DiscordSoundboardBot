@@ -2,6 +2,7 @@ import React, { FC, useCallback, useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import * as mixins from '../styles/mixins';
 import Sound from '../models/sound';
+import { useCustomTagsContext } from '../hooks/use-custom-tags';
 
 interface SoundTileMainProps {
   preview: boolean;
@@ -126,7 +127,6 @@ interface SoundTileProps {
   updateFavRequest: (soundId: string) => void;
   currentlyTagging: boolean;
   unsavedTagged: string[];
-  toggleSoundOnTag: (soundId: string) => void;
 }
 
 const SoundTile: FC<SoundTileProps> = ({
@@ -139,10 +139,10 @@ const SoundTile: FC<SoundTileProps> = ({
   updateFavRequest,
   currentlyTagging,
   unsavedTagged,
-  toggleSoundOnTag,
 }) => {
   const [statusBorder, setStatusBorder] = useState('');
   const theme = useTheme();
+  const { toggleSoundOnTag } = useCustomTagsContext();
 
   const raiseStatusSet = useCallback(() => setStatusBorder('success'), []);
 

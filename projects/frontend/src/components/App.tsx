@@ -11,8 +11,8 @@ import * as themes from '../styles/themes';
 import GlobalStyle from '../styles/global-style';
 import Snowflakes from './decorative/Snowflakes';
 import Fireworks from './decorative/Fireworks';
-import useSortRules from '../hooks/use-sort-rules';
-import useCustomTags from '../hooks/use-custom-tags';
+import { useSortRules, SortRulesProvider } from '../hooks/use-sort-rules';
+import { useCustomTags, CustomTagsProvider } from '../hooks/use-custom-tags';
 
 const AppMain = styled.div`
   display: flex;
@@ -57,30 +57,8 @@ function getThemeFromDate(date: string) {
 const theme = getThemeFromDate(new Date().toString());
 
 const App: FC = () => {
-  const {
-    sortRules,
-    toggleSmallButtons,
-    toggleFavs,
-    setSearchTerm,
-    toggleSoundSortOrder,
-    toggleSoundGrouping,
-    toggleTagFilter,
-  } = useSortRules();
-
-  const {
-    customTags,
-    mutateTags,
-    showCustomTagPicker,
-    toggleShowCustomTagPicker,
-    disableEditTagsButton,
-    setDisableEditTagsButton,
-    unsavedTagged,
-    currentlyTagging,
-    beginTagging,
-    toggleSoundOnTag,
-    saveTagged,
-    discardTagged,
-  } = useCustomTags();
+  const sortRules = useSortRules();
+  const customTags = useCustomTags();
 
   const [showAdminPanel, setShowAdminPanel] = useState(false);
 
@@ -128,49 +106,27 @@ const App: FC = () => {
         <CSSTransition in={ !showAdminPanel } timeout={ 410 }>
           { state => (
             <Soundboard state={ state }>
-              <Features
-                favoritesToggled={ sortRules.favorites }
-                toggleFavs={ toggleFavs }
-                previewToggled={ showPreview }
-                toggleShowPreview={ toggleShowPreview }
-                showCustomTagPicker={ showCustomTagPicker }
-                toggleShowCustomTagPicker={ toggleShowCustomTagPicker }
-                customTagProps={ customTags?.map(x => ({ id: x.id, name: x.name, color: x.color })) }
-                toggleSoundGrouping={ toggleSoundGrouping }
-                toggleTagFilter={ toggleTagFilter }
-                disableEditTagsButton={ disableEditTagsButton }
-                setSearchTerm={ setSearchTerm }
-                soundSortOrder={ sortRules.sortOrder }
-                toggleSoundSortOrder={ toggleSoundSortOrder }
-              />
-              <SortContainer
-                showPreview={ showPreview }
-                toggleSmallButtons={ toggleSmallButtons }
-                setPreviewVolume={ setPreviewVolume }
-                currentlyTagging={ currentlyTagging }
-                saveTagged={ saveTagged }
-                discardTagged={ discardTagged }
-              />
-              { showCustomTagPicker && (
-              <TagPicker
-                customTags={ customTags ?? [] }
-                mutateTags={ mutateTags }
-                setDisableEditTagsButton={ setDisableEditTagsButton }
-                beginTagging={ beginTagging }
-              />
-              ) }
-              <ButtonContainer
-                preview={ showPreview }
-                previewRequest={ previewRequest }
-                sortRules={ sortRules }
-                customTags={ customTags ?? [] }
-                currentlyTagging={ currentlyTagging }
-                unsavedTagged={ unsavedTagged }
-                toggleSoundOnTag={ toggleSoundOnTag }
-              />
+              <SortRulesProvider value={ sortRules }>
+                <CustomTagsProvider value={ customTags }>
+                  <Features
+                    previewToggled={ showPreview }
+                    toggleShowPreview={ toggleShowPreview }
+                  />
+                  <SortContainer
+                    showPreview={ showPreview }
+                    setPreviewVolume={ setPreviewVolume }
+                  />
+                  { customTags.showCustomTagPicker && (
+                  <TagPicker />
+                  ) }
+                  <ButtonContainer
+                    preview={ showPreview }
+                    previewRequest={ previewRequest }
+                  />
+                </CustomTagsProvider>
+              </SortRulesProvider>
             </Soundboard>
           ) }
-
         </CSSTransition>
       </ThemeProvider>
     </AppMain>

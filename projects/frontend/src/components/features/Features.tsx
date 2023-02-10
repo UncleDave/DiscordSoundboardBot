@@ -4,8 +4,8 @@ import SearchContainer from './SearchContainer';
 import FiltersBar from './FiltersBar';
 import SkipContainer from './SkipContainer';
 import OptionsContainer from './OptionsContainer';
-import TagProps from '../../models/tag-props';
 import { candyCaneBG } from '../../styles/mixins';
+import { useSortRulesContext } from '../../hooks/use-sort-rules';
 
 const FeaturesContainer = styled.div`
   padding: 0px 0px 14px;
@@ -49,60 +49,31 @@ const FiltersContainer = styled.div`
 `;
 
 interface FeaturesProps {
-  favoritesToggled: boolean;
   previewToggled: boolean;
-  toggleFavs: () => void;
   toggleShowPreview: () => void;
-  showCustomTagPicker: boolean;
-  toggleShowCustomTagPicker: () => void;
-  customTagProps: TagProps[] | undefined;
-  toggleSoundGrouping: () => void;
-  toggleTagFilter: (tagId: string) => void;
-  disableEditTagsButton: boolean;
-  setSearchTerm: (search: string) => void;
-  soundSortOrder: string;
-  toggleSoundSortOrder: () => void;
 }
 
 const Features: FC<FeaturesProps> = ({
-  favoritesToggled,
   previewToggled,
-  toggleFavs,
   toggleShowPreview,
-  showCustomTagPicker,
-  toggleShowCustomTagPicker,
-  customTagProps,
-  toggleSoundGrouping,
-  toggleTagFilter,
-  disableEditTagsButton,
-  setSearchTerm,
-  soundSortOrder,
-  toggleSoundSortOrder,
-}) => (
-  <FeaturesContainer>
-    <div>
-      <SkipContainer />
-      <OptionsContainer
-        disableEditTagsButton={ disableEditTagsButton }
-        showCustomTagPicker={ showCustomTagPicker }
-        toggleShowCustomTagPicker={ toggleShowCustomTagPicker }
-        previewToggled={ previewToggled }
-        toggleShowPreview={ toggleShowPreview }
-        toggleSoundGrouping={ toggleSoundGrouping }
-        soundSortOrder={ soundSortOrder }
-        toggleSoundSortOrder={ toggleSoundSortOrder }
-      />
-    </div>
-    <FiltersContainer>
-      <SearchContainer setSearchTerm={ setSearchTerm } focusOnEnter={ false } />
-      <FiltersBar
-        favoritesToggled={ favoritesToggled }
-        toggleFavs={ toggleFavs }
-        customTagProps={ customTagProps }
-        toggleTagFilter={ toggleTagFilter }
-      />
-    </FiltersContainer>
-  </FeaturesContainer>
-);
+}) => {
+  const { setSearchTerm } = useSortRulesContext();
+
+  return (
+    <FeaturesContainer>
+      <div>
+        <SkipContainer />
+        <OptionsContainer
+          previewToggled={ previewToggled }
+          toggleShowPreview={ toggleShowPreview }
+        />
+      </div>
+      <FiltersContainer>
+        <SearchContainer setSearchTerm={ setSearchTerm } focusOnEnter={ false } />
+        <FiltersBar />
+      </FiltersContainer>
+    </FeaturesContainer>
+  );
+};
 
 export default Features;
