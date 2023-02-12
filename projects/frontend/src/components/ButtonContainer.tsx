@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import useSWR from 'swr';
 import styled, { useTheme } from 'styled-components';
 import debounce from '../utils';
@@ -6,8 +6,8 @@ import SoundTile from './SoundTile';
 import Sound from '../models/sound';
 import FullMoon from './decorative/FullMoon';
 import CustomTag from '../models/custom-tag';
-import { useSortRulesContext } from '../hooks/use-sort-rules';
-import { useCustomTagsContext } from '../hooks/use-custom-tags';
+import { useSortRulesContext } from '../contexts/sort-rules-context';
+import { useCustomTagsContext } from '../contexts/custom-tags-context';
 
 const ButtonContainerMain = styled.div`
   display: flex;
@@ -24,10 +24,7 @@ const ButtonContainerMain = styled.div`
   }
 `;
 
-function sortByOrder(sounds: Sound[], sortOrder: string) {
-  const soundList = [...sounds];
-  if (sortOrder === 'A-Z') return soundList;
-
+function sortByDate(soundList: Sound[], sortOrder: string) {
   const compareFn = (a: Sound, b: Sound) => {
     if (sortOrder === 'Date - New') return a.date > b.date ? -1 : 1;
     return a.date < b.date ? -1 : 1;
@@ -36,10 +33,8 @@ function sortByOrder(sounds: Sound[], sortOrder: string) {
   return soundList.sort(compareFn);
 }
 
-function sortSoundGroups(sounds: Sound[], sortMode: string, groupMode: string, customTags: CustomTag[]) {
+function sortSoundGroups(sounds: Sound[], groupMode: string, customTags: CustomTag[]) {
   const soundList = [...sounds];
-
-  if (groupMode === 'none') return sortByOrder(soundList, sortMode);
 
   const idsGroupedByTag = customTags.map(x => [...x.sounds]);
 
@@ -49,26 +44,22 @@ function sortSoundGroups(sounds: Sound[], sortMode: string, groupMode: string, c
       const soundButton = soundList.find(x => x.id === sound);
       if (soundButton) total.push(soundButton);
     });
-    return sortByOrder(total, sortMode);
+    return total;
   }, new Array<Sound>());
 
   const allTagged = idsGroupedByTag.flat();
 
-  const unTagged = sortByOrder(soundList.filter(x => !allTagged.includes(x.id)), sortMode);
+  const unTagged = soundList.filter(x => !allTagged.includes(x.id));
 
   if (groupMode === 'start') return [...allTaggedSoundsGrouped, ...unTagged];
   return [...unTagged, ...allTaggedSoundsGrouped];
 }
 
 interface ButtonContainerProps {
-  preview: boolean;
-  previewRequest: (soundName: string) => void;
+  previewRequest: (soundId: string) => Promise<void>;
 }
 
-const ButtonContainer: FC<ButtonContainerProps> = ({
-  preview,
-  previewRequest,
-}) => {
+const ButtonContainer: FC<ButtonContainerProps> = ({ previewRequest }) => {
   const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
   const { data: customTags } = useSWR<CustomTag[]>('/api/customtags');
   const theme = useTheme();
@@ -98,11 +89,22 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
     }
   }, [sounds]);
 
-  if (sounds && customTags)
+  const orderedSounds = useMemo(() => {
+    if (!sounds || !customTags)
+      return [];
+    let soundList = [...sounds];
+    if (sortOrder !== 'A-Z')
+      soundList = sortByDate(soundList, sortOrder);
+    if (groups === 'none')
+      return soundList;
+    return sortSoundGroups(soundList, groups, customTags);
+  }, [sortOrder, sounds, groups, customTags]);
+
+  if (orderedSounds && customTags)
     return (
       <ButtonContainerMain>
         { theme.name === 'halloween' && <FullMoon /> }
-        { sortSoundGroups(sounds, sortOrder, groups, customTags).map(x => {
+        { orderedSounds.map(x => {
           let tagColor;
           const savedTag = customTags.find(tag => tag.sounds.includes(x.id));
           if (savedTag && savedTag?.id !== currentlyTagging?.id && unsavedTagged.includes(x.id)) tagColor = currentlyTagging?.color;
@@ -116,7 +118,6 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
           return (
             <SoundTile
               key={ x.id }
-              preview={ preview }
               small={ small }
               sound={ x }
               soundRequest={ soundRequest }

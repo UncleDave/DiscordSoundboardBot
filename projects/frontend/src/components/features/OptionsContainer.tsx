@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import * as mixins from '../../styles/mixins';
 import AddSoundDialog from './AddSoundDialog';
 import GroupTagsButton from './GroupTagsButton';
-import { useSortRulesContext } from '../../hooks/use-sort-rules';
-import { useCustomTagsContext } from '../../hooks/use-custom-tags';
+import { useSortRulesContext } from '../../contexts/sort-rules-context';
+import { useCustomTagsContext } from '../../contexts/custom-tags-context';
 
 const OptionsContainerMain = styled.div`
   display: flex;
@@ -12,8 +12,7 @@ const OptionsContainerMain = styled.div`
   background-color: ${ props => props.theme.colors.innerA };
   justify-content: space-between;
   align-items: center;
-  width: max-content;
-  margin-top: 16px;
+  min-width: 348px;
   margin-left: 14px;
   padding: 6px 6px;
   border-radius: 5px;
@@ -29,6 +28,7 @@ const OptionsContainerMain = styled.div`
 const ButtonRow = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
   position: relative;
 
@@ -38,6 +38,7 @@ const ButtonRow = styled.div`
 
   &:nth-child(2) {
     margin-top: 6px;
+    justify-content: space-evenly;
 
     @media only screen and (max-width: 780px) {
       margin-top: 2px;
@@ -92,15 +93,7 @@ const AddSoundButton = styled.button<ButtonProps>`
   }
 `;
 
-interface OptionsContainerProps {
-  previewToggled: boolean;
-  toggleShowPreview: () => void;
-}
-
-const OptionsContainer: FC<OptionsContainerProps> = ({
-  previewToggled,
-  toggleShowPreview,
-}) => {
+const OptionsContainer: FC = () => {
   const [showAddSound, setShowAddSound] = useState(false);
   const [disableAddSoundButton, setDisableAddSoundButton] = useState(false);
   const { toggleSoundSortOrder, sortRules } = useSortRulesContext();
@@ -117,12 +110,6 @@ const OptionsContainer: FC<OptionsContainerProps> = ({
             Edit Custom Tags
           </EditTagsButton>
         ) }
-        <ButtonToggle
-          toggled={ previewToggled }
-          onClick={ toggleShowPreview }
-        >
-          Preview Sounds
-        </ButtonToggle>
         <AddSoundButton
           toggled={ disableAddSoundButton }
           disabled={ disableAddSoundButton }

@@ -34,7 +34,6 @@ export const filterButtonMobile = css`
     min-height: 30px;
     font-size: 1.2rem;
     font-weight: normal;
-    margin-top: 8px;
     border: 3px solid ${ props => props.theme.colors.borderDefault };
     border-radius: 3px;
   }
@@ -50,7 +49,6 @@ export const textInput = css`
   font-size: 1.2rem;
   border: 5px solid ${ props => props.theme.colors.borderDefault };
   border-radius: 3px;
-  margin: 0px 0px 7px;
   width: 100%;
 
   &::placeholder {

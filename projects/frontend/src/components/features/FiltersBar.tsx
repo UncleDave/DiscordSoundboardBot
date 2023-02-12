@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import CustomTag from '../../models/custom-tag';
 import TagFilterButton from './TagFilterButton';
 import * as mixins from '../../styles/mixins';
-import { useSortRulesContext } from '../../hooks/use-sort-rules';
+import { useSortRulesContext } from '../../contexts/sort-rules-context';
 
 const FiltersBarMain = styled.div`
   display: flex;

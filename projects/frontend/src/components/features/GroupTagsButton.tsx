@@ -2,7 +2,7 @@ import React, { FC, useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { button, filterButton, filterButtonMobile, textShadowVisibility } from '../../styles/mixins';
 import usePrefs from '../../hooks/use-prefs';
-import { useSortRulesContext } from '../../hooks/use-sort-rules';
+import { useSortRulesContext } from '../../contexts/sort-rules-context';
 
 interface ButtonMainProps {
   toggled: boolean;

@@ -8,6 +8,7 @@ import PanelSound from './PanelSound';
 import PanelInfoContainer from './PanelInfoContainer';
 import Notification from './Notification';
 import { textShadowVisibility } from '../../styles/mixins';
+import useSoundPreview from '../../hooks/use-sound-preview';
 
 interface AdminStyleProps {
   state?: TransitionStatus;
@@ -111,16 +112,16 @@ const SoundsContainer = styled.div`
 interface AdminPanelProps {
   show: boolean;
   adminPanelClosed: () => void;
-  previewRequest: (soundName: string) => Promise<void>
 }
 
-const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed, previewRequest }) => {
+const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSound, setSelectedSound] = useState<Sound | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationProps, setNotificationProps] = useState({ text: '', color: '' });
 
   const { data: sounds, error } = useSWR<Sound[]>('/api/sounds');
+  const { setPreviewVolume, previewRequest } = useSoundPreview();
 
   const visibleSounds = useMemo(
     () => sounds?.filter(x => x.name.toUpperCase().includes(searchTerm)),
@@ -165,7 +166,13 @@ const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed, previewReques
                 <h2>Select a sound for info/delete/rename</h2>
                 { visibleSounds.map(x => (<PanelSound key={ x.id } sound={ x } selectedSoundId={ selectedSound?.id } setSelectedSound={ setSelectedSound } previewRequest={ previewRequest } />))}
               </SoundsContainer>
-              <PanelInfoContainer selectedSound={ selectedSound } setSelectedSound={ setSelectedSound } previewRequest={ previewRequest } setNotification={ setNotification } />
+              <PanelInfoContainer
+                selectedSound={ selectedSound }
+                setSelectedSound={ setSelectedSound }
+                setPreviewVolume={ setPreviewVolume }
+                previewRequest={ previewRequest }
+                setNotification={ setNotification }
+              />
             </LowerContainer>
           </AdminPanelMain>
         )}

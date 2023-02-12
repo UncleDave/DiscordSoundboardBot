@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { useCustomTagsContext } from '../../hooks/use-custom-tags';
+import { useCustomTagsContext } from '../../contexts/custom-tags-context';
 import { button } from '../../styles/mixins';
 
 interface TagStyleProps {

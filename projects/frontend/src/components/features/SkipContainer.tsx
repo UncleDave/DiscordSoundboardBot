@@ -5,8 +5,9 @@ import debounce from '../../utils';
 
 const SkipContainerMain = styled.div`
   display: flex;
-  justify-content: space-evenly;
-  margin-top: 15px;
+  justify-content: space-between;
+  margin: 0;
+  height: 56%;
   flex-grow: 1;
   position: relative;
   z-index: 10;
@@ -14,21 +15,23 @@ const SkipContainerMain = styled.div`
   > button {
     ${ button }
     
-    font-size: 1.8rem;
+    font-size: 1.2rem;
     color: white;
     background-color: ${ props => props.theme.colors.innerA };
     border: 5px solid ${ props => props.theme.colors.borderDefault };
     box-shadow: 0px 1px 8px 1px ${ props => props.theme.colors.shadowDefault };
     border-width: 5px;
     border-radius: 3px;
-    min-height: 70px;
     width: 50%;
-    margin: 6px 6px;
+    margin: 6px 0px;
+
+    &:first-child {
+      margin-right: 6px;
+    }
   }
 
   @media only screen and (max-width: 780px) {
-    min-height: 15vw;
-    width: 100%;
+    min-height: 80px;
     margin: 8px 8px 0px;
 
     > button {

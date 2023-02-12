@@ -1,8 +1,8 @@
-import { useState, useCallback, createContext, useContext } from 'react';
+import { useState, useCallback } from 'react';
 import SortRules from '../models/sort-rules';
 import usePrefs from './use-prefs';
 
-export function useSortRules() {
+export default function useSortRules() {
   const prefs = usePrefs();
 
   const [sortRules, setSortRules] = useState<SortRules>({ favorites: false, small: false, searchTerm: '', sortOrder: prefs.sort, groups: prefs.groups, tags: new Array<string>() });
@@ -45,28 +45,3 @@ export function useSortRules() {
 
   return { sortRules, toggleSmallButtons, toggleFavs, setSearchTerm, toggleSoundSortOrder, toggleSoundGrouping, toggleTagFilter };
 }
-
-interface SortRulesContextProps {
-  sortRules: SortRules;
-  toggleSmallButtons: () => void;
-  toggleFavs: () => void;
-  setSearchTerm: (searchTerm: string) => void;
-  toggleSoundSortOrder: () => Promise<void>;
-  toggleSoundGrouping: () => Promise<void>;
-  toggleTagFilter: (tagId: string) => void;
-}
-
-const SortRulesContext = createContext<SortRulesContextProps | null>(null);
-
-export const SortRulesProvider = SortRulesContext.Provider;
-
-export const useSortRulesContext = () => {
-  const sortRulesContext = useContext(SortRulesContext);
-
-  if (!sortRulesContext)
-    throw new Error(
-      'useSortRules has to be used within <SortRulesContext.Provider>',
-    );
-
-  return sortRulesContext;
-};

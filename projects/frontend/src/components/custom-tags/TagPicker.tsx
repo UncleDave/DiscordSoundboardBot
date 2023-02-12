@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import CustomTag from '../../models/custom-tag';
 import TagToolbar from './TagToolbar';
 import TagTileContainer from './TagTileContainer';
-import { useCustomTagsContext } from '../../hooks/use-custom-tags';
+import { useCustomTagsContext } from '../../contexts/custom-tags-context';
 
 const TagPickerMain = styled.div`
   display: flex;

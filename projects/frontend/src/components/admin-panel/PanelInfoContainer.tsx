@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Sound from '../../models/sound';
 import { textShadowVisibility, adminPanelDivider } from '../../styles/mixins';
 import AdminSoundActions from './AdminSoundActions';
+import VolumeSlider from '../VolumeSlider';
 
 const InfoContainer = styled.div`
   padding: 20px;
@@ -45,11 +46,12 @@ const Divider = styled.hr`
 interface PanelInfoContainerProps {
   selectedSound: Sound | null;
   setSelectedSound: (sound: Sound | null) => void;
+  setPreviewVolume: (volume: string) => void;
   previewRequest: (soundName: string) => Promise<void>
   setNotification: (text: string, color: string) => void;
 }
 
-const PanelInfoContainer:FC<PanelInfoContainerProps> = ({ selectedSound, setSelectedSound, previewRequest, setNotification }) => {
+const PanelInfoContainer:FC<PanelInfoContainerProps> = ({ selectedSound, setSelectedSound, setPreviewVolume, previewRequest, setNotification }) => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showRenameInput, setShowRenameInput] = useState(false);
 
@@ -60,6 +62,11 @@ const PanelInfoContainer:FC<PanelInfoContainerProps> = ({ selectedSound, setSele
 
   return (
     <InfoContainer>
+      <div>
+        <h2>Preview Volume</h2>
+        <VolumeSlider setPreviewVolume={ setPreviewVolume } />
+      </div>
+      <Divider />
       <div>
         <h2>Name:</h2>
         <h2>{ selectedSound?.name }</h2>

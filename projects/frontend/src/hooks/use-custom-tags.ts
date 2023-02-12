@@ -1,9 +1,9 @@
-import { useState, useCallback, useContext, createContext } from 'react';
+import { useState, useCallback } from 'react';
 import useSWR from 'swr';
 import CustomTag from '../models/custom-tag';
 import TagProps from '../models/tag-props';
 
-export function useCustomTags() {
+export default function useCustomTags() {
   const { data: customTags, mutate } = useSWR<CustomTag[]>('/api/customtags');
 
   const [unsavedTagged, setUnsavedTagged] = useState<string[]>([]);
@@ -91,31 +91,3 @@ export function useCustomTags() {
     discardTagged,
   };
 }
-
-interface CustomTagsContextProps {
-  showCustomTagPicker: boolean;
-  toggleShowCustomTagPicker: () => void;
-  disableEditTagsButton: boolean;
-  setDisableEditTagsButton: (disable: boolean) => void;
-  unsavedTagged: string[];
-  currentlyTagging: TagProps | null;
-  beginTagging: (tagId: string) => void;
-  toggleSoundOnTag: (soundId: string) => void;
-  saveTagged: () => Promise<void>;
-  discardTagged: () => void;
-}
-
-const CustomTagsContext = createContext<CustomTagsContextProps | null>(null);
-
-export const CustomTagsProvider = CustomTagsContext.Provider;
-
-export const useCustomTagsContext = () => {
-  const customTagsContext = useContext(CustomTagsContext);
-
-  if (!customTagsContext)
-    throw new Error(
-      'useSortRules has to be used within <SortRulesContext.Provider>',
-    );
-
-  return customTagsContext;
-};

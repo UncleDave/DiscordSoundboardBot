@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { useSortRulesContext } from '../../hooks/use-sort-rules';
+import { useSortRulesContext } from '../../contexts/sort-rules-context';
 import { button, filterButton, filterButtonMobile, textShadowVisibility } from '../../styles/mixins';
 
 interface ButtonMainProps {

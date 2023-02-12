@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { iconButton } from '../styles/mixins';
 import PreviewInstructions from './PreviewInstructions';
 import TaggingInstructions from './TaggingInstructions';
-import { useSortRulesContext } from '../hooks/use-sort-rules';
-import { useCustomTagsContext } from '../hooks/use-custom-tags';
+import { useSortRulesContext } from '../contexts/sort-rules-context';
+import { useCustomTagsContext } from '../contexts/custom-tags-context';
 
 const SortToolbar = styled.div`
   display: flex;
@@ -23,7 +23,6 @@ const SortToolbar = styled.div`
   }
 
   @media only screen and (max-width: 780px) {
-    flex-direction: column;
     justify-content: right;
     margin: 5px;
   }
@@ -76,11 +75,10 @@ const ResizeSpan = styled.span`
 `;
 
 interface SortContainerProps {
-  showPreview: boolean;
   setPreviewVolume: (volume: string) => void;
 }
 
-const SortContainer: FC<SortContainerProps> = ({ showPreview, setPreviewVolume }) => {
+const SortContainer: FC<SortContainerProps> = ({ setPreviewVolume }) => {
   const { toggleSmallButtons } = useSortRulesContext();
   const { currentlyTagging } = useCustomTagsContext();
 
@@ -93,7 +91,7 @@ const SortContainer: FC<SortContainerProps> = ({ showPreview, setPreviewVolume }
         tagColor={ currentlyTagging.color }
       />
       ) }
-      { showPreview && <PreviewInstructions setPreviewVolume={ setPreviewVolume } taggingModeOn={ !!currentlyTagging } /> }
+      <PreviewInstructions setPreviewVolume={ setPreviewVolume } />
       { currentlyTagging && <TagModeColorBar tagColor={ currentlyTagging.color } /> }
       <div>
         <ResizeIcon role="presentation" onClick={ toggleSmallButtons }>

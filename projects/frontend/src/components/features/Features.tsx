@@ -5,15 +5,17 @@ import FiltersBar from './FiltersBar';
 import SkipContainer from './SkipContainer';
 import OptionsContainer from './OptionsContainer';
 import { candyCaneBG } from '../../styles/mixins';
-import { useSortRulesContext } from '../../hooks/use-sort-rules';
+import { useSortRulesContext } from '../../contexts/sort-rules-context';
 
 const FeaturesContainer = styled.div`
+  margin-top: 16px;
   padding: 0px 0px 14px;
   box-shadow: 0px 5px 5px 2px ${ props => props.theme.colors.shadowDefault };
   position: relative;
 
   > div {
     display: flex;
+    align-content: center;
 
     &:first-child {
       padding: 0px 30px;
@@ -34,10 +36,9 @@ const FeaturesContainer = styled.div`
 
 const FiltersContainer = styled.div`
   display: flex;
-  flex-direction: column;
   position: relative;
   z-index: 10;
-  margin: 10px 3.2vw;
+  margin: 10px 40px;
   padding: 6px 6px;
   border-radius: 5px;
   background-color: ${ props => props.theme.colors.innerA };
@@ -48,28 +49,31 @@ const FiltersContainer = styled.div`
   }
 `;
 
-interface FeaturesProps {
-  previewToggled: boolean;
-  toggleShowPreview: () => void;
-}
+const SkipAndSearch = styled.div`
+  flex-grow: 1;
+  margin: 0;
 
-const Features: FC<FeaturesProps> = ({
-  previewToggled,
-  toggleShowPreview,
-}) => {
+  @media only screen and (max-width: 780px) {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    width: 95%;
+  }
+`;
+
+const Features: FC = () => {
   const { setSearchTerm } = useSortRulesContext();
 
   return (
     <FeaturesContainer>
       <div>
-        <SkipContainer />
-        <OptionsContainer
-          previewToggled={ previewToggled }
-          toggleShowPreview={ toggleShowPreview }
-        />
+        <SkipAndSearch>
+          <SkipContainer />
+          <SearchContainer setSearchTerm={ setSearchTerm } focusOnEnter={ false } />
+        </SkipAndSearch>
+        <OptionsContainer />
       </div>
       <FiltersContainer>
-        <SearchContainer setSearchTerm={ setSearchTerm } focusOnEnter={ false } />
         <FiltersBar />
       </FiltersContainer>
     </FeaturesContainer>
