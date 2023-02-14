@@ -18,6 +18,7 @@ const OptionsContainerMain = styled.div`
   border-radius: 5px;
   position: relative;
   z-index: 20;
+  box-shadow: 0px 1px 8px 1px ${ props => props.theme.colors.shadowDefault };
 
   @media only screen and (max-width: 780px) {
     margin: 4px 8px;
@@ -38,15 +39,10 @@ const ButtonRow = styled.div`
 
   &:nth-child(2) {
     margin-top: 6px;
-    justify-content: space-evenly;
 
     @media only screen and (max-width: 780px) {
       margin-top: 2px;
     }
-  }
-
-  @media only screen and (max-width: 780px) {
-    justify-content: space-between;
   }
 `;
 
@@ -59,6 +55,7 @@ const ButtonToggle = styled.button<ButtonProps>`
   ${ mixins.filterButton }
   ${ mixins.filterButtonMobile }
   ${ mixins.textShadowVisibility }
+  min-width: 169px;
 
   @media only screen and (max-width: 780px) {
     margin-top: 2px;
@@ -83,14 +80,17 @@ const DisableEditButton = styled.button`
 const AddSoundButton = styled.button<ButtonProps>`
   ${ mixins.filterButton }
   ${ mixins.filterButtonMobile }
+  min-width: 171px;
   
   border-color: ${ props => props.theme.colors.borderGold };
-
   ${ props => props.toggled ? mixins.buttonGreen : mixins.button }
 
   @media only screen and (max-width: 780px) {
+    border-color: ${ props => props.theme.colors.borderGold };
     margin-top: 2px;
+    width: 174px;
   }
+  
 `;
 
 const OptionsContainer: FC = () => {

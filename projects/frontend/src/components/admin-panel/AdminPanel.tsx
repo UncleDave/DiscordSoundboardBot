@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import styled from 'styled-components';
 import { CSSTransition, TransitionStatus } from 'react-transition-group';
 import Sound from '../../models/sound';
-import SearchContainer from '../features/SearchContainer';
+import SearchBar from '../SearchBar';
 import PanelSound from './PanelSound';
 import PanelInfoContainer from './PanelInfoContainer';
 import Notification from './Notification';
@@ -26,6 +26,10 @@ const AdminPanelMain = styled.div<AdminStyleProps>`
   overflow-y: hidden;
   z-index: 100;
   background-color: ${ props => props.theme.colors.bg };
+
+  @media only screen and (max-width: 780px) {
+    top: ${ props => props.state === 'entered' || props.state === 'entering' ? '90px' : '100vh' };
+  }
 `;
 
 const AdminFeatures = styled.div`
@@ -41,6 +45,10 @@ const FeaturesHeader = styled.div`
     ${ textShadowVisibility }
     margin: 18px 20px 10px 0px;
 
+    @media only screen and (max-width: 780px) {
+      margin-top: 10px;
+    }
+
     &:first-child {
       color: ${ props => props.theme.colors.borderDefault };
     }
@@ -50,6 +58,7 @@ const FeaturesHeader = styled.div`
 const CloseBar = styled.div`
   display: flex;
   justify-content: center;
+  align-content: center;
   width: 100%;
   opacity: 0.5;
   background-color: ${ props => props.theme.colors.borderRed };
@@ -63,10 +72,16 @@ const CloseBar = styled.div`
   }
 
   > p {
+    display: flex;
+    align-items: center;
     color: black;
     font-weight: bold;
     opacity: 0.8;
     margin: 0;
+  }
+
+  @media only screen and (max-width: 780px) {
+    height: 20px;
   }
 `;
 
@@ -106,6 +121,7 @@ const SoundsContainer = styled.div`
   @media only screen and (max-width: 780px) {
     border-right: none;
     border-bottom: 5px solid ${ props => props.theme.colors.borderDefault };
+    box-shadow: 0px -6px 10px 0px ${ props => props.theme.colors.shadowDefault } inset;
   }
 `;
 
@@ -159,7 +175,7 @@ const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed }) => {
                 <h2>TOP SECRET ADMIN ZONE</h2>
                 <Notification show={ showNotification } textProps={ { text: notificationProps.text, color: notificationProps.color } } />
               </FeaturesHeader>
-              <SearchContainer setSearchTerm={ setSearchTerm } focusOnEnter />
+              <SearchBar setSearchTerm={ setSearchTerm } focusOnEnter />
             </AdminFeatures>
             <LowerContainer>
               <SoundsContainer>

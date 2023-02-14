@@ -30,29 +30,25 @@ function sortByDate(soundList: Sound[], sortOrder: string) {
     return a.date < b.date ? -1 : 1;
   };
 
-  return soundList.sort(compareFn);
+  const sorted = [...soundList];
+  return sorted.sort(compareFn);
 }
 
 function sortSoundGroups(sounds: Sound[], groupMode: string, customTags: CustomTag[]) {
   const soundList = [...sounds];
 
-  const idsGroupedByTag = customTags.map(x => [...x.sounds]);
-
-  const allTaggedSoundsGrouped = idsGroupedByTag.reduce((groupedList, group) => {
-    const total = [...groupedList];
-    group.forEach(sound => {
-      const soundButton = soundList.find(x => x.id === sound);
-      if (soundButton) total.push(soundButton);
-    });
+  const taggedSoundsGrouped = customTags.reduce((tagGroups, tag) => {
+    const total = [...tagGroups];
+    total.push(soundList.filter(x => tag.sounds.includes(x.id)));
     return total;
-  }, new Array<Sound>());
+  }, new Array<Sound[]>());
 
-  const allTagged = idsGroupedByTag.flat();
+  const allTagged = taggedSoundsGrouped.flat();
 
-  const unTagged = soundList.filter(x => !allTagged.includes(x.id));
+  const unTagged = soundList.filter(x => !allTagged.includes(x));
 
-  if (groupMode === 'start') return [...allTaggedSoundsGrouped, ...unTagged];
-  return [...unTagged, ...allTaggedSoundsGrouped];
+  if (groupMode === 'start') return [...allTagged, ...unTagged];
+  return [...unTagged, ...allTagged];
 }
 
 interface ButtonContainerProps {
@@ -91,7 +87,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ previewRequest }) => {
 
   const orderedSounds = useMemo(() => {
     if (!sounds || !customTags)
-      return [];
+      return null;
     let soundList = [...sounds];
     if (sortOrder !== 'A-Z')
       soundList = sortByDate(soundList, sortOrder);

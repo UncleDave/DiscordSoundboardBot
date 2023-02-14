@@ -31,11 +31,11 @@ const SkipContainerMain = styled.div`
   }
 
   @media only screen and (max-width: 780px) {
-    min-height: 80px;
-    margin: 8px 8px 0px;
+    min-height: 40;
+    margin: 0px 4px;
 
     > button {
-      border-width: 4px;
+      border-width: 3px;
       min-height: 50px;
     }
   }

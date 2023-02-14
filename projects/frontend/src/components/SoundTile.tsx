@@ -140,6 +140,10 @@ const PreviewButton = styled.div<PreviewButtonStyleProps>`
     ${ mixins.iconButton }
     margin-right: 4px;
     ${ props => props.small && 'font-size: 0.8rem;' }
+
+    @media only screen and (max-width: 780px) {
+      font-size: ${ props => props.small ? '1rem' : '1.3rem' };
+    }
   }
 
   > p {
@@ -150,11 +154,18 @@ const PreviewButton = styled.div<PreviewButtonStyleProps>`
     pointer-events: none;
   }
 
-  &:hover {
-    opacity: 1;
+  @media only screen and (max-width: 780px) {
+    bottom: ${ props => props.small ? '0px' : '4px' };
+    left: ${ props => props.small ? '10px' : '12px' };
+  }
 
-    > p {
-      display: block;
+  @media only screen and (min-width: 780px) {
+    &:hover {
+      opacity: 1;
+
+      > p {
+        display: block;
+      }
     }
   }
 `;

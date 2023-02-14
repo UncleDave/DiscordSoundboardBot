@@ -22,6 +22,10 @@ const PreviewInstructionsMain = styled.div`
 
     ${ props => props.theme.name === 'christmas' && 'filter: brightness(1.4) saturate(1.4);' }
   }
+
+  @media only screen and (max-width: 780px) {
+    margin-left: 10px;
+  }
 `;
 
 interface PreviewInstructionsProps {
@@ -30,7 +34,7 @@ interface PreviewInstructionsProps {
 
 const PreviewInstructions: FC<PreviewInstructionsProps> = ({ setPreviewVolume }) => (
   <PreviewInstructionsMain>
-    <span className='material-icons'>play_circle</span>
+    <span className='material-icons'>play_circle_outline</span>
     <p>Preview Volume</p>
     <VolumeSlider setPreviewVolume={ setPreviewVolume } />
   </PreviewInstructionsMain>

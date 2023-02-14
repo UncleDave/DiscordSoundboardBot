@@ -15,7 +15,7 @@ const ButtonMain = styled.button<ButtonMainProps>`
   ${ textShadowVisibility }
 
 
-  min-width: 170px;
+  min-width: 174px;
   ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
 
   @media only screen and (max-width: 780px) {

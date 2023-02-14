@@ -16,6 +16,10 @@ const ButtonMain = styled.button<ButtonMainProps>`
 
   background-color: ${ props => props.color };
   ${ props => props.toggled ? `border-color: ${ props.theme.colors.borderGreen }` : null };
+
+  @media only screen and (max-width: 780px) {
+    margin: 2px;
+  }
 `;
 
 interface TagFilterButtonProps {

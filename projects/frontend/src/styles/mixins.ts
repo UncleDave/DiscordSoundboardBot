@@ -115,6 +115,6 @@ export const adminPanelDivider = css`
   margin: 2px 0px;
 
   @media only screen and (max-width: 780px) {
-    max-width: 100%;
+    display: none;
   }
 `;

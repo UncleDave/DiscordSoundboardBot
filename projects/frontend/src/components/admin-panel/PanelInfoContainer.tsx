@@ -14,16 +14,14 @@ const InfoContainer = styled.div`
     align-items: center;
     min-height: 40px;
   
-    > h2 {
+    > h2, h3 {
       margin: 0px 7px 0px 0px;
-  
+    }
+
+    h2 {
       &:first-child {
       color: ${ props => props.theme.colors.borderDefault }
       }
-    }
-
-    h3 {
-      margin: 0px 7px 0px 0px;
     }
 
     > span {
@@ -36,6 +34,14 @@ const InfoContainer = styled.div`
       opacity: 1;
       }
     }
+
+    @media only screen and (max-width: 780px) {
+      min-height: 30px;
+    }
+  }
+
+  @media only screen and (max-width: 780px) {
+    box-shadow: 0px 4px 10px 0px ${ props => props.theme.colors.shadowDefault } inset;
   }
 `;
 

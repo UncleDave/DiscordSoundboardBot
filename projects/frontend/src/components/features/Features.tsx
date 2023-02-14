@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import SearchContainer from './SearchContainer';
 import FiltersBar from './FiltersBar';
 import SkipContainer from './SkipContainer';
 import OptionsContainer from './OptionsContainer';
+import SearchBar from '../SearchBar';
 import { candyCaneBG } from '../../styles/mixins';
 import { useSortRulesContext } from '../../contexts/sort-rules-context';
 
@@ -12,6 +12,10 @@ const FeaturesContainer = styled.div`
   padding: 0px 0px 14px;
   box-shadow: 0px 5px 5px 2px ${ props => props.theme.colors.shadowDefault };
   position: relative;
+
+  input {
+    height: 30px;
+  }
 
   > div {
     display: flex;
@@ -69,7 +73,7 @@ const Features: FC = () => {
       <div>
         <SkipAndSearch>
           <SkipContainer />
-          <SearchContainer setSearchTerm={ setSearchTerm } focusOnEnter={ false } />
+          <SearchBar setSearchTerm={ setSearchTerm } focusOnEnter={ false } />
         </SkipAndSearch>
         <OptionsContainer />
       </div>

@@ -8,8 +8,14 @@ import { useSortRulesContext } from '../../contexts/sort-rules-context';
 
 const FiltersBarMain = styled.div`
   display: flex;
+  flex-wrap: wrap;
   justify-content: left;
   align-items: center;
+  
+  @media only screen and (max-width: 780px) {
+    margin: -2px;
+    justify-content: left;
+  }
 
   > p {
     margin: 0;
@@ -28,6 +34,10 @@ const ButtonToggle = styled.button<ButtonProps>`
   ${ mixins.filterButton }
   ${ mixins.filterButtonMobile }
   ${ mixins.textShadowVisibility }
+  
+  @media only screen and (max-width: 780px) {
+    margin: 2px;
+  }
 
   ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
 `;

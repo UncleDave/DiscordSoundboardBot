@@ -41,6 +41,25 @@ const StyledSlider = styled.input`
   &[type="range"]::-moz-range-thumb {
     ${ sliderThumb }
   }
+
+  @media only screen and (max-width: 780px) {
+    &[type="range"] {
+      height: 5px;
+    }
+  
+    &[type="range"]::-webkit-slider-thumb {
+      height: 18px;
+      width: 18px;
+    }
+  
+    &[type=range]::-webkit-slider-runnable-track {
+
+    }
+
+    &[type="range"]::-moz-range-thumb {
+
+    }
+  }
 `;
 
 const VolumeSlider: FC<VolumeSliderProps> = ({ setPreviewVolume }) => {
