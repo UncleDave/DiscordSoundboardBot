@@ -5,7 +5,7 @@ import SkipContainer from './SkipContainer';
 import OptionsContainer from './OptionsContainer';
 import SearchBar from '../SearchBar';
 import { candyCaneBG } from '../../styles/mixins';
-import { useSortRulesContext } from '../../contexts/sort-rules-context';
+import { useSortRules } from '../../contexts/sort-rules-context';
 
 const FeaturesContainer = styled.div`
   margin-top: 16px;
@@ -66,7 +66,7 @@ const SkipAndSearch = styled.div`
 `;
 
 const Features: FC = () => {
-  const { setSearchTerm } = useSortRulesContext();
+  const { setSearchTerm } = useSortRules();
 
   return (
     <FeaturesContainer>

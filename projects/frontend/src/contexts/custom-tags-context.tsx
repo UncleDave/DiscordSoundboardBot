@@ -1,9 +1,39 @@
-import { useState, useCallback } from 'react';
+import React, { FC, useCallback, useState, useMemo, createContext, useContext, ReactNode } from 'react';
 import useSWR from 'swr';
 import CustomTag from '../models/custom-tag';
 import TagProps from '../models/tag-props';
 
-export default function useCustomTags() {
+interface CustomTagsContextProps {
+  showCustomTagPicker: boolean;
+  toggleShowCustomTagPicker: () => void;
+  disableEditTagsButton: boolean;
+  setDisableEditTagsButton: (disable: boolean) => void;
+  unsavedTagged: string[];
+  currentlyTagging: TagProps | null;
+  beginTagging: (tagId: string) => void;
+  toggleSoundOnTag: (soundId: string) => void;
+  saveTagged: () => Promise<void>;
+  discardTagged: () => void;
+}
+
+const CustomTagsContext = createContext<CustomTagsContextProps | null>(null);
+
+export const useCustomTags = () => {
+  const customTagsContext = useContext(CustomTagsContext);
+
+  if (!customTagsContext)
+    throw new Error(
+      'useCustomTags has to be used within <CustomTagsProvider>',
+    );
+
+  return customTagsContext;
+};
+
+interface CustomTagsProviderProps {
+  children: ReactNode;
+}
+
+const CustomTagsProvider: FC<CustomTagsProviderProps> = ({ children }) => {
   const { data: customTags, mutate } = useSWR<CustomTag[]>('/api/customtags');
 
   const [unsavedTagged, setUnsavedTagged] = useState<string[]>([]);
@@ -78,7 +108,7 @@ export default function useCustomTags() {
     setDisableEditTagsButton(false);
   }, []);
 
-  return {
+  const context = useMemo<CustomTagsContextProps>(() => ({
     showCustomTagPicker,
     toggleShowCustomTagPicker,
     disableEditTagsButton,
@@ -89,5 +119,13 @@ export default function useCustomTags() {
     toggleSoundOnTag,
     saveTagged,
     discardTagged,
-  };
-}
+  }), [showCustomTagPicker, toggleShowCustomTagPicker, disableEditTagsButton, unsavedTagged, currentlyTagging, beginTagging, toggleSoundOnTag, saveTagged]);
+
+  return (
+    <CustomTagsContext.Provider value={ context }>
+      { children }
+    </CustomTagsContext.Provider>
+  );
+};
+
+export default CustomTagsProvider;

@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { iconButton } from '../styles/mixins';
 import PreviewInstructions from './PreviewInstructions';
 import TaggingInstructions from './TaggingInstructions';
-import { useSortRulesContext } from '../contexts/sort-rules-context';
-import { useCustomTagsContext } from '../contexts/custom-tags-context';
+import { useSortRules } from '../contexts/sort-rules-context';
+import { useCustomTags } from '../contexts/custom-tags-context';
 
 const SortToolbar = styled.div`
   display: flex;
@@ -79,8 +79,8 @@ interface SortContainerProps {
 }
 
 const SortContainer: FC<SortContainerProps> = ({ setPreviewVolume }) => {
-  const { toggleSmallButtons } = useSortRulesContext();
-  const { currentlyTagging } = useCustomTagsContext();
+  const { toggleSmallButtons } = useSortRules();
+  const { currentlyTagging } = useCustomTags();
 
   return (
     <SortToolbar>

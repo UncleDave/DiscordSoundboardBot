@@ -2,7 +2,7 @@ import React, { FC, useCallback, useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import * as mixins from '../styles/mixins';
 import Sound from '../models/sound';
-import { useCustomTagsContext } from '../contexts/custom-tags-context';
+import { useCustomTags } from '../contexts/custom-tags-context';
 
 const soundTileSmall = css`
   font-size: 0.6rem;
@@ -24,7 +24,7 @@ const soundTileSmallMobile = css`
     max-width: 15vw;
 `;
 
-const selectSoundTileMainBorder = (statusBorder: any) => {
+const selectSoundTileMainBorder = (statusBorder: string) => {
   if (statusBorder === 'success') return mixins.buttonGreen;
   if (statusBorder === 'error') return mixins.buttonRed;
   return css`
@@ -193,7 +193,7 @@ const SoundTile: FC<SoundTileProps> = ({
 }) => {
   const [statusBorder, setStatusBorder] = useState('');
   const theme = useTheme();
-  const { toggleSoundOnTag } = useCustomTagsContext();
+  const { toggleSoundOnTag } = useCustomTags();
 
   const raiseStatusSet = useCallback(() => setStatusBorder('success'), []);
 

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { useCustomTagsContext } from '../contexts/custom-tags-context';
+import { useCustomTags } from '../contexts/custom-tags-context';
 import { button, filterButton, filterButtonMobile } from '../styles/mixins';
 
 interface TaggingInstructionsMainProps {
@@ -37,7 +37,7 @@ interface TaggingInstructionsProps {
 }
 
 const TaggingInstructions: FC<TaggingInstructionsProps> = ({ tagName, tagColor }) => {
-  const { saveTagged, discardTagged } = useCustomTagsContext();
+  const { saveTagged, discardTagged } = useCustomTags();
 
   return (
     <TaggingInstructionsMain tagColor={ tagColor }>

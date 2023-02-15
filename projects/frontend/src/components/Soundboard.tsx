@@ -1,11 +1,8 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 import { TransitionStatus } from 'react-transition-group';
-import useCustomTags from '../hooks/use-custom-tags';
-import useSortRules from '../hooks/use-sort-rules';
 import useSoundPreview from '../hooks/use-sound-preview';
-import { SortRulesProvider } from '../contexts/sort-rules-context';
-import { CustomTagsProvider } from '../contexts/custom-tags-context';
+import { useCustomTags } from '../contexts/custom-tags-context';
 import Features from './features/Features';
 import SortContainer from './SortContainer';
 import TagPicker from './custom-tags/TagPicker';
@@ -41,26 +38,23 @@ interface SoundboardProps {
 }
 
 const Soundboard: FC<SoundboardProps> = ({ state }) => {
-  const sortRules = useSortRules();
-  const customTags = useCustomTags();
+  const { showCustomTagPicker } = useCustomTags();
   const { previewRequest, setPreviewVolume } = useSoundPreview();
 
   return (
     <SoundboardMain state={ state }>
-      <SortRulesProvider value={ sortRules }>
-        <CustomTagsProvider value={ customTags }>
-          <Features />
-          <SortContainer
-            setPreviewVolume={ setPreviewVolume }
-          />
-          { customTags.showCustomTagPicker && (
-          <TagPicker />
-          ) }
-          <ButtonContainer
-            previewRequest={ previewRequest }
-          />
-        </CustomTagsProvider>
-      </SortRulesProvider>
+
+      <Features />
+      <SortContainer
+        setPreviewVolume={ setPreviewVolume }
+      />
+      { showCustomTagPicker && (
+      <TagPicker />
+      ) }
+      <ButtonContainer
+        previewRequest={ previewRequest }
+      />
+
     </SoundboardMain>
   );
 };

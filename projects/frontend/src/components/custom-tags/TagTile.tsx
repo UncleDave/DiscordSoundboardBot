@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { useCustomTagsContext } from '../../contexts/custom-tags-context';
+import { useCustomTags } from '../../contexts/custom-tags-context';
 import { button } from '../../styles/mixins';
 
 interface TagStyleProps {
@@ -59,7 +59,7 @@ interface TagTileProps {
 }
 
 const TagTile: FC<TagTileProps> = ({ id, name, color, editMode, handleEditTagClick }) => {
-  const { beginTagging } = useCustomTagsContext();
+  const { beginTagging } = useCustomTags();
 
   return (
     <TagTileMain color={ color }>

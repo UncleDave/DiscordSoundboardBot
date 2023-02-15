@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import CustomTag from '../../models/custom-tag';
 import TagFilterButton from './TagFilterButton';
 import * as mixins from '../../styles/mixins';
-import { useSortRulesContext } from '../../contexts/sort-rules-context';
+import { useSortRules } from '../../contexts/sort-rules-context';
 
 const FiltersBarMain = styled.div`
   display: flex;
@@ -43,7 +43,7 @@ const ButtonToggle = styled.button<ButtonProps>`
 `;
 
 const FiltersBar: FC = () => {
-  const { sortRules, toggleFavs } = useSortRulesContext();
+  const { sortRules, toggleFavs } = useSortRules();
   const { data: customTags } = useSWR<CustomTag[]>('/api/customtags');
 
   return (

@@ -6,8 +6,8 @@ import SoundTile from './SoundTile';
 import Sound from '../models/sound';
 import FullMoon from './decorative/FullMoon';
 import CustomTag from '../models/custom-tag';
-import { useSortRulesContext } from '../contexts/sort-rules-context';
-import { useCustomTagsContext } from '../contexts/custom-tags-context';
+import { useSortRules } from '../contexts/sort-rules-context';
+import { useCustomTags } from '../contexts/custom-tags-context';
 
 const ButtonContainerMain = styled.div`
   display: flex;
@@ -24,28 +24,29 @@ const ButtonContainerMain = styled.div`
   }
 `;
 
-function sortByDate(soundList: Sound[], sortOrder: string) {
+function sortByDate(sounds: Sound[], sortOrder: string) {
+  if (sortOrder === 'A-Z') return sounds;
+
   const compareFn = (a: Sound, b: Sound) => {
     if (sortOrder === 'Date - New') return a.date > b.date ? -1 : 1;
     return a.date < b.date ? -1 : 1;
   };
 
-  const sorted = [...soundList];
-  return sorted.sort(compareFn);
+  return [...sounds].sort(compareFn);
 }
 
 function sortSoundGroups(sounds: Sound[], groupMode: string, customTags: CustomTag[]) {
-  const soundList = [...sounds];
+  if (groupMode === 'none') return sounds;
 
   const taggedSoundsGrouped = customTags.reduce((tagGroups, tag) => {
     const total = [...tagGroups];
-    total.push(soundList.filter(x => tag.sounds.includes(x.id)));
+    total.push(sounds.filter(x => tag.sounds.includes(x.id)));
     return total;
   }, new Array<Sound[]>());
 
   const allTagged = taggedSoundsGrouped.flat();
 
-  const unTagged = soundList.filter(x => !allTagged.includes(x));
+  const unTagged = sounds.filter(x => !allTagged.includes(x));
 
   if (groupMode === 'start') return [...allTagged, ...unTagged];
   return [...unTagged, ...allTagged];
@@ -59,8 +60,8 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ previewRequest }) => {
   const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
   const { data: customTags } = useSWR<CustomTag[]>('/api/customtags');
   const theme = useTheme();
-  const { sortRules: { favorites, small, searchTerm, sortOrder, groups, tags } } = useSortRulesContext();
-  const { currentlyTagging, unsavedTagged } = useCustomTagsContext();
+  const { sortRules: { favorites, small, searchTerm, sortOrder, groups, tags } } = useSortRules();
+  const { currentlyTagging, unsavedTagged } = useCustomTags();
 
   const soundRequest = useCallback(debounce(async (soundId: string, borderCallback: () => void) => {
     borderCallback();
@@ -88,13 +89,8 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ previewRequest }) => {
   const orderedSounds = useMemo(() => {
     if (!sounds || !customTags)
       return null;
-    let soundList = [...sounds];
-    if (sortOrder !== 'A-Z')
-      soundList = sortByDate(soundList, sortOrder);
-    if (groups === 'none')
-      return soundList;
-    return sortSoundGroups(soundList, groups, customTags);
-  }, [sortOrder, sounds, groups, customTags]);
+    return sortSoundGroups(sortByDate(sounds, sortOrder), groups, customTags);
+  }, [sounds, sortOrder, groups, customTags]);
 
   if (orderedSounds && customTags)
     return (

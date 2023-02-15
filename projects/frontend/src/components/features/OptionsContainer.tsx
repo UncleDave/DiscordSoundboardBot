@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import * as mixins from '../../styles/mixins';
 import AddSoundDialog from './AddSoundDialog';
 import GroupTagsButton from './GroupTagsButton';
-import { useSortRulesContext } from '../../contexts/sort-rules-context';
-import { useCustomTagsContext } from '../../contexts/custom-tags-context';
+import { useSortRules } from '../../contexts/sort-rules-context';
+import { useCustomTags } from '../../contexts/custom-tags-context';
 
 const OptionsContainerMain = styled.div`
   display: flex;
@@ -96,8 +96,8 @@ const AddSoundButton = styled.button<ButtonProps>`
 const OptionsContainer: FC = () => {
   const [showAddSound, setShowAddSound] = useState(false);
   const [disableAddSoundButton, setDisableAddSoundButton] = useState(false);
-  const { toggleSoundSortOrder, sortRules } = useSortRulesContext();
-  const { showCustomTagPicker, disableEditTagsButton, toggleShowCustomTagPicker } = useCustomTagsContext();
+  const { toggleSoundSortOrder, sortRules } = useSortRules();
+  const { showCustomTagPicker, disableEditTagsButton, toggleShowCustomTagPicker } = useCustomTags();
 
   return (
     <OptionsContainerMain>

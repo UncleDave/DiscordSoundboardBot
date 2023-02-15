@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { useSortRulesContext } from '../../contexts/sort-rules-context';
+import { useSortRules } from '../../contexts/sort-rules-context';
 import { button, filterButton, filterButtonMobile, textShadowVisibility } from '../../styles/mixins';
 
 interface ButtonMainProps {
@@ -30,7 +30,7 @@ interface TagFilterButtonProps {
 
 const TagFilterButton: FC<TagFilterButtonProps> = ({ id, name, color }) => {
   const [toggled, setToggled] = useState(false);
-  const { toggleTagFilter } = useSortRulesContext();
+  const { toggleTagFilter } = useSortRules();
 
   const handleClick = useCallback(() => {
     setToggled(!toggled);

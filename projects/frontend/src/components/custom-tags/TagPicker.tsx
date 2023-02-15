@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import CustomTag from '../../models/custom-tag';
 import TagToolbar from './TagToolbar';
 import TagTileContainer from './TagTileContainer';
-import { useCustomTagsContext } from '../../contexts/custom-tags-context';
+import { useCustomTags } from '../../contexts/custom-tags-context';
 
 const TagPickerMain = styled.div`
   display: flex;
@@ -37,7 +37,7 @@ const TagPicker: FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [currentlyEditing, setCurrentlyEditing] = useState<CustomTag | null>(null);
   const [newTagProps, setNewTagProps] = useState({ name: '', color: '' });
-  const { setDisableEditTagsButton } = useCustomTagsContext();
+  const { setDisableEditTagsButton } = useCustomTags();
 
   const handleEditTagClick = useCallback((id: string) => {
     const tag = customTags?.find(x => (x.id === id));

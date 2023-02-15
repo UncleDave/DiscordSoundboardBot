@@ -8,6 +8,8 @@ import * as themes from '../styles/themes';
 import GlobalStyle from '../styles/global-style';
 import Snowflakes from './decorative/Snowflakes';
 import Fireworks from './decorative/Fireworks';
+import SortRulesProvider from '../contexts/sort-rules-context';
+import CustomTagsProvider from '../contexts/custom-tags-context';
 
 const AppMain = styled.div`
   display: flex;
@@ -38,9 +40,13 @@ const App: FC = () => {
         { (theme.name === 'christmas' || theme.name === 'halloween') && <Snowflakes /> }
         <Nav showAdminPanel={ showAdminPanel } setShowAdminPanel={ setShowAdminPanel } />
         <AdminPanel show={ showAdminPanel } adminPanelClosed={ () => setShowAdminPanel(false) } />
-        <CSSTransition in={ !showAdminPanel } timeout={ 410 }>
-          { state => (<Soundboard state={ state } />) }
-        </CSSTransition>
+        <SortRulesProvider>
+          <CustomTagsProvider>
+            <CSSTransition in={ !showAdminPanel } timeout={ 410 }>
+              { state => (<Soundboard state={ state } />) }
+            </CSSTransition>
+          </CustomTagsProvider>
+        </SortRulesProvider>
       </ThemeProvider>
     </AppMain>
   );
