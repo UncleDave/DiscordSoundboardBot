@@ -17,7 +17,7 @@ export interface AddSoundOptions {
 
 export interface RenameSoundOptions {
   id: string;
-  newName: string;
+  name: string;
 }
 
 export class ReadOnlySoundsService extends MongoService {
@@ -133,9 +133,9 @@ export class SoundsService extends ReadOnlySoundsService {
       await this.filesService.deleteFile(deleted.value.fileName);
   }
 
-  async renameSound({ id, newName }: RenameSoundOptions) {
+  async renameSound({ id, name }: RenameSoundOptions) {
     const collection = await this.soundsCollection;
-    await collection.updateOne({ _id: new ObjectId(id) }, { $set: { name: newName } });
+    await collection.updateOne({ _id: new ObjectId(id) }, { $set: { name } });
   }
 
   private static async determineStreamFileType(stream: Readable): Promise<FileTypeResultWrapper<Readable>> {

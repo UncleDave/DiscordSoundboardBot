@@ -61,7 +61,14 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
 
   const renameRequest = useCallback(async () => {
     if (!renameInput) return;
-    const res = await fetch(`/api/sounds/${ selectedSound.id }/${ renameInput }`, { method: 'PUT' });
+    const res = await fetch(
+      `/api/sounds/${ selectedSound.id }`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: renameInput }),
+      },
+    );
     if (res.status === 200) {
       setNotification(`Renamed sound "${ selectedSound.name }" to "${ renameInput }"`, '');
       setSelectedSound({ ...selectedSound, name: renameInput });

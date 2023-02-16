@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { button, filterButton, filterButtonMobile, textShadowVisibility } from '../../styles/mixins';
 import usePrefs from '../../hooks/use-prefs';
 import { useSortRules } from '../../contexts/sort-rules-context';
+import { GroupOrder } from '../../models/sort-rules';
 
 interface ButtonMainProps {
   toggled: boolean;
@@ -24,7 +25,7 @@ const ButtonMain = styled.button<ButtonMainProps>`
 `;
 
 const GroupTagsButton: FC = () => {
-  const [mode, setMode] = useState(usePrefs().groups);
+  const [mode, setMode] = useState(usePrefs().groupOrder);
   const [text, setText] = useState('Off');
   const { toggleSoundGrouping } = useSortRules();
 
@@ -36,7 +37,7 @@ const GroupTagsButton: FC = () => {
   }, [mode]);
 
   const handleClick = useCallback(() => {
-    let newMode = 'none';
+    let newMode: GroupOrder = 'none';
     if (mode === 'none') newMode = 'start';
     else if (mode === 'start') newMode = 'end';
     setMode(newMode);

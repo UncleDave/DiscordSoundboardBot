@@ -119,7 +119,7 @@ const CustomTagsProvider: FC<CustomTagsProviderProps> = ({ children }) => {
     toggleSoundOnTag,
     saveTagged,
     discardTagged,
-  }), [showCustomTagPicker, toggleShowCustomTagPicker, disableEditTagsButton, unsavedTagged, currentlyTagging, beginTagging, toggleSoundOnTag, saveTagged]);
+  }), [showCustomTagPicker, toggleShowCustomTagPicker, disableEditTagsButton, unsavedTagged, currentlyTagging, beginTagging, toggleSoundOnTag, saveTagged, discardTagged]);
 
   return (
     <CustomTagsContext.Provider value={ context }>

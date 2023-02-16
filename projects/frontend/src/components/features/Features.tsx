@@ -66,14 +66,14 @@ const SkipAndSearch = styled.div`
 `;
 
 const Features: FC = () => {
-  const { setSearchTerm } = useSortRules();
+  const { updateSearchTerm } = useSortRules();
 
   return (
     <FeaturesContainer>
       <div>
         <SkipAndSearch>
           <SkipContainer />
-          <SearchBar setSearchTerm={ setSearchTerm } focusOnEnter={ false } />
+          <SearchBar setSearchTerm={ updateSearchTerm } focusOnEnter={ false } />
         </SkipAndSearch>
         <OptionsContainer />
       </div>

@@ -1,12 +1,12 @@
 import React, { FC, createContext, useContext, useCallback, useState, useMemo, ReactNode } from 'react';
-import SortRules from '../models/sort-rules';
+import SortRules, { GroupOrder, SortOrder } from '../models/sort-rules';
 import usePrefs from '../hooks/use-prefs';
 
 interface SortRulesContextProps {
   sortRules: SortRules;
   toggleSmallButtons: () => void;
   toggleFavs: () => void;
-  setSearchTerm: (searchTerm: string) => void;
+  updateSearchTerm: (searchTerm: string) => void;
   toggleSoundSortOrder: () => Promise<void>;
   toggleSoundGrouping: () => Promise<void>;
   toggleTagFilter: (tagId: string) => void;
@@ -32,7 +32,7 @@ interface SortRulesProviderProps {
 const SortRulesProvider: FC<SortRulesProviderProps> = ({ children }) => {
   const prefs = usePrefs();
 
-  const [sortRules, setSortRules] = useState<SortRules>({ favorites: false, small: false, searchTerm: '', sortOrder: prefs.sort, groups: prefs.groups, tags: new Array<string>() });
+  const [sortRules, setSortRules] = useState<SortRules>({ favorites: false, small: false, searchTerm: '', sortOrder: prefs.sortOrder, groupOrder: prefs.groupOrder, tags: new Array<string>() });
 
   const toggleSmallButtons = useCallback(() => {
     setSortRules(oldState => ({ ...oldState, small: !oldState.small }));
@@ -42,12 +42,12 @@ const SortRulesProvider: FC<SortRulesProviderProps> = ({ children }) => {
     setSortRules(oldState => ({ ...oldState, favorites: !oldState.favorites }));
   }, [sortRules.favorites]);
 
-  const setSearchTerm = useCallback((searchTerm: string) => {
+  const updateSearchTerm = useCallback((searchTerm: string) => {
     setSortRules(oldState => ({ ...oldState, searchTerm }));
   }, [sortRules.searchTerm]);
 
   const toggleSoundSortOrder = useCallback(async () => {
-    let newOrder = 'A-Z';
+    let newOrder: SortOrder = 'A-Z';
     if (sortRules.sortOrder === 'A-Z') newOrder = 'Date - New';
     else if (sortRules.sortOrder === 'Date - New') newOrder = 'Date - Old';
     setSortRules(oldState => ({ ...oldState, sortOrder: newOrder }));
@@ -55,12 +55,12 @@ const SortRulesProvider: FC<SortRulesProviderProps> = ({ children }) => {
   }, [sortRules.sortOrder]);
 
   const toggleSoundGrouping = useCallback(async () => {
-    let newMode = 'none';
-    if (sortRules.groups === 'none') newMode = 'start';
-    if (sortRules.groups === 'start') newMode = 'end';
-    setSortRules(oldState => ({ ...oldState, groups: newMode }));
+    let newMode: GroupOrder = 'none';
+    if (sortRules.groupOrder === 'none') newMode = 'start';
+    if (sortRules.groupOrder === 'start') newMode = 'end';
+    setSortRules(oldState => ({ ...oldState, groupOrder: newMode }));
     await fetch(`/api/prefs/setgroups/${ newMode }`, { method: 'PUT' });
-  }, [sortRules.groups]);
+  }, [sortRules.groupOrder]);
 
   const toggleTagFilter = useCallback((tagId: string) => {
     const newTagRules = [...sortRules.tags];
@@ -74,11 +74,11 @@ const SortRulesProvider: FC<SortRulesProviderProps> = ({ children }) => {
     sortRules,
     toggleSmallButtons,
     toggleFavs,
-    setSearchTerm,
+    updateSearchTerm,
     toggleSoundSortOrder,
     toggleSoundGrouping,
     toggleTagFilter,
-  }), [sortRules]);
+  }), [sortRules, toggleSmallButtons, toggleFavs, updateSearchTerm, toggleSoundSortOrder, toggleSoundGrouping, toggleTagFilter]);
 
   return (
     <SortRulesContext.Provider value={ context }>

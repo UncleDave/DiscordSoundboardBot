@@ -11,7 +11,7 @@ const isAdmin: RequestHandler = (req, res, next) => {
   return res.sendStatus(403);
 };
 
-function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesService, tagService: TagsService) {
+function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesService, tagsService: TagsService) {
   const botConfig: RawAxiosRequestConfig = { headers: { Authorization: environment.botApiKey } };
   const router = Router();
   const upload = multer();
@@ -31,12 +31,12 @@ function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesS
 
   router.delete('/:id', isAdmin, async (req, res) => {
     await soundsService.deleteSound(req.params.id);
-    await tagService.removeDeletedSound(req.params.id);
+    await tagsService.removeDeletedSound(req.params.id);
     res.sendStatus(200);
   });
 
-  router.put('/:id/:newname', isAdmin, async (req, res) => {
-    await soundsService.renameSound({ id: req.params.id, newName: req.params.newname });
+  router.put('/:id', isAdmin, async (req, res) => {
+    await soundsService.renameSound({ id: req.params.id, name: req.body.name });
     res.sendStatus(200);
   });
 
