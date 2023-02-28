@@ -2,7 +2,9 @@ import React, { FC, useCallback, useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import * as mixins from '../styles/mixins';
 import Sound from '../models/sound';
+import debounce from '../utils';
 import { useCustomTags } from '../contexts/custom-tags-context';
+import { useWebSockets } from '../contexts/websockets-context';
 
 const soundTileSmall = css`
   font-size: 0.6rem;
@@ -174,8 +176,7 @@ interface SoundTileProps {
   small: boolean;
   sound: Sound;
   tagColor: string | undefined;
-  soundRequest: (soundId: string, borderCallback: () => void) => void;
-  previewRequest: (soundId: string, volume?: string) => Promise<void>;
+  soundPreview: (soundId: string, volume?: string) => Promise<void>;
   updateFavRequest: (soundId: string) => void;
   currentlyTagging: boolean;
   unsavedTagged: string[];
@@ -183,10 +184,9 @@ interface SoundTileProps {
 
 const SoundTile: FC<SoundTileProps> = ({
   small,
-  sound: { id, name, isFavorite, volume },
+  sound: { id, name, url, isFavorite, volume },
   tagColor,
-  soundRequest,
-  previewRequest,
+  soundPreview,
   updateFavRequest,
   currentlyTagging,
   unsavedTagged,
@@ -194,19 +194,23 @@ const SoundTile: FC<SoundTileProps> = ({
   const [statusBorder, setStatusBorder] = useState('');
   const theme = useTheme();
   const { toggleSoundOnTag } = useCustomTags();
+  const { webSocket } = useWebSockets();
 
-  const raiseStatusSet = useCallback(() => setStatusBorder('success'), []);
+  const request = useCallback(debounce(() => {
+    setStatusBorder('success');
+    webSocket?.send(JSON.stringify({ type: 'play', data: id }));
+  }, 2000, true), [webSocket]);
 
-  const handleSoundPlayClick = useCallback(() => {
+  const playSound = useCallback(() => {
     setStatusBorder('error');
-    soundRequest(id, raiseStatusSet);
+    request();
     setTimeout(() => setStatusBorder(''), 1);
-  }, []);
+  }, [request]);
 
   const handleButtonClick = useCallback(() => {
     if (currentlyTagging) return toggleSoundOnTag(id);
-    return handleSoundPlayClick();
-  }, [currentlyTagging, unsavedTagged]);
+    return playSound();
+  }, [currentlyTagging, unsavedTagged, playSound]);
 
   const isFavIcon = theme.name === 'halloween' ? '💀' : 'star';
   const isNotFavIcon = theme.name === 'halloween' ? '💀' : 'star_outline';
@@ -234,7 +238,7 @@ const SoundTile: FC<SoundTileProps> = ({
         { isFavorite ? isFavIcon : isNotFavIcon }
       </FavStarButton>
       <PreviewButton small={ small }>
-        <span role='presentation' className='material-icons' onClick={ () => previewRequest(id, volume) }>play_circle</span>
+        <span role='presentation' className='material-icons' onClick={ () => soundPreview(url, volume) }>play_circle</span>
         <p>Preview</p>
       </PreviewButton>
     </SoundTileMain>

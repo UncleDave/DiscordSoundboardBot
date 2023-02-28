@@ -1,6 +1,5 @@
 import fs from 'fs';
 import winston, { LoggerOptions, transport } from 'winston';
-import expressWinston from 'express-winston';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -33,10 +32,5 @@ if (!isProduction) {
 }
 
 const logger = winston.createLogger(loggerOptions);
-
-export const requestLogger = expressWinston.logger({
-  winstonInstance: logger,
-  expressFormat: true,
-});
 
 export default logger;

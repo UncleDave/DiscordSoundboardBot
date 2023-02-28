@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 import { TransitionStatus } from 'react-transition-group';
+import WebSocketsProvider from '../contexts/websockets-context';
 import useSoundPreview from '../hooks/use-sound-preview';
 import { useCustomTags } from '../contexts/custom-tags-context';
 import Features from './features/Features';
@@ -39,23 +40,23 @@ interface SoundboardProps {
 
 const Soundboard: FC<SoundboardProps> = ({ state }) => {
   const { showCustomTagPicker } = useCustomTags();
-  const { previewRequest, setPreviewVolume } = useSoundPreview();
+  const { soundPreview, setPreviewVolume } = useSoundPreview();
 
   return (
-    <SoundboardMain state={ state }>
-
-      <Features />
-      <SortContainer
-        setPreviewVolume={ setPreviewVolume }
-      />
-      { showCustomTagPicker && (
-      <TagPicker />
-      ) }
-      <ButtonContainer
-        previewRequest={ previewRequest }
-      />
-
-    </SoundboardMain>
+    <WebSocketsProvider>
+      <SoundboardMain state={ state }>
+        <Features />
+        <SortContainer
+          setPreviewVolume={ setPreviewVolume }
+        />
+        { showCustomTagPicker && (
+        <TagPicker />
+        ) }
+        <ButtonContainer
+          soundPreview={ soundPreview }
+        />
+      </SoundboardMain>
+    </WebSocketsProvider>
   );
 };
 

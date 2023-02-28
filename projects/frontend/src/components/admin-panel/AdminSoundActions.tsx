@@ -58,7 +58,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
   const [renameInput, setRenameInput] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const { mutate } = useSWRConfig();
-  const { previewRequest } = useSoundPreview();
+  const { soundPreview } = useSoundPreview();
 
   const renameRequest = useCallback(async () => {
     if (!renameInput) return;
@@ -70,28 +70,28 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
         body: JSON.stringify({ name: renameInput }),
       },
     );
-    if (res.status === 200) {
-      setNotification(`Renamed sound "${ selectedSound.name }" to "${ renameInput }"`, '');
-      setSelectedSound({ ...selectedSound, name: renameInput });
-      setRenameInput('');
-      setShowRenameInput(false);
-      await mutate('/api/sounds');
-    } else {
+    if (res.status !== 200) {
       setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
+      return;
     }
+    setSelectedSound({ ...selectedSound, name: renameInput });
+    setRenameInput('');
+    setShowRenameInput(false);
+    await mutate('/api/sounds');
+    setNotification(`Renamed sound "${ selectedSound.name }" to "${ renameInput }"`, '');
   }, [renameInput, selectedSound]);
 
   const soundDeleteRequest = useCallback(async () => {
     const res = await fetch(`/api/sounds/${ selectedSound?.id }`, { method: 'DELETE' });
-    if (res.status === 200) {
-      setNotification(`Deleted sound "${ selectedSound.name }" o7`, '');
-      setShowConfirmDelete(false);
-      setRenameInput('');
-      setSelectedSound({ name: 'ded', id: 'nope', date: 'Dedcember 31st, 1969', isFavorite: false });
-      await mutate('/api/sounds');
-    } else {
+    if (res.status !== 200) {
       setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
+      return;
     }
+    setNotification(`Deleted sound "${ selectedSound.name }" o7`, '');
+    setShowConfirmDelete(false);
+    setRenameInput('');
+    setSelectedSound({ name: 'ded', id: 'nope', date: 'Dedcember 31st, 1969', url: '', isFavorite: false });
+    await mutate('/api/sounds');
   }, [selectedSound?.name]);
 
   useEffect(() => setRenameInput(selectedSound.name), [selectedSound.name]);
@@ -108,7 +108,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
       </div>
       <div>
         <h3>File Volume</h3>
-        <span className='material-icons' role='presentation' onClick={ () => previewRequest(selectedSound.id) }>play_circle</span>
+        <span className='material-icons' role='presentation' onClick={ () => soundPreview(selectedSound.url) }>play_circle</span>
       </div>
       <VolumeOffsetAction sound={ selectedSound } setNotification={ setNotification } />
       <Divider />

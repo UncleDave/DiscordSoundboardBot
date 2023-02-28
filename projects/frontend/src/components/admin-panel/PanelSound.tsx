@@ -51,16 +51,16 @@ interface PanelSoundProps {
   sound: Sound;
   selectedSoundId: string | undefined;
   setSelectedSound: (sound: Sound) => void;
-  previewRequest: (soundName: string, volume?: string) => Promise<void>
+  soundPreview: (soundName: string, volume?: string) => Promise<void>
 }
 
-const PanelSound: FC<PanelSoundProps> = ({ sound, selectedSoundId, setSelectedSound, previewRequest }) => (
+const PanelSound: FC<PanelSoundProps> = ({ sound, selectedSoundId, setSelectedSound, soundPreview }) => (
   <PanelSoundMain>
     <PanelSoundSection onClick={ () => setSelectedSound(sound) } isSelected={ selectedSoundId === sound.id }>
       <h4>{ sound.name }</h4>
       { (sound.volume && sound.volume !== '1') && <span className='material-icons'>equalizer</span> }
     </PanelSoundSection>
-    <span className='material-icons' role='presentation' onClick={ () => previewRequest(sound.id, sound.volume) }>play_circle</span>
+    <span className='material-icons' role='presentation' onClick={ () => soundPreview(sound.url, sound.volume) }>play_circle</span>
   </PanelSoundMain>
 );
 

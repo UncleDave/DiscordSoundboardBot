@@ -46,21 +46,29 @@ const SortRulesProvider: FC<SortRulesProviderProps> = ({ children }) => {
     setSortRules(oldState => ({ ...oldState, searchTerm }));
   }, [sortRules.searchTerm]);
 
+  const saveSortPrefs = useCallback(async (sortOrder: string, groupOrder: string) => {
+    await fetch('/api/prefs/', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sortOrder, groupOrder }),
+    });
+  }, []);
+
   const toggleSoundSortOrder = useCallback(async () => {
     let newOrder: SortOrder = 'A-Z';
     if (sortRules.sortOrder === 'A-Z') newOrder = 'Date - New';
     else if (sortRules.sortOrder === 'Date - New') newOrder = 'Date - Old';
     setSortRules(oldState => ({ ...oldState, sortOrder: newOrder }));
-    await fetch(`/api/prefs/setsortorder/${ newOrder }`, { method: 'PUT' });
-  }, [sortRules.sortOrder]);
+    saveSortPrefs(newOrder, sortRules.groupOrder);
+  }, [sortRules.sortOrder, sortRules.groupOrder]);
 
   const toggleSoundGrouping = useCallback(async () => {
     let newMode: GroupOrder = 'none';
     if (sortRules.groupOrder === 'none') newMode = 'start';
     if (sortRules.groupOrder === 'start') newMode = 'end';
     setSortRules(oldState => ({ ...oldState, groupOrder: newMode }));
-    await fetch(`/api/prefs/setgroups/${ newMode }`, { method: 'PUT' });
-  }, [sortRules.groupOrder]);
+    saveSortPrefs(sortRules.sortOrder, newMode);
+  }, [sortRules.groupOrder, sortRules.sortOrder]);
 
   const toggleTagFilter = useCallback((tagId: string) => {
     const newTagRules = [...sortRules.tags];

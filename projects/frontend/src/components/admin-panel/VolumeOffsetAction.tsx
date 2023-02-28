@@ -83,8 +83,8 @@ interface VolumeOffsetActionProps {
   setNotification: (text: string, color: string) => void;
 }
 
-const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, volume }, setNotification }) => {
-  const { setPreviewVolume, previewRequest } = useSoundPreview();
+const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, url, volume }, setNotification }) => {
+  const { setPreviewVolume, soundPreview } = useSoundPreview();
   const { mutate } = useSWRConfig();
   const [rangeValue, setRangeValue] = useState(volume || '1');
   const [enableSave, setEnableSave] = useState(false);
@@ -105,7 +105,14 @@ const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, vo
   }, [rangeValue, volume]);
 
   const saveVolumeRequest = useCallback(async () => {
-    const res = await fetch(`/api/volume/${ id }/${ rangeValue }`, { method: 'PUT' });
+    const res = await fetch(
+      `/api/sounds/${ id }`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ volume: rangeValue }),
+      },
+    );
     if (res.status !== 200)
       return setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
     setEnableSave(false);
@@ -116,7 +123,7 @@ const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, vo
   return (
     <ActionContainer>
       <h3>Offset</h3>
-      <span className='material-icons' role='presentation' onClick={ () => previewRequest(id) }>play_circle</span>
+      <span className='material-icons' role='presentation' onClick={ () => soundPreview(url) }>play_circle</span>
       <StyledSlider
         ref={ sliderRef }
         type='range'

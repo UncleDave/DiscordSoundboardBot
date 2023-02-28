@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import useSWR from 'swr';
 import styled, { useTheme } from 'styled-components';
-import debounce from '../utils';
 import SoundTile from './SoundTile';
 import Sound from '../models/sound';
 import FullMoon from './decorative/FullMoon';
@@ -46,22 +45,15 @@ function sortSoundGroups(sounds: Sound[], groupOrder: GroupOrder, customTags: Cu
 }
 
 interface ButtonContainerProps {
-  previewRequest: (soundId: string) => Promise<void>;
+  soundPreview: (soundId: string) => Promise<void>;
 }
 
-const ButtonContainer: FC<ButtonContainerProps> = ({ previewRequest }) => {
+const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
   const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
-  const { data: customTags } = useSWR<CustomTag[]>('/api/customtags');
+  const { data: customTags } = useSWR<CustomTag[]>('/api/tags');
   const theme = useTheme();
   const { sortRules: { favorites, small, searchTerm, sortOrder, groupOrder, tags } } = useSortRules();
   const { currentlyTagging, unsavedTagged } = useCustomTags();
-
-  const soundRequest = useCallback(debounce(async (soundId: string, borderCallback: () => void) => {
-    borderCallback();
-    const res = await fetch(`/api/sounds/${ soundId }`);
-    if (res.status === 401)
-      window.location.reload();
-  }, 2000, true), []);
 
   const updateFavoritesRequest = useCallback((soundName: string) => {
     if (sounds) {
@@ -105,8 +97,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ previewRequest }) => {
               key={ x.id }
               small={ small }
               sound={ x }
-              soundRequest={ soundRequest }
-              previewRequest={ previewRequest }
+              soundPreview={ soundPreview }
               tagColor={ tagColor }
               updateFavRequest={ updateFavoritesRequest }
               currentlyTagging={ !!currentlyTagging }

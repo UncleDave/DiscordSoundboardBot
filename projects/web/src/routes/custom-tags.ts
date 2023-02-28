@@ -27,9 +27,9 @@ function customTagsRouter(tagsService: TagsService) {
     res.end();
   });
 
-  router.put('/editsounds', async (req, res) => {
+  router.put('/:id/sounds', async (req, res) => {
     if (req.body.deleted.length) await tagsService.removeSoundsFromTags({ deleted: req.body.deleted, userId: String(req.cookies.userid) });
-    if (req.body.added.length) await tagsService.addSoundsToTag({ tagId: req.body.addedId, userId: String(req.cookies.userid), added: req.body.added });
+    if (req.body.added.length) await tagsService.addSoundsToTag({ tagId: req.params.id, userId: String(req.cookies.userid), added: req.body.added });
     res.sendStatus(204);
     res.end();
   });

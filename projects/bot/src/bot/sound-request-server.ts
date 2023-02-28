@@ -1,9 +1,20 @@
-import express from 'express';
-import logger, { requestLogger } from '../logger';
+import { WebSocketServer } from 'ws';
+import { createServer, IncomingMessage } from 'http';
+import axios from 'axios';
+import logger from '../logger';
 import Environment from '../environment';
 
 type SoundRequestSubscriber = (userID: string, soundId: string) => void;
 type SkipRequestSubscriber = (userID: string, skipAll: boolean) => void;
+
+interface SocketAction {
+  type: 'play' | 'skip';
+  data: string;
+}
+
+interface SocketRequest extends IncomingMessage {
+  userId: string;
+}
 
 export default class SoundRequestServer {
   constructor(port: number, private readonly environment: Environment) {
@@ -22,28 +33,38 @@ export default class SoundRequestServer {
   }
 
   private createServer(port: number) {
-    const app = express();
-    app.use(requestLogger);
+    const wss = new WebSocketServer({ noServer: true });
 
-    app.get('/', (req, res) => res.sendStatus(204));
+    wss.on('connection', (ws, req: SocketRequest) => {
+      ws.on('message', data => {
+        const action: SocketAction = JSON.parse(data.toString());
 
-    app.use((req, res, next) => {
-      if (req.headers.authorization === this.environment.apiKey) return next();
-      return res.sendStatus(401);
+        if (action.type === 'play')
+          this.soundSubscribers.forEach(x => x(req.userId, action.data));
+
+        if (action.type === 'skip')
+          this.skipSubscribers.forEach(x => x(req.userId, !!action.data));
+      });
     });
 
-    app.post('/soundrequest/:userid/:soundid', (req, res) => {
-      this.soundSubscribers.forEach(x => x(req.params.userid, req.params.soundid));
-      res.sendStatus(204);
+    const server = createServer((req, res) => res.writeHead(204).end());
+    server.on('upgrade', async (req: SocketRequest, socket, head) => {
+      const token = req.headers.cookie?.split('accesstoken=')[1].split(';')[0];
+
+      if (token)
+        try {
+          const userRes = await axios.get('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${ token }`, 'Accept-encoding': 'application/json' } });
+          req.userId = userRes.data.accesstoken;
+          wss.handleUpgrade(req, socket, head, ws => {
+            wss.emit('connection', ws, req);
+          });
+        } catch (error) {
+          socket.destroy();
+          logger.info(error);
+        }
     });
 
-    app.post('/skip/:all/:userid', (req, res) => {
-      logger.info(`Server request to skip. Skip all: ${ req.params.all }`);
-      this.skipSubscribers.forEach(x => x(req.params.userid, Boolean(req.params.all)));
-      res.sendStatus(204);
-    });
-
-    app.listen(port, () => {
+    server.listen(port, () => {
       logger.info(`Sound request server listening on port ${ port }`);
     });
   }

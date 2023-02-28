@@ -2,12 +2,10 @@ import * as applicationInsights from 'applicationinsights';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import axios, { RawAxiosRequestConfig } from 'axios';
 import { SoundsService } from 'botman-sounds';
 import { PrefsService, FavoritesService, TagsService } from 'botman-users';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import DiscordAuth from './middlewares/discord-auth';
-import isAdmin from './middlewares/is-admin';
 import soundsRouter from './routes/sounds';
 import favoritesRouter from './routes/favorites';
 import customTagsRouter from './routes/custom-tags';
@@ -51,34 +49,7 @@ app.use(async (req, res, next) => {
 app.use('/api/sounds', soundsRouter(soundsService, favoritesService, tagsService));
 app.use('/api/prefs', prefsRouter(prefsService));
 app.use('/api/favorites', favoritesRouter(favoritesService));
-app.use('/api/customtags', customTagsRouter(tagsService));
-
-const botConfig: RawAxiosRequestConfig = { headers: { Authorization: environment.botApiKey } };
-app.get('/api/skip/:all', async (req, res) => {
-  console.log(`Skip request. All: ${ req.params.all }`);
-  const skipAll = !!req.params.all;
-
-  await axios.post(`${ environment.botURL }/skip/${ skipAll }/${ req.cookies.userid }`, null, botConfig);
-
-  res.sendStatus(204);
-  res.end();
-});
-
-app.get('/api/preview/:id', async (req, res) => {
-  const sound = await soundsService.getSound(req.params.id);
-
-  if (!sound) {
-    res.sendStatus(404).end();
-    return;
-  }
-
-  res.send(`${ environment.soundsBaseUrl }/${ sound.file.fullName }`);
-});
-
-app.put('/api/volume/:id/:volume', isAdmin, async (req, res) => {
-  await soundsService.updateSoundVolume({ id: req.params.id, volume: req.params.volume });
-  res.sendStatus(200);
-});
+app.use('/api/tags', customTagsRouter(tagsService));
 
 if (environment.environment === 'production') app.use(serveStatic);
 else app.use('/', createProxyMiddleware({ target: 'http://frontend:3000', changeOrigin: true }));

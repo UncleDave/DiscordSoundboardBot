@@ -1,5 +1,6 @@
 import React, { FC, useCallback } from 'react';
 import styled from 'styled-components';
+import { useWebSockets } from '../../contexts/websockets-context';
 import { button } from '../../styles/mixins';
 import debounce from '../../utils';
 
@@ -42,18 +43,17 @@ const SkipContainerMain = styled.div`
 `;
 
 const SkipContainer: FC = () => {
+  const { webSocket } = useWebSockets();
   const skipSound = useCallback(debounce(async (all?: boolean) => {
-    const res = await fetch(`/api/skip/${ all && 'skip all' }`);
-    if (res.status === 401)
-      window.location.reload();
-  }, 500, true), []);
+    webSocket?.send(JSON.stringify({ type: 'skip', data: all && 'all' }));
+  }, 500, true), [webSocket]);
 
   return (
     <SkipContainerMain>
-      <button type="button" onClick={ () => skipSound() }>
+      <button type='button' onClick={ skipSound }>
         Skip one
       </button>
-      <button type="button" onClick={ () => skipSound(true) }>
+      <button type='button' onClick={ () => skipSound(true) }>
         Skip all
       </button>
     </SkipContainerMain>
