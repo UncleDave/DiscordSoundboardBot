@@ -5,9 +5,11 @@ import SoundTile from './SoundTile';
 import Sound from '../models/sound';
 import FullMoon from './decorative/FullMoon';
 import CustomTag from '../models/custom-tag';
+import debounce from '../utils';
 import { useSortRules } from '../contexts/sort-rules-context';
 import { useCustomTags } from '../contexts/custom-tags-context';
 import { GroupOrder, SortOrder } from '../models/sort-rules';
+import { useWebSockets } from '../contexts/websockets-context';
 
 const ButtonContainerMain = styled.div`
   display: flex;
@@ -54,6 +56,12 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
   const theme = useTheme();
   const { sortRules: { favorites, small, searchTerm, sortOrder, groupOrder, tags } } = useSortRules();
   const { currentlyTagging, unsavedTagged } = useCustomTags();
+  const { webSocket } = useWebSockets();
+
+  const soundRequest = useCallback(debounce((soundId: string, borderCallback: () => void) => {
+    borderCallback();
+    webSocket?.send(JSON.stringify({ type: 'play', data: soundId }));
+  }, 2000, true), [webSocket]);
 
   const updateFavoritesRequest = useCallback((soundName: string) => {
     if (sounds) {
@@ -97,6 +105,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
               key={ x.id }
               small={ small }
               sound={ x }
+              soundRequest={ soundRequest }
               soundPreview={ soundPreview }
               tagColor={ tagColor }
               updateFavRequest={ updateFavoritesRequest }

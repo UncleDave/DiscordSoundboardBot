@@ -1,4 +1,5 @@
 import React, { FC, createContext, useContext, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import environment from '../environment';
 
 interface WebSocketsContextProps {
   webSocket: WebSocket | null;
@@ -26,7 +27,7 @@ const WebSocketsProvider: FC<WebSocketsProviderProps> = ({ children }) => {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    webSocket.current = new WebSocket(`ws://${ window.location.hostname }:8000`);
+    webSocket.current = new WebSocket(`ws://${ environment.botWebSocketsUrl }`);
     const setReady = () => setIsReady(true);
     webSocket.current.addEventListener('open', setReady, { passive: true });
 

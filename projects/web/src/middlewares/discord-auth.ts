@@ -29,7 +29,7 @@ function discordAuth(prefsService: PrefsService) {
       } else { params.append('refresh_token', req.cookies.refreshtoken); }
       try {
         const tokenRes = await axios.post('https://discord.com/api/oauth2/token', params, { headers: { 'Accept-encoding': 'application/json' } });
-        res.cookie('accesstoken', tokenRes.data.access_token, { httpOnly: true, maxAge: 1000 * 60 * 30 });
+        res.cookie('accesstoken', tokenRes.data.access_token, { maxAge: 1000 * 60 * 30 });
         res.cookie('refreshtoken', tokenRes.data.refresh_token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
         if (req.query.code) {
           res.redirect('/');

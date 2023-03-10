@@ -39,10 +39,9 @@ app.post('/logout', (req, res) => {
 
 app.use(DiscordAuth(prefsService));
 app.use(async (req, res, next) => {
-  const sortRule = await prefsService.getSortOrderPref(String(req.cookies.userid));
-  const groupRule = await prefsService.getGroupsPref(String(req.cookies.userid));
-  res.cookie('sortpref', sortRule);
-  res.cookie('groupspref', groupRule);
+  const sortPrefs = await prefsService.getSortPrefs(String(req.cookies.userid));
+  res.cookie('sortpref', sortPrefs.sortOrder);
+  res.cookie('groupspref', sortPrefs.tagGroups);
   next();
 });
 

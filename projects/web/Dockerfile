@@ -17,6 +17,8 @@ WORKDIR ../users
 COPY projects/users/package.json projects/users/tsconfig.json ./
 COPY projects/users/src/ src/
 WORKDIR ../frontend
+ARG BOT_WEBSOCKETS_URL
+ENV REACT_APP_BOT_WEBSOCKETS_URL $BOT_WEBSOCKETS_URL
 COPY projects/frontend/package.json projects/frontend/tsconfig.json ./
 COPY projects/frontend/src/ src/
 COPY projects/frontend/public/ public/

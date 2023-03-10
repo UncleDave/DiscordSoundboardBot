@@ -22,7 +22,7 @@ export interface RenameSoundOptions {
 
 export interface UpdateVolumeOptions {
   id: string;
-  volume: string;
+  volume: number;
 }
 
 export class ReadOnlySoundsService extends MongoService {
@@ -146,7 +146,7 @@ export class SoundsService extends ReadOnlySoundsService {
 
   async updateSoundVolume({ id, volume }: UpdateVolumeOptions) {
     const collection = await this.soundsCollection;
-    await collection.updateOne({ _id: new ObjectId(id) }, { $set: { volume } }, { upsert: true });
+    await collection.updateOne({ _id: new ObjectId(id) }, { $set: { volume } });
   }
 
   private static async determineStreamFileType(stream: Readable): Promise<FileTypeResultWrapper<Readable>> {

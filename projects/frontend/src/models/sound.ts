@@ -4,5 +4,5 @@ export default interface Sound {
   date: string;
   url: string;
   isFavorite: boolean;
-  volume?: string;
+  volume?: number;
 }

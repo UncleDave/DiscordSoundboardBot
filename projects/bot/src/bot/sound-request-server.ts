@@ -7,9 +7,18 @@ import Environment from '../environment';
 type SoundRequestSubscriber = (userID: string, soundId: string) => void;
 type SkipRequestSubscriber = (userID: string, skipAll: boolean) => void;
 
-interface SocketAction {
+interface Action {
   type: 'play' | 'skip';
-  data: string;
+}
+
+interface PlayAction extends Action {
+  type: 'play';
+  sound: string;
+}
+
+interface SkipAction extends Action {
+  type: 'skip';
+  skipAll: boolean;
 }
 
 interface SocketRequest extends IncomingMessage {
@@ -37,13 +46,13 @@ export default class SoundRequestServer {
 
     wss.on('connection', (ws, req: SocketRequest) => {
       ws.on('message', data => {
-        const action: SocketAction = JSON.parse(data.toString());
+        const action: PlayAction | SkipAction = JSON.parse(data.toString());
 
         if (action.type === 'play')
-          this.soundSubscribers.forEach(x => x(req.userId, action.data));
+          this.soundSubscribers.forEach(x => x(req.userId, action.sound));
 
         if (action.type === 'skip')
-          this.skipSubscribers.forEach(x => x(req.userId, !!action.data));
+          this.skipSubscribers.forEach(x => x(req.userId, action.skipAll));
       });
     });
 
@@ -51,17 +60,22 @@ export default class SoundRequestServer {
     server.on('upgrade', async (req: SocketRequest, socket, head) => {
       const token = req.headers.cookie?.split('accesstoken=')[1].split(';')[0];
 
-      if (token)
-        try {
-          const userRes = await axios.get('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${ token }`, 'Accept-encoding': 'application/json' } });
-          req.userId = userRes.data.accesstoken;
-          wss.handleUpgrade(req, socket, head, ws => {
-            wss.emit('connection', ws, req);
-          });
-        } catch (error) {
-          socket.destroy();
-          logger.info(error);
-        }
+      if (!token) {
+        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+        socket.destroy();
+        return;
+      }
+
+      try {
+        const userRes = await axios.get('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${ token }`, 'Accept-encoding': 'application/json' } });
+        req.userId = userRes.data.accesstoken;
+        wss.handleUpgrade(req, socket, head, ws => {
+          wss.emit('connection', ws, req);
+        });
+      } catch (error) {
+        socket.destroy();
+        logger.info(error);
+      }
     });
 
     server.listen(port, () => {

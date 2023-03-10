@@ -70,7 +70,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
         body: JSON.stringify({ name: renameInput }),
       },
     );
-    if (res.status !== 200) {
+    if (res.status !== 204) {
       setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
       return;
     }
@@ -83,7 +83,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
 
   const soundDeleteRequest = useCallback(async () => {
     const res = await fetch(`/api/sounds/${ selectedSound?.id }`, { method: 'DELETE' });
-    if (res.status !== 200) {
+    if (res.status !== 204) {
       setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
       return;
     }

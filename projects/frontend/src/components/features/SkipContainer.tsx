@@ -44,13 +44,13 @@ const SkipContainerMain = styled.div`
 
 const SkipContainer: FC = () => {
   const { webSocket } = useWebSockets();
-  const skipSound = useCallback(debounce(async (all?: boolean) => {
-    webSocket?.send(JSON.stringify({ type: 'skip', data: all && 'all' }));
+  const skipSound = useCallback(debounce(async (all: boolean) => {
+    webSocket?.send(JSON.stringify({ type: 'skip', skipAll: all }));
   }, 500, true), [webSocket]);
 
   return (
     <SkipContainerMain>
-      <button type='button' onClick={ skipSound }>
+      <button type='button' onClick={ () => skipSound(false) }>
         Skip one
       </button>
       <button type='button' onClick={ () => skipSound(true) }>

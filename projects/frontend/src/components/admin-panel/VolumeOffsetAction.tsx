@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState, useEffect, useCallback } from 'react';
+import React, { FC, useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { useSWRConfig } from 'swr';
 import useSoundPreview from '../../hooks/use-sound-preview';
@@ -86,14 +86,15 @@ interface VolumeOffsetActionProps {
 const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, url, volume }, setNotification }) => {
   const { setPreviewVolume, soundPreview } = useSoundPreview();
   const { mutate } = useSWRConfig();
-  const [rangeValue, setRangeValue] = useState(volume || '1');
+  const soundVolume = useMemo(() => (String(volume || '')), [volume]);
+  const [rangeValue, setRangeValue] = useState(soundVolume || '1');
   const [enableSave, setEnableSave] = useState(false);
   const sliderRef = useRef(null);
 
   const resetAction = useCallback(() => {
-    setRangeValue(volume || '1');
+    setRangeValue(soundVolume || '1');
     setEnableSave(false);
-  }, [id, volume]);
+  }, [id, soundVolume]);
 
   useEffect(() => resetAction(), [id]);
 
@@ -101,7 +102,7 @@ const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, ur
 
   useEffect(() => {
     setPreviewVolume(rangeValue);
-    setEnableSave((Boolean(volume) && rangeValue !== volume) || (!volume && rangeValue !== '1'));
+    setEnableSave((Boolean(volume) && rangeValue !== soundVolume) || (!volume && rangeValue !== '1'));
   }, [rangeValue, volume]);
 
   const saveVolumeRequest = useCallback(async () => {
@@ -110,10 +111,10 @@ const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, ur
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ volume: rangeValue }),
+        body: JSON.stringify({ volume: Number(rangeValue) }),
       },
     );
-    if (res.status !== 200)
+    if (res.status !== 204)
       return setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
     setEnableSave(false);
     await mutate('/api/sounds');

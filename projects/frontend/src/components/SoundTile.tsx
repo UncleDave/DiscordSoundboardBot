@@ -2,9 +2,7 @@ import React, { FC, useCallback, useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import * as mixins from '../styles/mixins';
 import Sound from '../models/sound';
-import debounce from '../utils';
 import { useCustomTags } from '../contexts/custom-tags-context';
-import { useWebSockets } from '../contexts/websockets-context';
 
 const soundTileSmall = css`
   font-size: 0.6rem;
@@ -176,7 +174,8 @@ interface SoundTileProps {
   small: boolean;
   sound: Sound;
   tagColor: string | undefined;
-  soundPreview: (soundId: string, volume?: string) => Promise<void>;
+  soundRequest: (soundId: string, borderCallback: () => void) => void;
+  soundPreview: (soundId: string, volume?: number) => Promise<void>;
   updateFavRequest: (soundId: string) => void;
   currentlyTagging: boolean;
   unsavedTagged: string[];
@@ -186,6 +185,7 @@ const SoundTile: FC<SoundTileProps> = ({
   small,
   sound: { id, name, url, isFavorite, volume },
   tagColor,
+  soundRequest,
   soundPreview,
   updateFavRequest,
   currentlyTagging,
@@ -194,23 +194,16 @@ const SoundTile: FC<SoundTileProps> = ({
   const [statusBorder, setStatusBorder] = useState('');
   const theme = useTheme();
   const { toggleSoundOnTag } = useCustomTags();
-  const { webSocket } = useWebSockets();
 
-  const request = useCallback(debounce(() => {
-    setStatusBorder('success');
-    webSocket?.send(JSON.stringify({ type: 'play', data: id }));
-  }, 2000, true), [webSocket]);
-
-  const playSound = useCallback(() => {
-    setStatusBorder('error');
-    request();
-    setTimeout(() => setStatusBorder(''), 1);
-  }, [request]);
+  const onSuccess = useCallback(() => setStatusBorder('success'), []);
 
   const handleButtonClick = useCallback(() => {
-    if (currentlyTagging) return toggleSoundOnTag(id);
-    return playSound();
-  }, [currentlyTagging, unsavedTagged, playSound]);
+    if (currentlyTagging)
+      return toggleSoundOnTag(id);
+    setStatusBorder('error');
+    setTimeout(() => setStatusBorder(''), 1);
+    return soundRequest(id, onSuccess);
+  }, [currentlyTagging, unsavedTagged]);
 
   const isFavIcon = theme.name === 'halloween' ? '💀' : 'star';
   const isNotFavIcon = theme.name === 'halloween' ? '💀' : 'star_outline';

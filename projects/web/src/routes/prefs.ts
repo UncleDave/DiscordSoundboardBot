@@ -5,8 +5,7 @@ function prefsRouter(prefsService: PrefsService) {
   const router = Router();
 
   router.put('/', async (req, res) => {
-    await prefsService.setSortOrderPref(String(req.cookies.userid), req.body.sortOrder);
-    await prefsService.setGroupsPref(String(req.cookies.userid), req.body.groupOrder);
+    await prefsService.setSortPrefs(String(req.cookies.userid), { sortOrder: req.body.sortOrder, tagGroups: req.body.groupOrder });
     res.sendStatus(204);
   });
 

@@ -66,3 +66,5 @@ jobs:
           push: true
           tags: uncledave/botman-web:latest
           file: projects/web/Dockerfile
+          build-args: |
+            BOT_WEBSOCKETS_URL=${{ vars.BOT_WEBSOCKETS_URL }}
