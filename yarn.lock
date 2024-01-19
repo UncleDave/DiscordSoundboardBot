@@ -2087,10 +2087,10 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.3.tgz#472eaab5f15c1ffdd7f8628bd4c4f753995ec79e"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
 
-"@tsconfig/node17@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@tsconfig/node17/-/node17-1.0.2.tgz#72000fdf16ace97da2085cb698d54abda0c77854"
-  integrity sha512-L0dB4gaL8jtM7+J321MlPOTxJGhN4O3BSpd8nPTPzFHQa5BAIpm/FwIw05UyMXvUCrEDU11HNLDPawvUl6sV/Q==
+"@tsconfig/node17@^17.1.1":
+  version "17.1.1"
+  resolved "https://registry.yarnpkg.com/@tsconfig/node17/-/node17-17.1.1.tgz#e5682a7f19e17d32bfcc01b98e475908558640b3"
+  integrity sha512-2Momj8YxRye4wCXIqp0EouepR3TK8PmI7MRt9u+9zDqZ0y4B31qGvY00arIbbk4E4aKp9vQRa3rvWtNTKz9/4g==
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.14":
   version "7.1.19"
