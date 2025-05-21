@@ -12,7 +12,7 @@
     "@discordjs/opus": "^0.10.0",
     "@discordjs/voice": "^0.18.0",
     "applicationinsights": "^3.6.0",
-    "axios": "^1.8.3",
+    "axios": "^1.9.0",
     "botman-sounds": "*",
     "botman-users": "*",
     "cookie-parser": "^1.4.7",
@@ -20,8 +20,8 @@
     "express": "^4.21.2",
     "express-winston": "^4.2.0",
     "ffmpeg-static": "^5.2.0",
-    "http-proxy-middleware": "^3.0.3",
-    "multer": "^1.4.5-lts.1",
+    "http-proxy-middleware": "^3.0.5",
+    "multer": "^2.0.0",
     "ts-node": "^10.9.2",
     "tweetnacl": "^1.0.3",
     "typescript": "^5.8.2",
@@ -35,9 +35,9 @@
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.1",
     "@types/multer": "^1.4.12",
-    "@types/node": "^22.13.10",
+    "@types/node": "^22.15.18",
     "ts-node-dev": "^2.0.0"
   }
 }
